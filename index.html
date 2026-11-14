@@ -845,7 +845,12 @@
       setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
     }
 
-    const SHARE_HINT = 'WhatsApp share does not work on this page (it is opened inside Apps Script). Use the ⬇ Excel Download button and attach the file in WhatsApp, or open the GitHub Pages link.';
+    function inAppsScript() { return /googleusercontent\.com$|script\.google\.com$/.test(location.hostname); }
+    function shareHint() {
+      return inAppsScript()
+        ? 'WhatsApp share does not work on this page (it is opened inside Apps Script). Use the ⬇ Excel Download button and attach the file in WhatsApp, or open the GitHub Pages link.'
+        : 'This browser cannot share files directly (common on laptops). Use the ⬇ Excel Download button, then attach the file in WhatsApp.';
+    }
 
     async function makeReportFile(items, tag) {
       try {
@@ -884,15 +889,31 @@
       if (!builts.length) return;
       const files = builts.map(function (x) { return x.file; });
       if (!(navigator.share && navigator.canShare && navigator.canShare({ files: files }))) {
-        rptNote(SHARE_HINT);
+        rptNote(shareHint());
         return;
       }
+      doShare(files);
+    }
+
+    // The browser only allows sharing right after a tap. If it blocks, a "Tap to share" button appears (a fresh tap).
+    function doShare(files) {
       rptNote('Opening share menu...');
       navigator.share({ files: files, title: files.length === 1 ? files[0].name : 'Excel reports' }).then(function () {
         rptNote('');
       }).catch(function (e) {
         if (e && e.name === 'AbortError') { rptNote(''); return; }
-        rptNote(SHARE_HINT);
+        rptNote('Share was blocked by the browser (' + ((e && e.name) || 'error') + '). Tap the button below to try again, or use ⬇ Excel Download.');
+        const host = document.getElementById('rptNote');
+        if (host) {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'ig-login-btn';
+          b.style.marginTop = '8px';
+          b.innerText = '📤 Tap to share';
+          b.onclick = function () { doShare(files); };
+          host.appendChild(document.createElement('br'));
+          host.appendChild(b);
+        }
       });
     }
 
