@@ -1,0 +1,2374 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Urbanist:wght@600;700;800&display=swap" rel="stylesheet">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+  <style>
+    .rpt-bar { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+    .rpt-bar .ig-login-btn { flex: 1 1 auto; margin: 0; }
+    .rpt-note { width: 100%; font-size: 13px; color: #555; min-height: 1em; }
+    .rpt-head-title { font-weight: 800; margin: 8px 0; }
+  </style>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      outline: none !important;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+    input, textarea { -webkit-user-select: text; user-select: text; }
+    button, .picker-btn, .modal-item-btn { touch-action: manipulation; }
+
+    body { margin: 0; padding: 0; background: #ffffff; color: #0f172a; display: flex; justify-content: center; align-items: center; min-height: 100vh; min-height: 100dvh; width: 100%; overflow-x: hidden; }
+    .screen-wrapper { width: 100%; max-width: 420px; min-height: 100vh; min-height: 100dvh; margin: 0 auto; display: flex; flex-direction: column; justify-content: space-between; padding: 12px 16px 8px 16px; }
+
+    .top-header { width: 100%; text-align: center; margin-top: 2px; }
+    .company-title { font-family: 'Urbanist', sans-serif; font-size: 15px; font-weight: 800; color: #0f172a; letter-spacing: 0.8px; margin: 0; text-transform: uppercase; background: linear-gradient(90deg, #1e3a8a, #0064e0, #1e3a8a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .sub-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; font-weight: 800; color: #64748b; margin-top: 4px; text-transform: uppercase; letter-spacing: 2px; }
+
+    .bottom-footer { width: 100%; text-align: center; color: #475569; font-family: 'Urbanist', sans-serif; font-size: 13px; font-weight: 800; margin-bottom: 2px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+    .raptor-emoji { font-size: 16px; }
+
+    .ig-container { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: auto 0; }
+    .company-logo-wrap { width: 80px; height: 80px; margin: 0 auto 16px auto !important; border-radius: 24px; background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(220, 39, 67, 0.3); }
+    .company-logo-inner { width: 72px; height: 72px; border-radius: 20px; background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Urbanist', sans-serif; font-weight: 800; color: #dc2743; font-size: 20px; letter-spacing: 1px; }
+    .company-logo-inner span { font-size: 9px; color: #64748b; font-weight: 700; letter-spacing: 1px; margin-top: 2px; }
+
+    .ig-input { width: 100%; padding: 12px 14px; margin-bottom: 10px; border: 1.5px solid #cbd5e1; border-radius: 12px; background-color: #ffffff; font-size: 13px; font-weight: 700; color: #1e293b; }
+    .ig-input:focus { border-color: #0064e0; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
+
+    /* BUTTON-BASED DROPDOWN (does not freeze on phones) */
+    .picker-btn {
+      width: 100%; padding: 12px 14px; margin-bottom: 10px; border: 1.5px solid #cbd5e1; border-radius: 12px;
+      background-color: #ffffff; font-size: 13px; font-weight: 700; color: #1e293b; text-align: left;
+      display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+    }
+    .picker-btn:active { background-color: #f1f5f9; transform: scale(0.99); }
+    .picker-arrow { font-size: 12px; color: #64748b; }
+
+    /* VIEW ONLY DIV BOXES */
+    .readonly-div-box {
+      width: 100%; padding: 12px 14px; margin-bottom: 10px; border: 1.5px dashed #cbd5e1; border-radius: 12px;
+      background-color: #f8fafc; font-size: 13px; font-weight: 700; color: #475569;
+      min-height: 43px; display: flex; align-items: center; overflow: hidden; white-space: nowrap;
+    }
+    .live-calc-div-box {
+      width: 100%; padding: 12px 14px; margin-bottom: 10px; border: 1.5px solid #fde68a; border-radius: 12px;
+      background-color: #fffbeb; font-size: 14px; font-weight: 800; color: #d97706;
+      min-height: 43px; display: flex; align-items: center;
+    }
+
+    /* STEP-BY-STEP SOFT LOCK */
+    .locked-dabba { background-color: #f1f5f9 !important; border-color: #e2e8f0 !important; color: #94a3b8 !important; opacity: 0.75; }
+    .locked-label { color: #cbd5e1 !important; }
+    .locked-btn { background: #cbd5e1 !important; color: #64748b !important; box-shadow: none !important; opacity: 0.75; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+    .grid-art-batch { display: grid; grid-template-columns: 65% 35%; gap: 8px; width: 100%; }
+
+    .ig-login-btn { width: 100%; padding: 13px; margin-top: 2px; background: linear-gradient(135deg, #0064e0 0%, #1d4ed8 100%); color: #ffffff; border: none; border-radius: 20px; font-family: 'Urbanist', sans-serif; font-size: 14px; font-weight: 800; letter-spacing: 0.5px; cursor: pointer; box-shadow: 0 6px 15px rgba(0, 100, 224, 0.3); }
+    .ig-login-btn:active { transform: scale(0.98); }
+    .ig-login-btn[disabled] { opacity: 0.6; }
+    .btn-logout { background: #f1f5f9 !important; color: #1e293b !important; box-shadow: none !important; margin-top: 8px; border: 1.5px solid #cbd5e1; }
+
+    /* Messages float on top of the page, so they never push the form up or down (that shift caused wrong taps) */
+    .error-popup, .success-popup { position: fixed; top: 12px; left: 16px; right: 16px; z-index: 10000; margin: 0; padding: 10px; border-radius: 12px; font-size: 13px; font-weight: 800; text-align: center; pointer-events: none; box-shadow: 0 4px 12px rgba(0,0,0,0.12); display: none; }
+    .error-popup { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .success-popup { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+
+    .hidden { display: none !important; }
+    .althf-list { margin: 10px 0; }
+    .althf-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; font-size: 13px; color: #1e293b; }
+    .althf-art { font-weight: 800; margin-bottom: 4px; color: #0064e0; }
+    .sar-buy { font-weight: 900; font-size: 15px; color: #1e293b; margin: 14px 0 6px; }
+    .xl-wrap { overflow-x: auto; width: 100%; margin: 8px 0; -webkit-overflow-scrolling: touch; }
+    table.xl { border-collapse: collapse; font-size: 12px; white-space: nowrap; background: #fff; }
+    table.xl th, table.xl td { border: 1px solid #cbd5e1; padding: 4px 6px; text-align: center; }
+    table.xl th { background: #d9eead; position: sticky; top: 0; }
+    table.xl thead tr:nth-child(2) th { top: 27px; }
+    table.fmt { border-collapse: collapse; font-family: Calibri, Carlito, Arial, sans-serif; font-size: 13px; white-space: nowrap; background: #fff; }
+    table.fmt td { border: 1px solid #000; padding: 3px 5px; text-align: center; background: #fff; color: #000; }
+    table.fmt td.name { text-align: left; }
+    table.fmt tr.fmt-title td { background: #FFC000; color: #000; font-family: 'Arial Black', Arial, sans-serif; font-weight: 900; font-size: 19px; padding: 8px 10px; }
+    table.fmt tr.fmt-title td.fmt-date { background: #BFBFBF; color: #000; font-family: Calibri, Carlito, Arial, sans-serif; font-size: 16px; font-weight: 700; }
+    table.fmt tr.fmt-head td { background: #000; color: #fff; font-weight: 700; font-size: 13px; white-space: normal; }
+    table.fmt tr.fmt-group td { background: #fff; color: #000; font-family: 'Arial Black', Arial, sans-serif; font-weight: 900; font-size: 9px; }
+    table.fmt tr.fmt-total td { background: #000; color: #fff; font-weight: 700; font-size: 15px; }
+    /* Member report: ek screenshot me fit, text wrap hota hai, font chhote */
+    table.mrep { width: 100%; table-layout: fixed; border-collapse: collapse; font-family: Arial, sans-serif; }
+    table.mrep td { font-size: 10px; font-weight: 700; line-height: 1.2; padding: 2px 3px; border: 1px solid #000; text-align: center; white-space: normal; overflow-wrap: anywhere; word-break: break-word; font-family: Arial, sans-serif; }
+    table.mrep td.mrep-left { text-align: left; font-size: 9px; padding: 2px 2px; }
+    table.mrep.wide td { font-size: 9px; padding: 1px; white-space: nowrap; }
+    table.mrep.wide td.mrep-left { font-size: 8.5px; white-space: normal; }
+    table.mrep.wide tr.fmt-head td { font-size: 8px; white-space: normal; }
+    table.mrep.wide tr.fmt-total td { font-size: 9px; }
+    table.mrep.wide tr.fmt-title td { white-space: normal; font-size: 10px; line-height: 1.15; }
+    table.mrep.wide tr.fmt-title td.fmt-date { font-size: 8px; }
+    /* KAFEEL admin pages (Kitting Report, KIT STOCK, Edit Entry): poori chaudai, table side scroll ke saath */
+    .screen-wrapper.wide { max-width: 100vw; padding: 10px 8px; }
+    .screen-wrapper.wide .form-card { max-width: 100%; width: 100%; }
+    .screen-wrapper.wide .ig-login-btn { max-width: 420px; margin-left: auto; margin-right: auto; display: block; }
+    .screen-wrapper.wide .xl-wrap { overflow-x: auto; width: 100%; }
+    table.mrep.wide tr.fmt-group td { font-size: 8px; }
+    table.mrep tr.fmt-title td { background: #FFC000; color: #000; font-family: 'Arial Black', Arial, sans-serif; font-size: 12px; font-weight: 900; }
+    table.mrep tr.fmt-title td.fmt-date { background: #BFBFBF; color: #000; font-family: Arial, sans-serif; font-size: 10px; font-weight: 700; }
+    table.mrep tr.fmt-head td { background: #000; color: #fff; font-weight: 700; font-size: 10px; }
+    table.mrep tr.fmt-group td { background: #fff; color: #000; font-family: 'Arial Black', Arial, sans-serif; font-size: 9px; }
+    table.mrep tr.fmt-total td { background: #000; color: #fff; font-weight: 700; font-size: 11px; }
+    /* KAFEEL Kitting Report / KIT STOCK: laptop par poori table ek screen me */
+    table.fmt.fit td { font-size: 10px; padding: 1px 2px; overflow-wrap: anywhere; word-break: break-word; }
+    table.fmt.fit tr.fmt-title td { font-size: 14px; }
+    table.fmt.fit tr.fmt-head td { font-size: 9px; }
+    table.fmt.fit tr.fmt-group td { font-size: 8px; }
+    table.fmt.fit tr.fmt-total td { font-size: 10px; }
+    table.fmt tr.fmt-title td { text-align: left; }
+    table.fmt tr.clk { cursor: pointer; }
+    table.xl td.name { text-align: left; }
+    table.xl tr.clk { cursor: pointer; }
+    table.xl tr.clk:active td { background: #eef6ff; }
+    table.xl tr.xl-buy td { background: #f1f5f9; font-weight: 800; text-align: left; }
+
+    .form-card { width: 100%; background: transparent; padding: 5px 10px; margin: auto 0; }
+    .form-card h2 { font-family: 'Urbanist', sans-serif; text-align: center; color: #0064e0; margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 800; }
+    .field-label { font-family: 'Urbanist', sans-serif; font-weight: 800; display: block; margin: 4px 0 3px 4px; color: #334155; font-size: 11px; text-align: left; }
+
+    /* BOTTOM SHEET MODAL */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(15, 23, 42, 0.55); z-index: 9999;
+      display: flex; align-items: flex-end; justify-content: center;
+    }
+    .modal-sheet {
+      width: 100%; max-width: 420px; background: #ffffff;
+      border-radius: 24px 24px 0 0; padding: 18px 16px 24px 16px;
+      max-height: 65vh; display: flex; flex-direction: column;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.2);
+    }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-bottom: 12px; border-bottom: 1.5px solid #f1f5f9; margin-bottom: 10px;
+    }
+    .modal-title { font-family: 'Urbanist', sans-serif; font-size: 16px; font-weight: 800; color: #0064e0; }
+    .modal-close { background: #f1f5f9; border: none; border-radius: 50%; width: 30px; height: 30px; font-weight: 800; color: #475569; cursor: pointer; }
+    .modal-list { overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 8px; }
+    .modal-item-btn {
+      width: 100%; padding: 14px 16px; background: #f8fafc; border: 1.5px solid #e2e8f0;
+      border-radius: 14px; font-size: 14px; font-weight: 800; color: #1e293b;
+      text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    }
+    .modal-item-btn:active { background: #eff6ff; border-color: #0064e0; color: #0064e0; }
+  </style>
+</head>
+<body>
+
+  <div class="screen-wrapper">
+    <div class="top-header">
+      <p class="company-title">INDIA SHOES EXPORT PTD LTD B UNIT</p>
+      <p class="sub-title">Kitting Reports</p>
+    </div>
+
+    <!-- LOGIN SCREEN -->
+    <div class="ig-container" id="loginScreen">
+      <div class="company-logo-wrap"><div class="company-logo-inner">ISE<span>UNIT B</span></div></div>
+      <div id="loginMsgBox" class="error-popup"></div>
+
+      <button type="button" class="picker-btn" onclick="openWorkerPicker()">
+        <span id="loginWorkerText">✦ Choose Your Identity ✦</span>
+        <span class="picker-arrow">▼</span>
+      </button>
+      <input type="hidden" id="workerName" value="">
+
+      <input type="password" class="ig-input" id="workerPin" placeholder="Enter PIN Code" inputmode="numeric">
+      <button type="button" class="ig-login-btn" id="loginBtn" onclick="checkLogin()">Log in</button>
+    </div>
+
+    <!-- ADMIN SCREEN -->
+    <div class="form-card hidden" id="adminScreen">
+      <h2>👑 Master Admin Control</h2>
+      <div id="adminMsgBox" class="error-popup"></div>
+      <label class="field-label">1. Upload Excel Order Sheet (.xlsx)</label>
+      <input type="file" class="ig-input" id="excelFile" accept=".xlsx, .xls">
+      <button type="button" class="ig-login-btn" id="uploadExcelBtn" onclick="processExcel()">Upload & Sync Orders 🚀</button>
+      <label class="field-label">2. Upload Full Format (one-time, .xlsx)</label>
+      <input type="file" class="ig-input" id="fullFmtFile" accept=".xlsx">
+      <button type="button" class="ig-login-btn" onclick="uploadFullFormat()">Upload Full Format (one-time) 🚀</button>
+      <button type="button" class="ig-login-btn" onclick="admFullExcelPage()">📥 Full Excel (all reports, 1 file)</button>
+      <button type="button" class="ig-login-btn" onclick="admOpen('Delete a Buy', admDeleteBuyPage)">🗑 Delete a Buy</button>
+      <button type="button" class="ig-login-btn" onclick="admOpen('Change PIN: One Member', admPinOnePage)">🔑 Change PIN (One Member)</button>
+      <button type="button" class="ig-login-btn" onclick="admOpen('Change PIN: All 7 Members', admPinAllPage)">🔑 Change PIN (All 7 Members)</button>
+      <button type="button" class="ig-login-btn" onclick="admOpen('Recalculate All', admRecalcPage)">🔁 Recalculate All Members</button>
+      <button type="button" class="ig-login-btn" onclick="admOpen('Activity Log', admLog)">📜 Activity Log</button>
+      <button type="button" class="ig-login-btn hidden" id="goReportBtn" onclick="openReportFromAdmin()">My Stitching Report 📝</button>
+      <button type="button" class="ig-login-btn btn-logout" onclick="logout()">Lock & Exit 🔒</button>
+    </div>
+
+    <!-- ADMIN MENU (SADIQ / KAFEEL): one button per separate screen -->
+    <div class="form-card hidden" id="adminMenu">
+      <h2>🛠 Welcome KAFEEL</h2>
+      <button type="button" class="ig-login-btn" onclick="admOpen('Summary', admSummary)">📊 Summary</button>
+      <button type="button" class="ig-login-btn" onclick="admOpen('Kitting Report', admReportPage)">📊 Kitting Report (Excel view)</button>
+      <button type="button" class="ig-login-btn" onclick="admGoEditMain()">✏️ Edit Entry</button>
+      <button type="button" class="ig-login-btn" onclick="admKitStockPage()">📦 KIT STOCK (line-wise) Excel view</button>
+      <button type="button" class="ig-login-btn" onclick="admKitPick()">✏️ Edit Entry (LOKASH / SARAVANAN)</button>
+      <button type="button" class="ig-login-btn" onclick="admFullExcelPage()">📥 Full Excel (buy select: 7 members + kitting + kit stock)</button>
+      <button type="button" class="ig-login-btn btn-logout" onclick="logout()">Lock &amp; Exit 🔒</button>
+    </div>
+
+    <!-- ADMIN SUB-SCREEN: one page opens at a time -->
+    <div class="form-card hidden" id="adminPage">
+      <button type="button" class="ig-login-btn" onclick="admMenu()">⬅ Back to Menu</button>
+      <h2 id="admPageTitle"></h2>
+      <div id="adminCtlMsg" class="error-popup"></div>
+      <div id="adminOut" class="althf-list"></div>
+    </div>
+
+    <!-- ALTHF SCREEN: Excel upload + sirf dekhne wala balance list -->
+    <div class="form-card hidden" id="althfScreen">
+      <h2>📦 ALTHF Data</h2>
+      <button type="button" class="ig-login-btn" onclick="openWorkerReport(this)">📊 Show Report (Excel view)</button>
+      <div id="althfMsgBox" class="error-popup"></div>
+      <label class="field-label">1. Upload Excel file (.xlsx)</label>
+      <input type="file" class="ig-input" id="althfFile" accept=".xlsx, .xls">
+      <button type="button" class="ig-login-btn" onclick="uploadAlthf()">Upload 🚀</button>
+      <div id="althfList" class="althf-list"></div>
+      <button type="button" class="ig-login-btn btn-logout" onclick="logout()">Lock & Exit 🔒</button>
+    </div>
+
+    <!-- SARAVANAN SCREEN: Excel upload + buy-wise charging/packing balance list -->
+    <div class="form-card hidden" id="sarScreen">
+      <h2>🧾 Welcome SARAVANAN</h2>
+      <button type="button" class="ig-login-btn" onclick="openWorkerReport(this)">📊 Show Report (Excel view)</button>
+      <div id="sarMsgBox" class="error-popup"></div>
+      <label class="field-label">1. Attach Excel file (.xlsx)</label>
+      <input type="file" class="ig-input" id="sarFile" accept=".xlsx, .xls">
+      <button type="button" class="ig-login-btn" onclick="uploadSar()">Upload 🚀</button>
+      <div id="sarList" class="althf-list"></div>
+      <button type="button" class="ig-login-btn btn-logout" onclick="logout()">Lock & Exit 🔒</button>
+    </div>
+
+    <!-- MEMBER REPORT SCREEN: "Show Report" dabane par alag screen khulti hai -->
+    <div class="form-card hidden" id="wReportScreen">
+      <h2 id="wReportTitle">REPORT</h2>
+      <button type="button" class="ig-login-btn" onclick="closeWorkerReport()">← Back</button>
+      <div id="wReportBody"></div>
+    </div>
+
+    <!-- WORKER SCREEN -->
+    <div class="form-card hidden" id="workerScreen">
+      <h2 id="roomTitle">👤 Welcome</h2>
+      <button type="button" class="ig-login-btn" onclick="openWorkerEntries()">📝 Entries &amp; Correct</button>
+      <div id="wEntriesBox" class="althf-list hidden"></div>
+      <button type="button" class="ig-login-btn" onclick="openWorkerReport(this)">📊 Show Report (Excel view)</button>
+
+      <!-- STEP 1: BUY -->
+      <label class="field-label">Buys Select</label>
+      <button type="button" class="picker-btn" id="btn_buy" onclick="openBuyPicker()">
+        <span id="w_buy_text">✦ Fetching Data... ✦</span>
+        <span class="picker-arrow">▼</span>
+      </button>
+      <input type="hidden" id="w_buy" value="">
+
+      <!-- STEP 2: ARTICLE -->
+      <label class="field-label locked-label" id="lbl_article">Article Select</label>
+      <button type="button" class="picker-btn locked-dabba" id="btn_article" onclick="openArticlePicker()">
+        <span id="w_article_text">✦ Select Buy First ✦</span>
+        <span class="picker-arrow">▼</span>
+      </button>
+      <input type="hidden" id="w_article" value="">
+
+      <!-- VIEW ONLY FIELDS -->
+      <div class="grid-art-batch">
+         <div>
+            <label class="field-label">Art Name</label>
+            <div class="readonly-div-box" id="w_artName"></div>
+         </div>
+         <div>
+            <label class="field-label">Batch</label>
+            <div class="readonly-div-box" id="w_batch"></div>
+         </div>
+      </div>
+
+      <div class="grid-2">
+         <div>
+            <label class="field-label">Order Pairs</label>
+            <div class="readonly-div-box" id="w_pairs"></div>
+         </div>
+         <div>
+            <label class="field-label">Current Bal</label>
+            <div class="readonly-div-box" id="w_curBal"></div>
+         </div>
+      </div>
+
+      <!-- STEP 3: OUTPUT -->
+      <label class="field-label locked-label" id="lbl_output">Upper Output</label>
+      <input type="number" class="ig-input locked-dabba" id="w_output" placeholder="Type quantity here..." oninput="calcBalance()" onclick="checkOutputClick()" readonly>
+
+      <label class="field-label">Balance (Live Update)</label>
+      <div class="live-calc-div-box" id="w_newBal"></div>
+
+      <div id="workerMsgBox" class="error-popup"></div>
+
+      <!-- STEP 4: SUBMIT -->
+      <button type="button" class="ig-login-btn locked-btn" onclick="sendWorkerData()" id="workerSubmitBtn">Report Submit 🚀</button>
+      <button type="button" class="ig-login-btn hidden" id="backAdminBtn" onclick="backToAdmin()">⬅ Admin Screen</button>
+      <button type="button" class="ig-login-btn btn-logout" onclick="logout()">Lock & Exit 🔒</button>
+    </div>
+
+    <div class="bottom-footer">
+      <span class="raptor-emoji">👾</span><span>Raptor</span>
+    </div>
+  </div>
+
+  <!-- POPUP BOTTOM SHEET -->
+  <div class="modal-overlay hidden" id="pickerModal" onclick="closeModal(event)">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span class="modal-title" id="modalTitle">Select Option</span>
+        <button type="button" class="modal-close" onclick="hideModal()">✕</button>
+      </div>
+      <div class="modal-list" id="modalList"></div>
+    </div>
+  </div>
+
+  <script>
+    // ===== SETTINGS: yahan apna Apps Script link paste karo (Deploy wala link, jo /exec pe khatam hota hai) =====
+    const API_URL = "https://script.google.com/macros/s/AKfycbxulSRigybfMUq0Ao3SH52J_lPW1TWm8NHrLAJr2MC4lV6TSFeh_gQGf65_-u0ihZqZWQ/exec";
+
+    // ===== Connector: pehle google.script.run use hota tha. Ab wahi naam, lekin data Apps Script ke link se aata hai. =====
+    (function () {
+      const TIMEOUT_MS = 20000;
+      let counter = 0;
+      let adminPin = "";
+      const pins = {};
+
+      function jsonp(fn, args, onOk, onFail) {
+        const name = "__jp" + (++counter) + "_" + Date.now();
+        const script = document.createElement("script");
+        let finished = false;
+        let timer = null;
+        function finish(err, res) {
+          if (finished) return;
+          finished = true;
+          clearTimeout(timer);
+          try { delete window[name]; } catch (e) { window[name] = undefined; }
+          if (script.parentNode) script.parentNode.removeChild(script);
+          if (err || !res || res.error) onFail(new Error((res && res.error) || "network"));
+          else onOk(res);
+        }
+        window[name] = function (res) { finish(null, res); };
+        script.onerror = function () { finish(new Error("network"), null); };
+        timer = setTimeout(function () { finish(new Error("timeout"), null); }, TIMEOUT_MS);
+        script.src = API_URL + "?fn=" + encodeURIComponent(fn) + "&callback=" + name +
+          "&args=" + encodeURIComponent(JSON.stringify(args)) + "&t=" + Date.now();
+        document.body.appendChild(script);
+      }
+
+      function post(body, onOk, onFail) {
+        fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(body)
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (j) {
+            if (j.error) onFail(new Error(j.error));
+            else onOk(j.message !== undefined ? j.message : j.result);
+          })
+          .catch(onFail);
+      }
+
+      // Admin calls: POST ke saath admin PIN jaata hai, jawab mein result aata hai
+      function adminCall(action, args, onOk, onFail) {
+        fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ type: "admin", action: action, args: args, pin: adminPin })
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (j) {
+            if (j.error) onFail(new Error(j.error));
+            else onOk(j.result);
+          })
+          .catch(onFail);
+      }
+
+      const FUNCS = ["verifyPin", "getOrdersForWorker", "submitReport", "saveExcelOrders", "saveAlthfData", "getAlthfData", "saveCharPackData", "getCharPackData", "adminSummary", "adminWorkerLog", "adminEditEntry", "adminSetPin", "adminRecalcAll", "adminLog", "adminSetPins", "adminStockReport", "adminFullReport", "adminArticleEntries", "adminDeleteEntry", "adminAddEntry", "adminSetCharPack", "adminGetFormat", "adminGetFormatFile", "adminSaveFormatFile", "adminMemberReport", "adminDeleteBuy", "saveKittingFormat", "workerList", "workerEdit", "workerDelete", "workerReport", "workerFormatFile"];
+
+      function makeRun(okH, failH) {
+        const run = {
+          withSuccessHandler: function (h) { return makeRun(h, failH); },
+          withFailureHandler: function (h) { return makeRun(okH, h); }
+        };
+        FUNCS.forEach(function (fn) {
+          run[fn] = function () {
+            const args = Array.prototype.slice.call(arguments);
+            const onOk = function (res) {
+              if (fn === "verifyPin" && res && res.success) {
+                pins[args[0]] = args[1];
+              }
+              if (fn === "verifyPin" && res && res.success && ["SADIQ", "KAFEEL", "ALTHF"].indexOf(args[0]) >= 0) {
+                adminPin = args[1];
+              }
+              if (okH) okH(res);
+            };
+            const onFail = function (err) { if (failH) failH(err); };
+            if (fn.indexOf("admin") === 0) adminCall(fn, args, onOk, onFail);
+            else if (fn === "saveExcelOrders") post({ orders: args[0], pin: adminPin }, onOk, onFail);
+            else if (fn === "saveKittingFormat") post({ type: "format", rows: args[0], pin: adminPin }, onOk, onFail);
+            else if (fn === "workerList" || fn === "workerEdit" || fn === "workerDelete" || fn === "workerReport" || fn === "workerFormatFile") post({ type: "worker", action: fn, worker: args[0], pin: pins[args[0]] || "", args: args.slice(1) }, onOk, onFail);
+            else if (fn === "verifyPin") post({ type: "verify", worker: args[0], pin: args[1] }, onOk, onFail);
+            else if (fn === "getOrdersForWorker") post({ type: "worker", action: "workerOrders", worker: args[0], pin: pins[args[0]] || "", args: [] }, onOk, onFail);
+            else if (fn === "submitReport") { const sd = args[0] || {}; post({ type: "worker", action: "workerSubmit", worker: sd.worker, pin: pins[sd.worker] || "", args: [sd] }, onOk, onFail); }
+            else if (fn === "getAlthfData") post({ type: "worker", action: "workerAlthf", worker: args[0], pin: pins[args[0]] || "", args: [] }, onOk, onFail);
+            else if (fn === "getCharPackData") post({ type: "worker", action: "workerCharpack", worker: "SARAVANAN", pin: pins["SARAVANAN"] || "", args: [] }, onOk, onFail);
+            else if (fn === "saveAlthfData") post({ type: "althf", worker: args[0], rows: args[1], pin: pins[args[0]] || "" }, onOk, onFail);
+            else if (fn === "saveCharPackData") post({ type: "charpack", rows: args[0], pin: pins["SARAVANAN"] || "" }, onOk, onFail);
+            else jsonp(fn, args, onOk, onFail);
+          };
+        });
+        return run;
+      }
+
+      window.__clearAuth = function () {
+        adminPin = "";
+        Object.keys(pins).forEach(function (k) { delete pins[k]; });
+      };
+
+      window.google = { script: { run: makeRun(null, null) } };
+    })();
+
+    let masterOrders = [];
+    let loggedInWorker = "";
+    let step1Done = false;
+    let step2Done = false;
+    let step3Done = false;
+
+    // Names must match the server (Code.gs): WORKER_COLS and WORKER_PINS
+    const ALL_WORKERS = ["SADIQ", "KAFEEL", "KUMAR", "ZESAN", "IMTHIYAZ", "MUDASSIR", "LOKASH", "ALTHF", "SARAVANAN"];
+    const ADMIN_USERS = ["SADIQ", "KAFEEL", "ALTHF"];
+
+    // ALTHF admin screen se apni report screen par jaaye
+    function openReportFromAdmin() {
+      document.getElementById('adminScreen').classList.add('hidden');
+      document.getElementById('workerScreen').classList.remove('hidden');
+      document.getElementById('roomTitle').innerText = "👤 Welcome " + loggedInWorker;
+      document.getElementById('lbl_output').innerText = WORKER_LABELS[loggedInWorker];
+      document.getElementById('backAdminBtn').classList.remove('hidden');
+      resetLockSystem();
+      fetchMasterOrders();
+    }
+
+    // ===== ALTHF: Excel upload aur dekhne wala list =====
+    function findCol(header, name) {
+      for (let i = 0; i < header.length; i++) {
+        if (String(header[i]).replace(/\s+/g, " ").trim().toUpperCase() === name) return i;
+      }
+      return -1;
+    }
+
+    function uploadAlthf() {
+      const fileInput = document.getElementById('althfFile');
+      if (fileInput.files.length === 0) { showMsg('althfMsgBox', 'error', '⚠️ Please select an Excel file first!'); return; }
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+          const data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: "" });
+          if (data.length < 2) { showMsg('althfMsgBox', 'error', '❌ No data found in the Excel.'); return; }
+          const h = data[0];
+          const cols = {
+            art: findCol(h, "ARTICLE NUMBER"), name: findCol(h, "ARTICLE NAME"), po: findCol(h, "PO NUMBER"),
+            order: findCol(h, "ORDER PAIRS"),
+            soleR: findCol(h, "SOLE RECV"), soleB: findCol(h, "SOLE BAL"),
+            insR: findCol(h, "INSOLE RECV"), insB: findCol(h, "INSOLE BAL"),
+            sockR: findCol(h, "SOCK RECV"), sockB: findCol(h, "SOCK BAL"),
+            buy: findColAny(h, ["BUYS NAME", "BUY NAME"]), batch: findCol(h, "BATCH")
+          };
+          if (cols.art < 0 || cols.soleB < 0 || cols.insB < 0 || cols.sockB < 0) {
+            showMsg('althfMsgBox', 'error', '❌ Required columns not found (ARTICLE NUMBER, SOLE BAL, INSOLE BAL, SOCK BAL). Check the header row.');
+            return;
+          }
+          const get = function (r, i) { return (i >= 0 && r[i] !== undefined) ? String(r[i]).trim() : ""; };
+          const rows = [];
+          for (let i = 1; i < data.length; i++) {
+            const r = data[i];
+            if (!get(r, cols.art)) continue;
+            rows.push([get(r, cols.art), get(r, cols.name), get(r, cols.po), get(r, cols.order),
+                       get(r, cols.soleR), get(r, cols.soleB), get(r, cols.insR), get(r, cols.insB),
+                       get(r, cols.sockR), get(r, cols.sockB), get(r, cols.buy), get(r, cols.batch)]);
+          }
+          google.script.run.withSuccessHandler(function (msg) {
+            showMsg('althfMsgBox', 'success', msg || '✅ Upload complete');
+            fileInput.value = "";
+            loadAlthfList();
+          }).withFailureHandler(function () {
+            showMsg('althfMsgBox', 'error', '❌ Upload failed. Check your internet and try again.');
+          }).saveAlthfData(loggedInWorker, rows);
+        } catch (err) {
+          showMsg('althfMsgBox', 'error', '❌ Could not read the Excel (' + err.message + ')');
+        }
+      };
+      reader.onerror = function () { showMsg('althfMsgBox', 'error', '❌ Could not read the file.'); };
+      reader.readAsArrayBuffer(fileInput.files[0]);
+    }
+
+    function loadAlthfList() {
+      const box = document.getElementById('althfList');
+      box.innerText = "⏳ Loading data...";
+      google.script.run.withSuccessHandler(function (rows) {
+        renderAlthfList(rows || []);
+      }).withFailureHandler(function () {
+        box.innerText = "⚠️ Could not connect to server. Please try again.";
+      }).getAlthfData(loggedInWorker);
+    }
+
+    function renderAlthfList(rows) {
+      const box = document.getElementById('althfList');
+      box.innerHTML = "";
+      if (rows.length === 0) { box.innerText = "No data yet. Upload an Excel file above."; return; }
+      rows.forEach(function (o) {
+        const card = document.createElement('div');
+        card.className = 'althf-card';
+        const title = document.createElement('div');
+        title.className = 'althf-art';
+        title.innerText = 'Article ' + o.articleNo + (o.articleName ? ' - ' + o.articleName : '');
+        card.appendChild(title);
+        const line = function (label, val) {
+          const d = document.createElement('div');
+          d.innerText = label + ': ' + (val === "" ? "—" : val);
+          card.appendChild(d);
+        };
+        line('Buy Name', o.buyName);
+        line('Batch', o.batch);
+        line('Order Pairs', o.orderPairs);
+        line('Sole Bal', o.soleBal);
+        line('Insole Bal', o.insoleBal);
+        line('Socks Bal', o.sockBal);
+        box.appendChild(card);
+      });
+    }
+
+    // ===== ADMIN CONTROL: menu and separate screens =====
+    const ADM_WORKERS = ["KUMAR", "ZESAN", "IMTHIYAZ", "MUDASSIR", "LOKASH", "ALTHF", "SARAVANAN"];
+
+    function admShow(id) {
+      ["adminMenu", "adminPage", "adminScreen"].forEach(function (x) {
+        document.getElementById(x).classList.toggle('hidden', x !== id);
+      });
+      const wrapEl = document.querySelector('.screen-wrapper');
+      if (wrapEl) wrapEl.classList.toggle('wide', id === 'adminPage');
+    }
+    // Member ki apni report: alag screen khulti hai, pehle "Loading" dikhta hai, phir table.
+    let wRepPrev = null;
+    function openWorkerReport() {
+      getFormatB64();
+      const cur = ['workerScreen', 'althfScreen', 'sarScreen'].map(function (id) { return document.getElementById(id); })
+        .find(function (el) { return el && !el.classList.contains('hidden'); });
+      wRepPrev = cur || null;
+      if (cur) cur.classList.add('hidden');
+      document.getElementById('wReportScreen').classList.remove('hidden');
+      document.getElementById('wReportTitle').innerText = loggedInWorker + ' REPORT';
+      const body = document.getElementById('wReportBody');
+      body.innerHTML = '<div class="althf-card">Loading report... ⏳</div>';
+      window.scrollTo(0, 0);
+      google.script.run
+        .withSuccessHandler(function (rep) { renderWorkerReport(rep); })
+        .withFailureHandler(function (e) {
+          body.innerHTML = '';
+          const d = document.createElement('div');
+          d.className = 'error-popup';
+          d.innerText = '❌ ' + ((e && e.message) || 'Could not load report');
+          body.appendChild(d);
+        })
+        .workerReport(loggedInWorker);
+    }
+
+    function closeWorkerReport() {
+      document.getElementById('wReportScreen').classList.add('hidden');
+      if (wRepPrev) wRepPrev.classList.remove('hidden');
+      window.scrollTo(0, 0);
+    }
+
+    // Excel jaisi table: ek hi data se screen, PDF aur Excel teeno bante hain.
+    // Har line: { cls, cells: [{ t, span, cls }] }. Buy ka title, heading, member ka naam (group row),
+    // har 4 articles ke baad TOTAL, aur aakhir me GRAND TOTAL.
+    function buildReportMatrix(rep, who) {
+      const heads = ['BATCH NO', 'Style Name', 'Order QTY'].concat(rep.headers);
+      const nCols = heads.length;
+      const nVals = rep.headers.length + 1; // Order QTY + member ke columns
+      const now = new Date();
+      const pad = function (n) { return (n < 10 ? '0' : '') + n; };
+      const asOn = pad(now.getDate()) + '-' + pad(now.getMonth() + 1) + '-' + now.getFullYear();
+      const lines = [];
+      const addLine = function (cls, cells) { lines.push({ cls: cls, cells: cells }); };
+      const num = function (v) { const n = Number(v); return isFinite(n) ? n : 0; };
+      const zeros = function () { return new Array(nVals).fill(0); };
+      const addTotal = function (label, sums) { addLine('fmt-total', [{ t: label, span: 2 }].concat(sums.map(function (v) { return { t: v }; }))); };
+
+      // Buy ke hisab se groups (rows pehle se buy ke order me aati hain)
+      const groups = [];
+      rep.rows.forEach(function (r) {
+        const last = groups[groups.length - 1];
+        if (last && last.buy === r.buyName) last.rows.push(r);
+        else groups.push({ buy: r.buyName, rows: [r] });
+      });
+
+      let grand = zeros();
+      groups.forEach(function (g) {
+        const total = g.rows.reduce(function (s, r) { return s + num(r.order); }, 0);
+        addLine('fmt-title', [
+          { t: admFmtTitle(g.buy, total, who), span: nCols - 2 },
+          { t: 'AS ON DATE\n' + asOn, span: 2, cls: 'fmt-date' }
+        ]);
+        addLine('fmt-head', heads.map(function (h) { return { t: h }; }));
+        addLine('fmt-group', [{ t: '', span: 3 }, { t: who, span: rep.headers.length }]);
+        let block = zeros();
+        const gg = zeros();
+        g.rows.forEach(function (r, i) {
+          const vals = [r.order].concat(r.values);
+          const cells = vals.map(function (v) { return { t: v }; });
+          cells.unshift({ t: r.batch, cls: 'mrep-left' }, { t: r.articleName });
+          addLine('', cells);
+          vals.forEach(function (v, j) {
+            block[j] += num(v);
+            grand[j] += num(v);
+            gg[j] += num(v);
+          });
+          if ((i + 1) % 4 === 0 || i === g.rows.length - 1) {
+            addTotal('TOTAL', block);
+            block = zeros();
+          }
+        });
+        addTotal('GRAND TOTAL', gg);
+      });
+      if (groups.length > 1) addTotal('GRAND TOTAL', grand);
+      return { nCols: nCols, lines: lines };
+    }
+
+    // Screen par table banati hai (ek hi wrapper me)
+    function drawReportTable(mx) {
+      const wrap = document.createElement('div');
+      wrap.style.overflowX = 'auto';
+      const tbl = document.createElement('table');
+      tbl.className = 'fmt';
+      mx.lines.forEach(function (ln) {
+        const tr = document.createElement('tr');
+        if (ln.cls) tr.className = ln.cls;
+        ln.cells.forEach(function (o) {
+          const td = document.createElement('td');
+          td.innerText = (o.t === undefined || o.t === null) ? '' : o.t;
+          if (o.span) td.colSpan = o.span;
+          if (o.cls) td.className = o.cls;
+          tr.appendChild(td);
+        });
+        tbl.appendChild(tr);
+      });
+      wrap.appendChild(tbl);
+      return wrap;
+    }
+
+    // Export bar: sirf Excel (share + download). build(b) items deta hai; split = true ho to har buy ki alag file.
+    function addExportBar(host, build, baseTag, split) {
+      const bar = document.createElement('div');
+      bar.className = 'rpt-bar';
+      admButton(bar, '📤 Excel - WhatsApp / Share', function () { shareReport(build, baseTag, split); });
+      admButton(bar, '⬇ Excel Download', function () { downloadReport(build, baseTag, split); });
+      const note = document.createElement('div');
+      note.id = 'rptNote';
+      note.className = 'rpt-note';
+      bar.appendChild(note);
+      host.appendChild(bar);
+    }
+
+    // Member report: buttons + table. host = jahan dikhani hai.
+    function showReport(rep, who, host) {
+      host.innerHTML = '';
+      if (!rep.rows.length) {
+        const d = document.createElement('div');
+        d.className = 'althf-card';
+        d.innerText = 'No articles yet.';
+        host.appendChild(d);
+        return;
+      }
+      addExportBar(host, function () { return Promise.resolve([{ tpl: who + ' report format', sheetName: who, mx: buildReportMatrix(rep, who) }]); }, 'Report_' + who, false);
+      const area = document.createElement('div');
+      area.id = 'rptPrint';
+      const head = document.createElement('div');
+      head.className = 'rpt-head-title';
+      head.innerText = who + ' REPORT';
+      area.appendChild(head);
+      area.appendChild(drawReportTable(buildReportMatrix(rep, who)));
+      host.appendChild(area);
+    }
+
+    function rptNote(text) {
+      const el = document.getElementById('rptNote');
+      if (el) el.innerText = text;
+    }
+
+    function reportFileName(tag, ext) {
+      const now = new Date();
+      const pad = function (n) { return (n < 10 ? '0' : '') + n; };
+      const stamp = pad(now.getDate()) + '-' + pad(now.getMonth() + 1) + '-' + now.getFullYear();
+      return tag + '_' + stamp + '.' + ext;
+    }
+
+    // Format workbook: SADIQ ka upload (server). Nahi hua to built-in copy. Har report apni template sheet se banti hai.
+    const FMT_TEMPLATE_B64 = "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";
+    const XLSX_MIME = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    const ALL_MEMBERS = ['KUMAR', 'ZESAN', 'IMTHIYAZ', 'MUDASSIR', 'LOKASH', 'ALTHF', 'SARAVANAN'];
+    let fmtB64Cache = null;
+
+    function admPromise(fn, args) {
+      return new Promise(function (resolve, reject) {
+        const run = google.script.run
+          .withSuccessHandler(resolve)
+          .withFailureHandler(function (e) { reject(new Error((e && e.message) || 'Server error')); });
+        run[fn].apply(null, args);
+      });
+    }
+
+    // Format file server se (ek baar, cache me). Admin ke liye adminGetFormatFile, member ke liye workerFormatFile.
+    function getFormatB64() {
+      if (fmtB64Cache) return Promise.resolve(fmtB64Cache);
+      const isAdminUser = (loggedInWorker === 'KAFEEL' || loggedInWorker === 'SADIQ');
+      const call = new Promise(function (resolve, reject) {
+        const run = google.script.run
+          .withSuccessHandler(resolve)
+          .withFailureHandler(function (e) { reject(new Error((e && e.message) || 'Server error')); });
+        if (isAdminUser) run.adminGetFormatFile(); else run.workerFormatFile(loggedInWorker);
+      });
+      return call.then(function (s) {
+        fmtB64Cache = s || FMT_TEMPLATE_B64;
+        return fmtB64Cache;
+      }).catch(function () { return FMT_TEMPLATE_B64; });
+    }
+
+    function b64ToBytes(b64) {
+      const bin = atob(b64);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      return bytes;
+    }
+
+    function findTemplate(wb, name) {
+      const want = String(name).toLowerCase();
+      const ws = wb.worksheets.find(function (w) { return String(w.name).toLowerCase() === want; });
+      if (!ws) throw new Error('Sheet "' + name + '" was not found in the format file. Ask SADIQ to upload the full format file again.');
+      return ws;
+    }
+
+    // Ek report sheet: template ke merges (title/date), styles, widths aur row height ke saath.
+    function fillReportSheet(wb, tpl, mx, sheetName) {
+      const ws = wb.addWorksheet(String(sheetName).slice(0, 31));
+      const spanAt = function (row, col) {
+        const c0 = tpl.getCell(row, col);
+        if (!c0.isMerged) return 1;
+        let k = 1;
+        while (tpl.getCell(row, col + k).isMerged && tpl.getCell(row, col + k).master.address === c0.master.address) k++;
+        return k;
+      };
+      const w1 = spanAt(1, 2);
+      const w2 = spanAt(1, 2 + w1);
+      const useTplTitle = (w1 + w2 === mx.nCols);
+      for (let c = 1; c <= Math.max(tpl.columnCount, mx.nCols + 1); c++) {
+        const w = tpl.getColumn(c).width;
+        if (w) ws.getColumn(c).width = w;
+      }
+      const ROW_OF = { 'fmt-title': 1, 'fmt-head': 2, 'fmt-group': 3, 'fmt-total': 8, '': 4 };
+      const styleAt = function (row, col) { return JSON.parse(JSON.stringify(tpl.getCell(row, col).style || {})); };
+      let r = 0;
+      mx.lines.forEach(function (ln) {
+        r++;
+        const cls = ln.cls || '';
+        let srow = ROW_OF[cls] !== undefined ? ROW_OF[cls] : 4;
+        if (cls === 'fmt-total' && ln.cells[0] && ln.cells[0].t === 'GRAND TOTAL') srow = 22;
+        let cells = ln.cells;
+        if (cls === 'fmt-title' && useTplTitle && cells.length === 2) {
+          cells = [Object.assign({}, cells[0], { span: w1 }), Object.assign({}, cells[1], { span: w2 })];
+        }
+        let c = 2;
+        cells.forEach(function (o) {
+          const span = o.span || 1;
+          for (let k = 0; k < span; k++) ws.getCell(r, c + k).style = styleAt(srow, c + k);
+          if (o.t !== undefined && o.t !== null && o.t !== '') ws.getCell(r, c).value = o.t;
+          if (span > 1) ws.mergeCells(r, c, r, c + span - 1);
+          c += span;
+        });
+        const h = tpl.getRow(srow).height;
+        if (h) ws.getRow(r).height = h;
+      });
+      // Table ke chaaron taraf dark black line
+      const lastCol = 2 + mx.nCols - 1;
+      const dark = { style: 'medium', color: { argb: 'FF000000' } };
+      for (let c = 2; c <= lastCol; c++) {
+        ws.getCell(1, c).border = Object.assign({}, ws.getCell(1, c).border, { top: dark });
+        ws.getCell(r, c).border = Object.assign({}, ws.getCell(r, c).border, { bottom: dark });
+      }
+      for (let rr = 1; rr <= r; rr++) {
+        ws.getCell(rr, 2).border = Object.assign({}, ws.getCell(rr, 2).border, { left: dark });
+        ws.getCell(rr, lastCol).border = Object.assign({}, ws.getCell(rr, lastCol).border, { right: dark });
+      }
+      ws.pageSetup = { orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0 };
+      return ws;
+    }
+
+    // items: [{ tpl, mx, sheetName }]. Ek workbook me sab sheets; format ki template sheets hata di jaati hain.
+    async function buildBook(items) {
+      if (!window.ExcelJS) throw new Error('Excel library did not load. Check the internet connection and try again.');
+      const b64 = await getFormatB64();
+      const wb = new ExcelJS.Workbook();
+      await wb.xlsx.load(b64ToBytes(b64).buffer);
+      const originals = wb.worksheets.map(function (w) { return w.id; });
+      items.forEach(function (it) {
+        fillReportSheet(wb, findTemplate(wb, it.tpl), it.mx, it.sheetName);
+      });
+      originals.forEach(function (id) { wb.removeWorksheet(id); });
+      const buf = await wb.xlsx.writeBuffer();
+      return new Blob([buf], { type: XLSX_MIME });
+    }
+
+    function downloadBlob(blob, name) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+    }
+
+    const SHARE_HINT = 'WhatsApp share does not work on this page (it is opened inside Apps Script). Use the ⬇ Excel Download button and attach the file in WhatsApp, or open the GitHub Pages link.';
+
+    async function makeReportFile(items, tag) {
+      try {
+        const blob = await buildBook(items);
+        const name = reportFileName(tag, 'xlsx');
+        return { blob: blob, name: name, file: new File([blob], name, { type: XLSX_MIME }) };
+      } catch (e) {
+        rptNote('❌ ' + ((e && e.message) || 'Could not create the file'));
+        return null;
+      }
+    }
+
+    // Buy list: split ho to filter wali buy (ya sab buys), warna ek hi '' entry.
+    function rowsForBuy(b) { return admRows.filter(function (o) { return o.buyName === b; }); }
+    function exportBuys(split) {
+      if (!split) return [''];
+      const list = admBuyFilter ? [admBuyFilter] : admBuyNames();
+      return list.length ? list : [''];
+    }
+    function fileTag(base, b) { return b ? base + '_' + b.replace(/[^A-Za-z0-9_-]+/g, '_') : base; }
+
+    // Har buy ke liye ek Excel file banati hai.
+    async function makeReportFiles(build, baseTag, split) {
+      const out = [];
+      const buys = exportBuys(split);
+      for (let i = 0; i < buys.length; i++) {
+        const items = await build(buys[i]);
+        const built = await makeReportFile(items, split ? fileTag(baseTag, buys[i]) : baseTag);
+        if (built) out.push(built);
+      }
+      return out;
+    }
+
+    // WhatsApp / share: saari files ek saath share menu me. Share na chale to hint dikhta hai.
+    function shareBuilts(builts) {
+      if (!builts.length) return;
+      const files = builts.map(function (x) { return x.file; });
+      if (!(navigator.share && navigator.canShare && navigator.canShare({ files: files }))) {
+        rptNote(SHARE_HINT);
+        return;
+      }
+      rptNote('Opening share menu...');
+      navigator.share({ files: files, title: files.length === 1 ? files[0].name : 'Excel reports' }).then(function () {
+        rptNote('');
+      }).catch(function (e) {
+        if (e && e.name === 'AbortError') { rptNote(''); return; }
+        rptNote(SHARE_HINT);
+      });
+    }
+
+    function downloadBuilts(builts) {
+      if (!builts.length) return;
+      builts.forEach(function (x, i) { setTimeout(function () { downloadBlob(x.blob, x.name); }, i * 500); });
+      rptNote('Downloaded: ' + builts.map(function (x) { return x.name; }).join(', '));
+    }
+
+    function shareReport(build, baseTag, split) {
+      rptNote('Creating file...');
+      makeReportFiles(build, baseTag, split).then(shareBuilts);
+    }
+
+    function downloadReport(build, baseTag, split) {
+      rptNote('Creating file...');
+      makeReportFiles(build, baseTag, split).then(downloadBuilts);
+    }
+
+    // Full Excel: sab reports ek file me. Buy filter ho to sirf wahi buy (KITTING, KIT STOCK, 7 members).
+    async function fullBookItems(b) {
+      const sel = b || admBuyFilter;
+      const rows = sel ? rowsForBuy(sel) : admRows;
+      const items = [
+        { tpl: 'all kitting report format', sheetName: 'KITTING', mx: admFormatMatrix(rows, FMT_COLS, true, 'KITTING REPORT') },
+        { tpl: 'kit stock format', sheetName: 'KIT STOCK', mx: admFormatMatrix(rows, KIT_FMT_COLS, false, 'KIT STOCK (LINE-WISE)') }
+      ];
+      for (const m of ALL_MEMBERS) {
+        const rep = await admPromise('adminMemberReport', [m]);
+        const mine = sel ? rep.rows.filter(function (r) { return r.buyName === sel; }) : rep.rows;
+        items.push({ tpl: m + ' report format', sheetName: m, mx: buildReportMatrix({ headers: rep.headers, rows: mine }, m) });
+      }
+      return items;
+    }
+
+    function admFullExcelPage() {
+      admOpen('Full Excel (all reports)', renderFullExcel);
+    }
+    function renderFullExcel() {
+      const box = document.getElementById('adminOut');
+      box.innerHTML = '';
+      admLine(box, 'Loading data...');
+      admReloadAll(function () {
+        box.innerHTML = '';
+        admBuySelect(box, renderFullExcel);
+        admLine(box, 'One Excel file' + (admBuyFilter ? ' for buy ' + admBuyFilter : ' for all buys') + ': KITTING, KIT STOCK and the 7 members, each in its own sheet.');
+        addExportBar(box, function (b) { return fullBookItems(b); }, 'Full_All_Reports', true);
+      });
+    }
+
+    // SADIQ: ek poora buy delete (orders, entries, ALTHF/SARAVANAN data). Naam type karke confirm karna padta hai.
+    function admDeleteBuyPage(doneMsg) {
+      const box = document.getElementById('adminOut');
+      box.innerHTML = '';
+      admLine(box, 'Loading buys...');
+      admReloadAll(function () {
+        box.innerHTML = '';
+        if (doneMsg) admLine(box, doneMsg);
+        admLine(box, 'Warning: this deletes the whole buy: its articles, all worker entries, and its ALTHF / SARAVANAN data. This cannot be undone.');
+        const names = admBuyNames();
+        if (!names.length) { admLine(box, 'No buys found.'); return; }
+        const sel = document.createElement('select');
+        sel.className = 'ig-input';
+        names.forEach(function (b) {
+          const op = document.createElement('option');
+          op.value = b;
+          op.innerText = b;
+          sel.appendChild(op);
+        });
+        box.appendChild(sel);
+        const typed = document.createElement('input');
+        typed.className = 'ig-input';
+        typed.placeholder = 'Type the buy name to confirm';
+        box.appendChild(typed);
+        admButton(box, '🗑 Delete this buy', function () {
+          const buy = sel.value;
+          if (typed.value.trim() !== buy) { admLine(box, '❌ Type the exact buy name "' + buy + '" to confirm.'); return; }
+          admPromise('adminDeleteBuy', [buy]).then(function (msg) {
+            if (admBuyFilter === buy) admBuyFilter = '';
+            admDeleteBuyPage(msg);
+          }, function (e) { admLine(box, '❌ ' + ((e && e.message) || 'Delete failed')); });
+        });
+      });
+    }
+
+    // SADIQ: full format Excel ek baar upload. Zaroori sheets check hoti hain.
+    async function uploadFullFormat() {
+      const fileInput = document.getElementById('fullFmtFile');
+      if (!fileInput.files.length) { showMsg('adminMsgBox', 'error', '⚠️ Select the full format Excel file first'); return; }
+      try {
+        const buf = await fileInput.files[0].arrayBuffer();
+        const wb = new ExcelJS.Workbook();
+        await wb.xlsx.load(buf);
+        const names = wb.worksheets.map(function (w) { return String(w.name).toLowerCase(); });
+        const need = ['all kitting report format', 'kit stock format'].concat(ALL_MEMBERS.map(function (m) { return (m + ' report format').toLowerCase(); }));
+        const missing = need.filter(function (n) { return names.indexOf(n) < 0; });
+        if (missing.length) { showMsg('adminMsgBox', 'error', '❌ These sheets are missing in the file: ' + missing.join(', ')); return; }
+        const bytes = new Uint8Array(buf);
+        let bin = '';
+        for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+        const msg = await admPromise('adminSaveFormatFile', [btoa(bin)]);
+        fmtB64Cache = null;
+        showMsg('adminMsgBox', 'success', msg || '✅ Full format saved');
+        fileInput.value = '';
+      } catch (err) {
+        showMsg('adminMsgBox', 'error', '❌ ' + ((err && err.message) || 'Upload failed'));
+      }
+    }
+
+    // Member ki apni report (member login se)
+    function renderWorkerReport(rep) {
+      showReport(rep, loggedInWorker, document.getElementById('wReportBody'));
+    }
+
+    // Member's own entries: list, change quantity (reason needed), delete (reason needed)
+    function openWorkerEntries() {
+      const box = document.getElementById('wEntriesBox');
+      const opening = box.classList.contains('hidden');
+      box.classList.toggle('hidden', !opening);
+      if (opening) loadWorkerEntries();
+    }
+
+    function loadWorkerEntries() {
+      const box = document.getElementById('wEntriesBox');
+      box.innerHTML = '<div id="wEntryMsg" class="error-popup"></div>';
+      google.script.run
+        .withSuccessHandler(function (rows) { renderWorkerEntries(rows); })
+        .withFailureHandler(function (e) { showMsg('wEntryMsg', 'error', '❌ ' + ((e && e.message) || 'Could not load entries')); })
+        .workerList(loggedInWorker);
+    }
+
+    function renderWorkerEntries(rows) {
+      const box = document.getElementById('wEntriesBox');
+      box.innerHTML = '<div id="wEntryMsg" class="error-popup"></div>';
+      if (!rows.length) { admLine(box, 'No entries yet.'); return; }
+      const fail = function (e) { showMsg('wEntryMsg', 'error', '❌ ' + ((e && e.message) || 'Something went wrong')); };
+      rows.forEach(function (e) {
+        const card = document.createElement('div');
+        card.className = 'althf-card';
+        const t = document.createElement('div');
+        t.className = 'althf-art';
+        t.innerText = e.date + ' | Article ' + e.article + (e.artInfo ? ' - ' + e.artInfo : '');
+        card.appendChild(t);
+        const d = document.createElement('div');
+        d.innerText = 'Current: ' + e.output + (e.remarks ? ' | ' + e.remarks : '');
+        card.appendChild(d);
+        const inQ = document.createElement('input');
+        inQ.className = 'ig-input';
+        inQ.type = 'number';
+        inQ.inputMode = 'numeric';
+        inQ.placeholder = 'New quantity';
+        const inR = document.createElement('input');
+        inR.className = 'ig-input';
+        inR.placeholder = 'Reason for change (required)';
+        card.appendChild(inQ);
+        card.appendChild(inR);
+        admButton(card, 'Save change ✅', function () {
+          google.script.run
+            .withSuccessHandler(function (msg) { showMsg('wEntryMsg', 'success', msg); loadWorkerEntries(); })
+            .withFailureHandler(fail)
+            .workerEdit(loggedInWorker, e.row, inQ.value, inR.value);
+        });
+        const inD = document.createElement('input');
+        inD.className = 'ig-input';
+        inD.placeholder = 'Reason for delete (required)';
+        card.appendChild(inD);
+        admButton(card, '🗑 Delete entry', function () {
+          if (!confirm('Delete this entry? This cannot be undone.')) return;
+          google.script.run
+            .withSuccessHandler(function (msg) { showMsg('wEntryMsg', 'success', msg); loadWorkerEntries(); })
+            .withFailureHandler(fail)
+            .workerDelete(loggedInWorker, e.row, inD.value);
+        });
+        box.appendChild(card);
+      });
+    }
+
+    function admMenu() {
+      if (loggedInWorker === 'SADIQ') { admUploadScreen(); return; }
+      getFormatB64();
+      admShow('adminMenu');
+    }
+
+    function admUploadScreen() { admShow('adminScreen'); }
+
+    // Opens one admin page: clears the old content, then builds the new one
+    function admOpen(title, builder) {
+      admShow('adminPage');
+      document.getElementById('admPageTitle').innerText = title;
+      document.getElementById('adminOut').innerHTML = "";
+      builder();
+    }
+
+    function admMsg(text, kind) { showMsg('adminCtlMsg', kind, text); }
+
+    function admCall(fn, args, onOk) {
+      const run = google.script.run
+        .withSuccessHandler(onOk)
+        .withFailureHandler(function (e) { admMsg('❌ ' + ((e && e.message) || 'Could not connect to server'), 'error'); });
+      run[fn].apply(null, args);
+    }
+
+    function admLine(box, text) {
+      const d = document.createElement('div');
+      d.className = 'althf-card';
+      d.innerText = text;
+      box.appendChild(d);
+    }
+
+    function admButton(box, text, onClick) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'ig-login-btn';
+      b.innerText = text;
+      b.onclick = onClick;
+      box.appendChild(b);
+      return b;
+    }
+
+    function admWorkerSelect(box, list) {
+      const sel = document.createElement('select');
+      sel.className = 'ig-input';
+      (list || ADM_WORKERS).forEach(function (w) {
+        const o = document.createElement('option');
+        o.value = w;
+        o.innerText = w;
+        sel.appendChild(o);
+      });
+      box.appendChild(sel);
+      return sel;
+    }
+
+    function admSummary() {
+      admCall('adminSummary', [], function (s) {
+        const box = document.getElementById('adminOut');
+        box.innerHTML = "";
+        admLine(box, 'Buys: ' + s.buys + ' | Master articles: ' + s.articles);
+        admLine(box, 'ALTHF data: ' + s.althf + ' articles | SARAVANAN data: ' + s.charpack + ' articles');
+        s.workers.forEach(function (w) {
+          admLine(box, w.worker + ' → done ' + w.done + ' | balance ' + w.balance + ' | entries ' + w.logs);
+        });
+      });
+    }
+
+    // Entries page: pick a worker, then see and correct that worker's entries
+    function admEntriesPage() {
+      const box = document.getElementById('adminOut');
+      const sel = admWorkerSelect(box);
+      admButton(box, 'Show entries', function () { admEntries(sel.value); });
+      const list = document.createElement('div');
+      list.id = 'admEntryList';
+      box.appendChild(list);
+    }
+
+    function admEntries(w) {
+      const list = document.getElementById('admEntryList');
+      admCall('adminWorkerLog', [w], function (rows) {
+        list.innerHTML = "";
+        if (!rows.length) { admLine(list, w + ' has no entries.'); return; }
+        rows.forEach(function (e) {
+          const card = document.createElement('div');
+          card.className = 'althf-card';
+          const t = document.createElement('div');
+          t.className = 'althf-art';
+          t.innerText = e.date + ' | Article ' + e.article + (e.artInfo ? ' - ' + e.artInfo : '');
+          card.appendChild(t);
+          const d = document.createElement('div');
+          d.innerText = 'Current: ' + e.output + (e.remarks ? ' | ' + e.remarks : '');
+          card.appendChild(d);
+          const inQ = document.createElement('input');
+          inQ.className = 'ig-input';
+          inQ.type = 'number';
+          inQ.inputMode = 'numeric';
+          inQ.placeholder = 'New quantity';
+          const inR = document.createElement('input');
+          inR.className = 'ig-input';
+          inR.placeholder = 'Reason for change (required)';
+          card.appendChild(inQ);
+          card.appendChild(inR);
+          admButton(card, 'Save ✅', function () {
+            admCall('adminEditEntry', [w, e.row, inQ.value, inR.value], function (msg) {
+              admMsg(msg, 'success');
+              admEntries(w);
+            });
+          });
+          list.appendChild(card);
+        });
+      });
+    }
+
+    function admRecalcPage() {
+      const box = document.getElementById('adminOut');
+      admLine(box, 'Rebuilds every member\'s done count from their saved entries.');
+      admButton(box, 'Recalculate now', function () {
+        if (!confirm('All members will be recalculated. Are you sure?')) return;
+        admCall('adminRecalcAll', [], function (msg) { admMsg(msg, 'success'); });
+      });
+    }
+
+    function admPinOnePage() {
+      const box = document.getElementById('adminOut');
+      const sel = admWorkerSelect(box, ADM_WORKERS.concat(['KAFEEL']));
+      const inp = document.createElement('input');
+      inp.className = 'ig-input';
+      inp.type = 'password';
+      inp.inputMode = 'numeric';
+      inp.maxLength = 6;
+      inp.placeholder = 'New PIN (4 to 6 digits)';
+      box.appendChild(inp);
+      admButton(box, 'Change PIN', function () {
+        admCall('adminSetPin', [sel.value, inp.value], function (msg) {
+          admMsg(msg, 'success');
+          inp.value = "";
+        });
+      });
+    }
+
+    function admPinAllPage() {
+      const box = document.getElementById('adminOut');
+      const inputs = {};
+      ADM_WORKERS.forEach(function (w) {
+        const lbl = document.createElement('div');
+        lbl.className = 'field-label';
+        lbl.innerText = w;
+        box.appendChild(lbl);
+        const inp = document.createElement('input');
+        inp.className = 'ig-input';
+        inp.type = 'password';
+        inp.inputMode = 'numeric';
+        inp.maxLength = 6;
+        inp.placeholder = 'New PIN (empty = no change)';
+        box.appendChild(inp);
+        inputs[w] = inp;
+      });
+      admButton(box, 'Save all PINs', function () {
+        const map = {};
+        ADM_WORKERS.forEach(function (w) {
+          const v = inputs[w].value.trim();
+          if (v) map[w] = v;
+        });
+        if (Object.keys(map).length === 0) { admMsg('Enter at least one PIN.', 'error'); return; }
+        admCall('adminSetPins', [map], function (msg) {
+          admMsg(msg, 'success');
+          ADM_WORKERS.forEach(function (w) { inputs[w].value = ""; });
+        });
+      });
+    }
+
+    // Stock report: one card per article, grouped by buy
+    function admStockPage() {
+      admCall('adminStockReport', [], function (rows) {
+        const box = document.getElementById('adminOut');
+        box.innerHTML = "";
+        if (!rows.length) { admLine(box, 'No data yet. Upload the master Excel and the SARAVANAN Excel first.'); return; }
+        const groups = {};
+        const order = [];
+        rows.forEach(function (o) {
+          const key = o.buyName || "Buy";
+          if (!groups[key]) { groups[key] = []; order.push(key); }
+          groups[key].push(o);
+        });
+        order.forEach(function (key) {
+          const head = document.createElement('div');
+          head.className = 'sar-buy';
+          head.innerText = key;
+          box.appendChild(head);
+          groups[key].forEach(function (o) {
+            const card = document.createElement('div');
+            card.className = 'althf-card';
+            const t = document.createElement('div');
+            t.className = 'althf-art';
+            t.innerText = 'Article ' + o.articleNo + (o.articleName ? ' - ' + o.articleName : '');
+            card.appendChild(t);
+            admLine(card, 'Order: ' + o.order + ' | Kit Issue (LOKASH): ' + o.kit);
+            admLine(card, 'Charging (SARAVANAN): ' + o.charg + ' | Packing (SARAVANAN): ' + o.pack);
+            admLine(card, 'WIP (Kit Issue - Charging): ' + o.wip);
+            admLine(card, 'Stock (Charging - Packing): ' + o.stock);
+            box.appendChild(card);
+          });
+        });
+      });
+    }
+
+    // ===== KAFEEL: Kitting report (Excel view), article detail, KIT STOCK line-wise =====
+    let admRows = [];
+
+    const XL_COLS = [
+      ['Article', 'articleNo'], ['Article Name', 'articleName'], ['Batch', 'batch'], ['Order QTY', 'order'],
+      ['Insole Recv', 'insoleRecv'], ['Insole Bal', 'insoleBal'], ['Sole Recv', 'soleRecv'], ['Sole Bal', 'soleBal'],
+      ['Socks Recv', 'socksRecv'], ['Socks Bal', 'socksBal'],
+      ['Upper Output (KUMAR)', 'upperOut'], ['HS Upper (ZESAN)', 'hsUpper'], ['Upper Stock (IMTHIYAZ)', 'upperStock'],
+      ['Molding & Forming (MUDASSIR)', 'molding'], ['Kit Issue (LOKASH)', 'kitIssue'], ['KIT STOCK', 'kitStock'],
+      ['Charging (SARAVANAN)', 'charging'], ['Charging Bal', 'chargingBal'],
+      ['Packing (SARAVANAN)', 'packing'], ['Packing Bal', 'packingBal'], ['Line WIP', 'lineWip']
+    ];
+    const KIT_COLS = [
+      ['Article', 'articleNo'], ['Article Name', 'articleName'], ['Batch', 'batch'], ['Order QTY', 'order'],
+      ['Kit Issue (LOKASH)', 'kitIssue'], ['KIT STOCK', 'kitStock'],
+      ['Charging (SARAVANAN)', 'charging'], ['Line WIP', 'lineWip']
+    ];
+
+    let admFormat = null;   // heading text from the uploaded format Excel (null = built-in headings)
+    function admReloadAll(cb) {
+      admCall('adminFullReport', [], function (rows) {
+        admRows = rows;
+        admCall('adminGetFormat', [], function (f) { admFormat = f || null; if (cb) cb(); });
+      });
+    }
+
+    // Table: one row per article, grouped by buy. Click a row to open its detail.
+    function admRenderTable(wrap, rows, cols) {
+      wrap.innerHTML = "";
+      if (!rows.length) { wrap.innerText = 'No data yet. Upload the master Excel first.'; return; }
+      const t = document.createElement('table');
+      t.className = 'xl';
+      const head = document.createElement('thead');
+      const hr = document.createElement('tr');
+      cols.forEach(function (c) {
+        const th = document.createElement('th');
+        th.innerText = c[0];
+        hr.appendChild(th);
+      });
+      head.appendChild(hr);
+      t.appendChild(head);
+      const tb = document.createElement('tbody');
+      t.appendChild(tb);
+      let lastBuy = null;
+      rows.forEach(function (o) {
+        if (o.buyName !== lastBuy) {
+          lastBuy = o.buyName;
+          const br = document.createElement('tr');
+          br.className = 'xl-buy';
+          const td = document.createElement('td');
+          td.colSpan = cols.length;
+          td.innerText = o.buyName;
+          br.appendChild(td);
+          tb.appendChild(br);
+        }
+        const tr = document.createElement('tr');
+        tr.className = 'clk';
+        tr.onclick = function () { admArticleDetail(o.articleNo, undefined, o.buyName); };
+        cols.forEach(function (c) {
+          const td = document.createElement('td');
+          const v = o[c[1]];
+          td.innerText = (v === undefined || v === null) ? '' : String(v);
+          if (c[1] === 'articleName') td.className = 'name';
+          tr.appendChild(td);
+        });
+        tb.appendChild(tr);
+      });
+      // grand total row at the bottom: sum of every article row, per column
+      const gt = document.createElement('tr');
+      gt.className = 'xl-buy';
+      cols.forEach(function (c, i) {
+        const td = document.createElement('td');
+        if (i === 0) {
+          td.innerText = 'GRAND TOTAL';
+          td.className = 'name';
+        } else if (c[1] !== 'articleName' && c[1] !== 'batch') {
+          let sum = 0;
+          rows.forEach(function (o) { sum += Number(o[c[1]]) || 0; });
+          td.innerText = String(sum);
+        }
+        gt.appendChild(td);
+      });
+      tb.appendChild(gt);
+      wrap.appendChild(t);
+    }
+
+    // Kitting report in the same layout as the supplied format Excel (26 columns, group headers, TOTAL per buy, GRAND TOTAL)
+    // Excel column widths (B..AA) from the format file; W, Z are not set in the Excel, so default 9
+    const FMT_W = [10.3, 44.3, 9.1, 13.7, 14.9, 13.7, 14.9, 13.7, 14.9, 14.7, 14.7, 15.9, 15.9, 9.7, 12.7, 23.0, 17.7, 14.4, 13.4, 11.4, 13.7, 9, 12.6, 12.7, 9, 17.4];
+    const FMT_COLS = [
+      { h: 'BATCH NO', f: o => o.batch, text: true },
+      { h: 'Style Name', f: o => o.articleName, text: true },
+      { h: 'Order QTY', f: o => o.order },
+      { g: 'SOLE DT ALTHF', h: 'INSOLE RECIVED', f: o => o.insoleRecv },
+      { h: 'INSOLE BALANCE', f: o => o.insoleBal },
+      { h: 'SOLE RECIVED', f: o => o.soleRecv },
+      { h: 'SOLE BALANCE', f: o => o.soleBal },
+      { h: 'SOCKS RECIVED', f: o => o.socksRecv },
+      { h: 'SOCKS BALANCE', f: o => o.socksBal },
+      { g: 'KUMAR UPPER DT', h: 'upper out put', f: o => o.upperOut },
+      { h: 'upper out Bal', f: o => o.order - o.upperOut },
+      { g: 'HS DT ZESAN', h: 'HS UPPER RECIVED', f: o => o.hsUpper },
+      { h: 'HS UPPER BAL', f: o => o.order - o.hsUpper },
+      { g: 'IMTHIYAZ', h: 'upper stock', f: o => o.upperStock },
+      { h: 'upper balance', f: o => o.order - o.upperStock },
+      { g: 'MUDASSIR', h: 'Molding & Forming Arrived', f: o => o.molding },
+      { h: 'Molding & Forming Bal', f: o => o.order - o.molding },
+      { g: 'LOKASH', h: 'kit issue', f: o => o.kitIssue },
+      { h: 'kit balance', f: o => o.order - o.kitIssue },
+      { g: '', h: 'KIT STOCK', f: o => o.kitStock },
+      { g: 'SARAVANAN', h: 'charging', f: o => o.charging },
+      { h: 'charging balance', f: o => o.chargingBal },
+      { h: 'packing', f: o => o.packing },
+      { h: 'packing balance', f: o => o.packingBal },
+      { g: '', h: 'Line wip', f: o => o.lineWip },
+      { g: '', h: 'Remark', f: o => '', text: true }
+    ];
+
+    // Group header spans: a column with g starts a new group; columns before the first g form one blank group.
+    function admGroupSpans(cols) {
+      const spans = [];
+      cols.forEach(function (c) {
+        if (c.g !== undefined || spans.length === 0) spans.push([c.g || '', 1]);
+        else spans[spans.length - 1][1]++;
+      });
+      return spans;
+    }
+
+    // Columns and widths for the KIT STOCK (line-wise) view, same look as the format
+    const KIT_FMT_COLS = [
+      { h: 'BATCH NO', f: o => o.batch, text: true },
+      { h: 'Style Name', f: o => o.articleName, text: true },
+      { h: 'Order QTY', f: o => o.order },
+      { g: 'LOKASH', h: 'kit issue', f: o => o.kitIssue },
+      { g: '', h: 'KIT STOCK', f: o => o.kitStock },
+      { g: 'SARAVANAN', h: 'charging', f: o => o.charging },
+      { h: 'packing', f: o => o.packing },
+      { g: '', h: 'Line wip', f: o => o.lineWip }
+    ];
+    const KIT_FMT_W = [10.3, 44.3, 9.1, 14.4, 11.4, 13.7, 12.6, 9];
+
+    // Title for one buy with its total pairs. Uses the buy name from the uploaded format when it matches.
+    function admFmtTitle(buy, total, label) {
+      const f = (admFormat && admFormat.title) ? admFormat.title : '';
+      const m = f.match(/^(.*?)\s+PAIRS/i);
+      const norm = function (s) { return String(s).replace(/[\s\-]+/g, ' ').trim().toUpperCase(); };
+      const name = (m && norm(m[1]) === norm(buy)) ? m[1].replace(/\s+/g, ' ').trim() : String(buy);
+      return name.toUpperCase() + ' PAIRS (' + total + ') ' + label;
+    }
+
+    // Same look as the format Excel. Used for the Kitting Report and the KIT STOCK (line-wise) view.
+    // Per buy: amber title, black heading row, group row, articles in blocks of 4 with a black TOTAL after each block.
+    // GRAND TOTAL at the end.
+    function admRenderFormat(wrap, rows, cols, widths, useFormatHeads, label) {
+      wrap.innerHTML = "";
+      if (!rows.length) { wrap.innerText = 'No data yet. Upload the master Excel first.'; return; }
+      const N = cols.length;
+      const dateSpan = N >= 26 ? 6 : 2;
+      const heads = cols.map(function (c, i) {
+        return (useFormatHeads && admFormat && admFormat.heads && admFormat.heads[i]) ? admFormat.heads[i] : c.h;
+      });
+      const today = new Date().toLocaleDateString('en-GB');
+      const t = document.createElement('table');
+      t.className = 'fmt';
+      const cg = document.createElement('colgroup');
+      const pxs = widths.map(function (w) { return Math.round(w * 7 + 5); });
+      const totalPx = pxs.reduce(function (a, b) { return a + b; }, 0);
+      // Laptop/desktop: poori table screen ki chaudai me fit. Chhoti screen: pixel width ke saath side scroll.
+      const fitWide = window.innerWidth >= 900;
+      if (fitWide) {
+        t.classList.add('fit');
+        t.style.width = '100%';
+        t.style.tableLayout = 'fixed';
+      } else {
+        t.style.width = totalPx + 'px';
+      }
+      pxs.forEach(function (px, i) {
+        const col = document.createElement('col');
+        col.style.width = fitWide ? ((px / totalPx) * 100).toFixed(3) + '%' : px + 'px';
+        cg.appendChild(col);
+      });
+      t.appendChild(cg);
+      const tb = document.createElement('tbody');
+      t.appendChild(tb);
+      function row(cls) { const tr = document.createElement('tr'); if (cls) tr.className = cls; return tr; }
+      function cell(tr, v, span, cls) {
+        const td = document.createElement('td');
+        if (span) td.colSpan = span;
+        td.innerText = (v === undefined || v === null) ? '' : String(v);
+        if (cls) td.className = cls;
+        tr.appendChild(td);
+      }
+      function sumRow(list, labelText) {
+        const tr = row('fmt-total');
+        cols.forEach(function (c, i) {
+          if (i === 0) { cell(tr, labelText); return; }
+          if (c.text) { cell(tr, ''); return; }
+          let s = 0;
+          list.forEach(function (o) { s += Number(c.f(o)) || 0; });
+          cell(tr, s);
+        });
+        return tr;
+      }
+      // group rows by buy, in order of first appearance
+      const groups = [];
+      const idx = {};
+      rows.forEach(function (o) {
+        const k = o.buyName || '';
+        if (!(k in idx)) { idx[k] = groups.length; groups.push({ name: k, list: [] }); }
+        groups[idx[k]].list.push(o);
+      });
+      groups.forEach(function (g) {
+        let total = 0;
+        g.list.forEach(function (o) { total += Number(o.order) || 0; });
+        const title = row('fmt-title');
+        cell(title, admFmtTitle(g.name, total, label), N - dateSpan);
+        cell(title, 'AS ON DATE: ' + today, dateSpan, 'fmt-date');
+        const hr = row('fmt-head');
+        heads.forEach(function (hd) { cell(hr, hd); });
+        const gr = row('fmt-group');
+        admGroupSpans(cols).forEach(function (sp) { cell(gr, sp[0], sp[1]); });
+        tb.appendChild(title);
+        tb.appendChild(hr);
+        tb.appendChild(gr);
+        for (let i = 0; i < g.list.length; i += 4) {
+          const block = g.list.slice(i, i + 4);
+          block.forEach(function (o) {
+            const tr = row('clk');
+            tr.onclick = function () { admArticleDetail(o.articleNo, undefined, o.buyName); };
+            cols.forEach(function (c) {
+              cell(tr, c.f(o), 0, c.h === 'Style Name' ? 'name' : '');
+            });
+            tb.appendChild(tr);
+          });
+          tb.appendChild(sumRow(block, 'TOTAL'));
+        }
+        tb.appendChild(sumRow(g.list, 'GRAND TOTAL'));
+      });
+      if (groups.length > 1) tb.appendChild(sumRow(rows, 'GRAND TOTAL'));
+      wrap.appendChild(t);
+    }
+
+    // Kitting Report ka matrix (PDF / Excel / share ke liye). Screen wale admRenderFormat ka same logic.
+    function admFormatMatrix(rows, cols, useFormatHeads, label) {
+      const N = cols.length;
+      const dateSpan = N >= 26 ? 6 : 2;
+      const heads = cols.map(function (c, i) {
+        return (useFormatHeads && admFormat && admFormat.heads && admFormat.heads[i]) ? admFormat.heads[i] : c.h;
+      });
+      const today = new Date().toLocaleDateString('en-GB');
+      const lines = [];
+      const add = function (cls, cells) { lines.push({ cls: cls, cells: cells }); };
+      const sumLine = function (list, text) {
+        const cells = [{ t: text, span: 2 }];
+        cols.forEach(function (c, i) {
+          if (i < 2) return;
+          if (c.text) { cells.push({ t: '' }); return; }
+          let s = 0;
+          list.forEach(function (o) { s += Number(c.f(o)) || 0; });
+          cells.push({ t: s });
+        });
+        add('fmt-total', cells);
+      };
+      const groups = [];
+      const idx = {};
+      rows.forEach(function (o) {
+        const k = o.buyName || '';
+        if (!(k in idx)) { idx[k] = groups.length; groups.push({ name: k, list: [] }); }
+        groups[idx[k]].list.push(o);
+      });
+      groups.forEach(function (g) {
+        let total = 0;
+        g.list.forEach(function (o) { total += Number(o.order) || 0; });
+        add('fmt-title', [
+          { t: admFmtTitle(g.name, total, label), span: N - dateSpan },
+          { t: 'AS ON DATE: ' + today, span: dateSpan, cls: 'fmt-date' }
+        ]);
+        add('fmt-head', heads.map(function (hd) { return { t: hd }; }));
+        add('fmt-group', admGroupSpans(cols).map(function (sp) { return { t: sp[0], span: sp[1] }; }));
+        for (let i = 0; i < g.list.length; i += 4) {
+          const block = g.list.slice(i, i + 4);
+          block.forEach(function (o) {
+            add('', cols.map(function (c) { return { t: c.f(o) }; }));
+          });
+          sumLine(block, 'TOTAL');
+        }
+        sumLine(g.list, 'GRAND TOTAL');
+      });
+      if (groups.length > 1) sumLine(rows, 'GRAND TOTAL');
+      return { nCols: N, lines: lines, kitting: N >= 26 };
+    }
+
+    function admGoEditMain() {
+      admEditMode = 'main';
+      admPickArticle('Edit Entry');
+    }
+
+    // Buy filter: admin Excel pages par ek buy chuno. '' ka matlab sab buys.
+    let admBuyFilter = '';
+    function admFilterRows() {
+      return admBuyFilter ? admRows.filter(function (o) { return o.buyName === admBuyFilter; }) : admRows;
+    }
+    function admBuyNames() {
+      const seen = {}; const out = [];
+      admRows.forEach(function (o) { const b = o.buyName || ''; if (b && !seen[b]) { seen[b] = true; out.push(b); } });
+      return out;
+    }
+    function admTag(base) {
+      return admBuyFilter ? base + '_' + admBuyFilter.replace(/[^A-Za-z0-9_-]+/g, '_') : base;
+    }
+    function admBuySelect(host, redraw) {
+      const names = admBuyNames();
+      if (admBuyFilter && names.indexOf(admBuyFilter) < 0) admBuyFilter = '';
+      const bar = document.createElement('div');
+      bar.className = 'rpt-bar';
+      const lab = document.createElement('label');
+      lab.innerText = 'Buy: ';
+      lab.style.fontWeight = 'bold';
+      const sel = document.createElement('select');
+      sel.className = 'ig-input';
+      sel.style.width = 'auto';
+      [''].concat(names).forEach(function (b) {
+        const op = document.createElement('option');
+        op.value = b;
+        op.innerText = b || 'All buys';
+        if (b === admBuyFilter) op.selected = true;
+        sel.appendChild(op);
+      });
+      sel.onchange = function () { admBuyFilter = sel.value; redraw(); };
+      lab.appendChild(sel);
+      bar.appendChild(lab);
+      host.appendChild(bar);
+    }
+
+    function admReportPage() {
+      const box = document.getElementById('adminOut');
+      box.innerHTML = '';
+      admLine(box, 'Loading report...');
+      admReloadAll(function () {
+        box.innerHTML = '';
+        admBuySelect(box, admReportPage);
+        addExportBar(box, function (b) { return Promise.resolve([{ tpl: 'all kitting report format', sheetName: 'KITTING', mx: admFormatMatrix(b ? rowsForBuy(b) : admFilterRows(), FMT_COLS, true, 'KITTING REPORT') }]); }, 'Kitting_Report', true);
+        const wrap = document.createElement('div');
+        wrap.className = 'xl-wrap';
+        const area = document.createElement('div');
+        area.id = 'rptPrint';
+        const head = document.createElement('div');
+        head.className = 'rpt-head-title';
+        head.innerText = 'KITTING REPORT';
+        const tbl = document.createElement('div');
+        area.appendChild(head);
+        area.appendChild(tbl);
+        wrap.appendChild(area);
+        box.appendChild(wrap);
+        admRenderFormat(tbl, admFilterRows(), FMT_COLS, FMT_W, true, 'KITTING REPORT');
+      });
+    }
+
+    function admKitStockPage() {
+      admOpen('KIT STOCK (line-wise)', renderKitStock);
+    }
+    function renderKitStock() {
+      const box = document.getElementById('adminOut');
+      box.innerHTML = '';
+      admLine(box, 'Loading...');
+      admReloadAll(function () {
+        box.innerHTML = '';
+        admBuySelect(box, renderKitStock);
+        addExportBar(box, function (b) { return Promise.resolve([{ tpl: 'kit stock format', sheetName: 'KIT STOCK', mx: admFormatMatrix(b ? rowsForBuy(b) : admFilterRows(), KIT_FMT_COLS, false, 'KIT STOCK (LINE-WISE)') }]); }, 'KitStock_Report', true);
+        const wrap = document.createElement('div');
+        wrap.className = 'xl-wrap';
+        box.appendChild(wrap);
+        admRenderFormat(wrap, admFilterRows(), KIT_FMT_COLS, KIT_FMT_W, false, 'KIT STOCK (LINE-WISE)');
+      });
+    }
+
+    function admPickArticle(title) {
+      admOpen(title, function () {
+        admReloadAll(function () {
+          const box = document.getElementById('adminOut');
+          if (!admRows.length) { admLine(box, 'No articles yet.'); return; }
+          admRows.forEach(function (o) {
+            admButton(box, (o.buyName ? o.buyName + ' | ' : '') + o.articleNo + (o.articleName ? ' - ' + o.articleName : ''), function () { admArticleDetail(o.articleNo, undefined, o.buyName); });
+          });
+        });
+      });
+    }
+
+    // Same article alag buys mein ho sakta hai: current buy ko yahin rakhte hain aur sab calls ke saath bhejte hain.
+    let admArtBuy = '';
+    function admArticleDetail(a, openW, buy) {
+      if (buy !== undefined) admArtBuy = buy || '';
+      admOpen('Article ' + a, function () {
+        const box = document.getElementById('adminOut');
+        const list = document.createElement('div');
+        box.appendChild(list);
+        admLoadEntries(a, list, openW);
+      });
+    }
+
+    let admEditMode = 'main';
+    const MAIN_MEMBERS = ['KUMAR', 'ZESAN', 'IMTHIYAZ', 'MUDASSIR', 'ALTHF'];
+    const KIT_MEMBERS = ['LOKASH', 'SARAVANAN'];
+
+    function admKitPick() {
+      admEditMode = 'kit';
+      admPickArticle('KIT STOCK - Edit Entry');
+    }
+
+    function admLoadEntries(a, list, openW) {
+      admCall('adminArticleEntries', [a, admArtBuy], function (rows) {
+        list.innerHTML = "";
+        if (openW === 'SARAVANAN') { admCharPack(a, list); return; }
+        if (openW) { admMemberEntries(a, openW, rows, list); return; }
+        const members = admEditMode === 'kit' ? KIT_MEMBERS : MAIN_MEMBERS;
+        members.forEach(function (w) {
+          if (w === 'SARAVANAN') {
+            admButton(list, 'Edit SARAVANAN (Charging / Packing)', function () { admCharPack(a, list); });
+            return;
+          }
+          const n = rows.filter(function (e) { return e.worker === w; }).length;
+          const lbl = w === 'LOKASH' ? 'Edit LOKASH (Kit Issue) - ' + n + ' entries' : w + ' (' + n + ' entries)';
+          admButton(list, lbl, function () { admMemberEntries(a, w, rows, list); });
+        });
+      });
+    }
+
+    // SARAVANAN: charging aur packing ki quantity (SARAVANAN_DATA sheet) - live balance ke saath.
+    function admCharPack(a, list) {
+      list.innerHTML = "";
+      admButton(list, '← Back to members', function () { admLoadEntries(a, list); });
+      const o = admRows.find(function (x) { return x.articleNo === a && x.buyName === admArtBuy; }) || admRows.find(function (x) { return x.articleNo === a; }) || { articleNo: a };
+      const dash = function (v) { return (v === undefined || v === '' || v === null) ? '—' : v; };
+      const order = Number(o.order) || 0;
+      admLine(list, 'Member: SARAVANAN (Charging / Packing)');
+      admLine(list, 'Article No: ' + a);
+      admLine(list, 'Article Name: ' + dash(o.articleName));
+      admLine(list, 'Batch: ' + dash(o.batch));
+      admLine(list, 'Order QTY: ' + dash(o.order));
+      [['charging', 'Charging', Number(o.charging) || 0], ['packing', 'Packing', Number(o.packing) || 0]].forEach(function (f) {
+        const card = document.createElement('div');
+        card.className = 'althf-card';
+        const live = document.createElement('div');
+        live.className = 'althf-art';
+        live.innerText = f[1] + ' done: ' + f[2] + ' | Live balance: ' + Math.max(0, order - f[2]);
+        card.appendChild(live);
+        const inp = document.createElement('input');
+        inp.className = 'ig-input';
+        inp.type = 'number';
+        inp.inputMode = 'numeric';
+        inp.placeholder = 'Quantity';
+        inp.value = f[2];
+        card.appendChild(inp);
+        inp.addEventListener('input', function () {
+          const t = inp.value === '' ? 0 : Number(inp.value);
+          live.innerText = f[1] + ' done: ' + t + ' | Live balance: ' + Math.max(0, order - t);
+        });
+        admButton(card, 'Save ' + f[1].toLowerCase() + ' ✅', function () {
+          if (inp.value === '') { admMsg('Enter a quantity.', 'error'); return; }
+          admCall('adminSetCharPack', [a, f[0], inp.value, '', admArtBuy], function (msg) {
+            admMsg(msg, 'success');
+            admReloadAll(function () { admArticleDetail(a, 'SARAVANAN'); });
+          });
+        });
+        list.appendChild(card);
+      });
+    }
+
+    function admMemberEntries(a, w, rows, list) {
+      list.innerHTML = "";
+      admButton(list, '← Back to members', function () { admLoadEntries(a, list); });
+      const o = admRows.find(function (x) { return x.articleNo === a && x.buyName === admArtBuy; }) || admRows.find(function (x) { return x.articleNo === a; }) || { articleNo: a };
+      const dash = function (v) { return (v === undefined || v === '' || v === null) ? '—' : v; };
+      const order = Number(o.order) || 0;
+      const mine = rows.filter(function (e) { return e.worker === w; });
+      const done = mine.reduce(function (s, e) { return s + (Number(e.output) || 0); }, 0);
+      admLine(list, 'Member: ' + w);
+      admLine(list, 'Article No: ' + a);
+      admLine(list, 'Article Name: ' + dash(o.articleName));
+      admLine(list, 'Batch: ' + dash(o.batch));
+      admLine(list, 'Order QTY: ' + dash(o.order));
+      const topBal = document.createElement('div');
+      topBal.className = 'althf-card';
+      topBal.innerText = w + ' done: ' + done + ' | Live balance: ' + Math.max(0, order - done);
+      list.appendChild(topBal);
+
+      // Quantity type karte hi live balance badle: order - (baaki entries + jo type kiya)
+      function watch(inputEl, liveEl, others) {
+        inputEl.addEventListener('input', function () {
+          const typed = Number(inputEl.value);
+          const val = (inputEl.value === '' || !isFinite(typed)) ? 0 : typed;
+          const total = others + val;
+          const bal = Math.max(0, order - total);
+          liveEl.innerText = 'Live balance: ' + bal;
+          topBal.innerText = w + ' done: ' + total + ' | Live balance: ' + bal;
+        });
+      }
+
+      mine.forEach(function (e) {
+        const others = done - (Number(e.output) || 0);
+        const card = document.createElement('div');
+        card.className = 'althf-card';
+        const t = document.createElement('div');
+        t.className = 'althf-art';
+        t.innerText = e.worker + ' | ' + e.date + ' | Current: ' + e.output;
+        card.appendChild(t);
+        const live = document.createElement('div');
+        live.className = 'althf-art';
+        live.innerText = 'Live balance: ' + Math.max(0, order - done);
+        card.appendChild(live);
+        const inQ = document.createElement('input');
+        inQ.className = 'ig-input';
+        inQ.type = 'number';
+        inQ.inputMode = 'numeric';
+        inQ.placeholder = 'Quantity';
+        inQ.value = e.output;
+        card.appendChild(inQ);
+        watch(inQ, live, others);
+        admButton(card, 'Save change ✅', function () {
+          if (inQ.value === '') { admMsg('Enter a quantity.', 'error'); return; }
+          admCall('adminEditEntry', [e.worker, e.row, inQ.value, ''], function (msg) {
+            admMsg(msg, 'success');
+            admReloadAll(function () { admArticleDetail(a, w); });
+          });
+        });
+        admButton(card, '🗑 Delete entry', function () {
+          if (!confirm('Delete this entry? This cannot be undone.')) return;
+          admCall('adminDeleteEntry', [e.worker, e.row, ''], function (msg) {
+            admMsg(msg, 'success');
+            admReloadAll(function () { admArticleDetail(a, w); });
+          });
+        });
+        list.appendChild(card);
+      });
+
+      if (!mine.length) {
+        const addCard = document.createElement('div');
+        addCard.className = 'althf-card';
+        const addT = document.createElement('div');
+        addT.className = 'althf-art';
+        addT.innerText = (w === 'LOKASH' ? 'Edit kit issue for ' : 'Edit quantity for ') + w;
+        addCard.appendChild(addT);
+        const live = document.createElement('div');
+        live.className = 'althf-art';
+        live.innerText = 'Live balance: ' + Math.max(0, order);
+        addCard.appendChild(live);
+        const aQ = document.createElement('input');
+        aQ.className = 'ig-input';
+        aQ.type = 'number';
+        aQ.inputMode = 'numeric';
+        aQ.placeholder = 'Quantity';
+        addCard.appendChild(aQ);
+        watch(aQ, live, 0);
+        admButton(addCard, w === 'LOKASH' ? 'Save kit issue ✅' : 'Save quantity ✅', function () {
+          if (aQ.value === '') { admMsg('Enter a quantity.', 'error'); return; }
+          admCall('adminAddEntry', [w, a, aQ.value, '', admArtBuy], function (msg) {
+            admMsg(msg, 'success');
+            admReloadAll(function () { admArticleDetail(a, w); });
+          });
+        });
+        list.appendChild(addCard);
+      }
+    }
+
+    function admLog() {
+      admCall('adminLog', [], function (rows) {
+        const box = document.getElementById('adminOut');
+        box.innerHTML = "";
+        if (!rows.length) { admLine(box, 'No activity yet.'); return; }
+        rows.forEach(function (r) {
+          admLine(box, r.time + ' | ' + r.who + ' | ' + r.action + ' | ' + r.worker + ' | ' + r.change + (r.note ? ' | ' + r.note : ''));
+        });
+      });
+    }
+
+    // ===== SARAVANAN: charging/packing Excel upload aur buy-wise list =====
+    function findColAny(header, names) {
+      for (let n = 0; n < names.length; n++) {
+        const idx = findCol(header, names[n]);
+        if (idx >= 0) return idx;
+      }
+      return -1;
+    }
+
+    function uploadSar() {
+      const fileInput = document.getElementById('sarFile');
+      if (fileInput.files.length === 0) { showMsg('sarMsgBox', 'error', '⚠️ Please select an Excel file first!'); return; }
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+          const data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: "" });
+          if (data.length < 2) { showMsg('sarMsgBox', 'error', '❌ No data found in the Excel.'); return; }
+          const h = data[0];
+          const cols = {
+            buy: findColAny(h, ["BUYS NAME", "BUY NAME"]), po: findCol(h, "PO NUMBER"), batch: findCol(h, "BATCH"),
+            art: findCol(h, "ARTICLE NUMBER"), name: findCol(h, "ARTICLE NAME"), order: findCol(h, "ORDER PAIRS"),
+            chg: findCol(h, "CHARGING"), pck: findCol(h, "PACKING")
+          };
+          if (cols.art < 0 || cols.order < 0 || cols.chg < 0 || cols.pck < 0) {
+            showMsg('sarMsgBox', 'error', '❌ Required columns not found (ARTICLE NUMBER, ORDER PAIRS, Charging, Packing). Check the header row.');
+            return;
+          }
+          const get = function (r, i) { return (i >= 0 && r[i] !== undefined) ? String(r[i]).trim() : ""; };
+          const num = function (r, i) { const v = Number(get(r, i)); return isNaN(v) ? 0 : v; };
+          const rows = [];
+          for (let i = 1; i < data.length; i++) {
+            const r = data[i];
+            if (!get(r, cols.art)) continue;
+            rows.push([get(r, cols.buy) || "Buy", get(r, cols.po), get(r, cols.batch), get(r, cols.art), get(r, cols.name),
+                       num(r, cols.order), num(r, cols.chg), num(r, cols.pck)]);
+          }
+          google.script.run.withSuccessHandler(function (msg) {
+            showMsg('sarMsgBox', 'success', msg || '✅ Upload complete');
+            fileInput.value = "";
+            loadSarList();
+          }).withFailureHandler(function () {
+            showMsg('sarMsgBox', 'error', '❌ Upload failed. Check your internet and try again.');
+          }).saveCharPackData(rows);
+        } catch (err) {
+          showMsg('sarMsgBox', 'error', '❌ Could not read the Excel (' + err.message + ')');
+        }
+      };
+      reader.onerror = function () { showMsg('sarMsgBox', 'error', '❌ Could not read the file.'); };
+      reader.readAsArrayBuffer(fileInput.files[0]);
+    }
+
+    function loadSarList() {
+      const box = document.getElementById('sarList');
+      box.innerText = "⏳ Loading data...";
+      google.script.run.withSuccessHandler(function (rows) {
+        renderSarList(rows || []);
+      }).withFailureHandler(function () {
+        box.innerText = "⚠️ Could not connect to server. Please try again.";
+      }).getCharPackData();
+    }
+
+    function renderSarList(rows) {
+      const box = document.getElementById('sarList');
+      box.innerHTML = "";
+      if (rows.length === 0) { box.innerText = "No data yet. Attach an Excel file above and tap Upload."; return; }
+      const groups = {};
+      const order = [];
+      rows.forEach(function (o) {
+        const key = o.buyName || "Buy";
+        if (!groups[key]) { groups[key] = []; order.push(key); }
+        groups[key].push(o);
+      });
+      order.forEach(function (key) {
+        const head = document.createElement('div');
+        head.className = 'sar-buy';
+        head.innerText = key;
+        box.appendChild(head);
+        groups[key].forEach(function (o) {
+          const card = document.createElement('div');
+          card.className = 'althf-card';
+          const title = document.createElement('div');
+          title.className = 'althf-art';
+          title.innerText = 'Article ' + o.articleNo + (o.articleName ? ' - ' + o.articleName : '');
+          card.appendChild(title);
+          const line = function (text) {
+            const d = document.createElement('div');
+            d.innerText = text;
+            card.appendChild(d);
+          };
+          line('Batch: ' + (o.batch || '—'));
+          line('Order Pairs: ' + o.orderPairs);
+          line('Charging: ' + o.chgDone + ' | Balance: ' + o.chgBal);
+          line('Packing: ' + o.pckDone + ' | Balance: ' + o.pckBal);
+          box.appendChild(card);
+        });
+      });
+    }
+
+    function backToAdmin() {
+      document.getElementById('workerScreen').classList.add('hidden');
+      document.getElementById('adminScreen').classList.remove('hidden');
+    }
+    const WORKER_LABELS = {
+      "KUMAR": "Upper Output", "ZESAN": "Upper Received", "IMTHIYAZ": "Upper Stock",
+      "MUDASSIR": "Molding And Forming Arrived", "LOKASH": "Kit Issue",
+      "ALTHF": "Stitching Qty", "SARAVANAN": "Packing Qty"
+    };
+
+    function showMsg(boxId, type, message) {
+      const box = document.getElementById(boxId);
+      box.className = (type === "error") ? "error-popup" : "success-popup";
+      box.innerText = message;
+      box.style.display = "block";
+      setTimeout(() => { box.style.display = "none"; }, 3500);
+    }
+
+    function killKeyboard() {
+      document.getElementById('workerPin').blur();
+      document.getElementById('w_output').blur();
+      if (document.activeElement) document.activeElement.blur();
+      window.scrollTo(0, 0);
+    }
+
+    // Modal with ready-made HTML (used for the worker picker only; names are fixed, not user data)
+    function showModal(title, itemsHTML) {
+      killKeyboard();
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalList').innerHTML = itemsHTML;
+      document.getElementById('pickerModal').classList.remove('hidden');
+    }
+
+    // Modal built with DOM nodes (used for buy and article lists, whose text comes from the sheet)
+    function showChoices(title, items, onPick) {
+      killKeyboard();
+      document.getElementById('modalTitle').innerText = title;
+      const list = document.getElementById('modalList');
+      list.innerHTML = "";
+      items.forEach(function (it) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'modal-item-btn';
+        const left = document.createElement('span');
+        left.innerText = it.label;
+        const right = document.createElement('span');
+        right.innerText = it.right || '➔';
+        btn.appendChild(left);
+        btn.appendChild(right);
+        btn.addEventListener('click', function () { onPick(it.value); });
+        list.appendChild(btn);
+      });
+      document.getElementById('pickerModal').classList.remove('hidden');
+    }
+
+    function hideModal() {
+      document.getElementById('pickerModal').classList.add('hidden');
+    }
+
+    function closeModal(e) {
+      if (e.target.id === 'pickerModal') hideModal();
+    }
+
+    // 1. LOGIN WORKER PICKER
+    function openWorkerPicker() {
+      let html = "";
+      ALL_WORKERS.forEach(w => {
+        html += `<button type="button" class="modal-item-btn" onclick="pickWorker('${w}')"><span>👤 ${w}</span><span>➔</span></button>`;
+      });
+      showModal("Choose Your Identity", html);
+    }
+
+    function pickWorker(w) {
+      document.getElementById('workerName').value = w;
+      document.getElementById('loginWorkerText').innerText = w;
+      hideModal();
+    }
+
+    // 2. BUY PICKER (STEP 1)
+    function openBuyPicker() {
+      if (masterOrders.length === 0) {
+        showMsg('workerMsgBox', 'error', '⏳ Orders not loaded yet. Loading again, then tap once more.');
+        fetchMasterOrders();
+        return;
+      }
+      const buys = [...new Set(masterOrders.map(o => o.buyName))];
+      showChoices("Select Buy", buys.map(b => ({ label: "📦 " + b, value: b })), pickBuy);
+    }
+
+    function pickBuy(b) {
+      document.getElementById('w_buy').value = b;
+      document.getElementById('w_buy_text').innerText = b;
+      hideModal();
+
+      step1Done = true;
+      step2Done = false;
+      step3Done = false;
+
+      document.getElementById('btn_article').classList.remove('locked-dabba');
+      document.getElementById('lbl_article').classList.remove('locked-label');
+      document.getElementById('w_article').value = "";
+      document.getElementById('w_article_text').innerText = "✦ Select Article ✦";
+
+      clearWorkerFields();
+      lockOutputAndSubmit();
+    }
+
+    // 3. ARTICLE PICKER (STEP 2)
+    function openArticlePicker() {
+      if (!step1Done) {
+        showMsg('workerMsgBox', 'error', '⚠️ Select a Buy first!');
+        return;
+      }
+      const selectedBuy = document.getElementById('w_buy').value;
+      const items = masterOrders
+        .filter(o => o.buyName === selectedBuy)
+        .map(a => ({ label: "👟 " + a.articleNo, right: "Bal: " + (a.balance < 0 ? 0 : a.balance), value: String(a.articleNo) }));
+      if (items.length === 0) {
+        showMsg('workerMsgBox', 'error', '⚠️ This buy has no articles.');
+        return;
+      }
+      showChoices("Select Article", items, pickArticle);
+    }
+
+    function pickArticle(artNo) {
+      document.getElementById('w_article').value = artNo;
+      document.getElementById('w_article_text').innerText = artNo;
+      hideModal();
+
+      const selectedBuy = document.getElementById('w_buy').value;
+      const order = masterOrders.find(o => o.buyName === selectedBuy && String(o.articleNo) === String(artNo));
+      if (!order) {
+        showMsg('workerMsgBox', 'error', '❌ Article not found. Select again.');
+        return;
+      }
+
+      document.getElementById('w_artName').innerText = order.articleName;
+      document.getElementById('w_batch').innerText = order.batch;
+      document.getElementById('w_pairs').innerText = order.orderPairs;
+
+      const curBal = order.balance < 0 ? 0 : order.balance;
+      document.getElementById('w_curBal').innerText = curBal;
+      document.getElementById('w_newBal').innerText = curBal;
+
+      // Unlock Step 3 (Output)
+      step2Done = true;
+      const out = document.getElementById('w_output');
+      out.readOnly = false;
+      out.value = "";
+      out.classList.remove('locked-dabba');
+      document.getElementById('lbl_output').classList.remove('locked-label');
+
+      document.getElementById('workerSubmitBtn').classList.add('locked-btn');
+      step3Done = false;
+    }
+
+    function checkOutputClick() {
+      if (!step2Done) {
+        killKeyboard();
+        showMsg('workerMsgBox', 'error', '⚠️ Select Buy and Article first!');
+      }
+    }
+
+    function lockOutputAndSubmit() {
+      const out = document.getElementById('w_output');
+      out.readOnly = true;
+      out.classList.add('locked-dabba');
+      document.getElementById('lbl_output').classList.add('locked-label');
+      document.getElementById('workerSubmitBtn').classList.add('locked-btn');
+    }
+
+    function checkLogin() {
+      killKeyboard();
+
+      const worker = document.getElementById('workerName').value;
+      const pin = document.getElementById('workerPin').value;
+      if (!worker || !pin) { showMsg('loginMsgBox', 'error', '⚠️ Please select your name and enter PIN!'); return; }
+
+      document.getElementById('loginBtn').innerText = "Logging in...";
+
+      setTimeout(() => {
+        google.script.run
+          .withSuccessHandler(function (res) {
+            document.getElementById('loginBtn').innerText = "Log in";
+            if (res && res.success) {
+              document.getElementById('loginScreen').classList.add('hidden');
+              loggedInWorker = worker;
+
+              if (worker === "SARAVANAN") {
+                document.getElementById('sarScreen').classList.remove('hidden');
+                loadSarList();
+              } else if (worker === "ALTHF") {
+                document.getElementById('althfScreen').classList.remove('hidden');
+                loadAlthfList();
+              } else if (worker === "KAFEEL") {
+                admMenu();
+              } else if (worker === "SADIQ") {
+                admUploadScreen();
+              } else {
+                document.getElementById('workerScreen').classList.remove('hidden');
+                document.getElementById('roomTitle').innerText = "👤 Welcome " + worker;
+                document.getElementById('lbl_output').innerText = WORKER_LABELS[worker];
+
+                resetLockSystem();
+                fetchMasterOrders();
+              }
+            } else {
+              showMsg('loginMsgBox', 'error', (res && res.locked) ? '⛔ Too many wrong attempts. Try again in 10 minutes.' : '❌ Incorrect Security PIN!');
+              document.getElementById('workerPin').value = "";
+            }
+          })
+          .withFailureHandler(function () {
+            document.getElementById('loginBtn').innerText = "Log in";
+            showMsg('loginMsgBox', 'error', '⚠️ Could not connect to server. Please try again.');
+          })
+          .verifyPin(worker, pin);
+      }, 100);
+    }
+
+    function logout() {
+      if (window.__clearAuth) window.__clearAuth();
+      killKeyboard();
+      document.getElementById('workerPin').value = "";
+      document.getElementById('adminScreen').classList.add('hidden');
+      document.getElementById('althfScreen').classList.add('hidden');
+      document.getElementById('sarScreen').classList.add('hidden');
+      document.getElementById('adminMenu').classList.add('hidden');
+      document.getElementById('adminPage').classList.add('hidden');
+      document.getElementById('workerScreen').classList.add('hidden');
+      document.getElementById('loginScreen').classList.remove('hidden');
+
+      document.getElementById('workerName').value = "";
+      document.getElementById('loginWorkerText').innerText = "✦ Choose Your Identity ✦";
+      resetLockSystem();
+      loggedInWorker = "";
+      masterOrders = [];
+    }
+
+    function resetLockSystem() {
+      step1Done = false;
+      step2Done = false;
+      step3Done = false;
+
+      document.getElementById('w_buy').value = "";
+      document.getElementById('w_buy_text').innerText = "✦ Select Buy ✦";
+
+      document.getElementById('w_article').value = "";
+      document.getElementById('w_article_text').innerText = "✦ Select Buy First ✦";
+      document.getElementById('btn_article').classList.add('locked-dabba');
+      document.getElementById('lbl_article').classList.add('locked-label');
+
+      clearWorkerFields();
+      lockOutputAndSubmit();
+    }
+
+    // Loads this worker's orders from the server. Shows a clear message if nothing loads.
+    function fetchMasterOrders() {
+      document.getElementById('w_buy_text').innerText = "✦ Fetching Data... ✦";
+      google.script.run
+        .withSuccessHandler(function (orders) {
+          masterOrders = Array.isArray(orders) ? orders : [];
+          document.getElementById('w_buy_text').innerText = masterOrders.length
+            ? "✦ Select Buy ✦"
+            : "✦ No orders yet (Admin, please upload Excel) ✦";
+        })
+        .withFailureHandler(function () {
+          masterOrders = [];
+          document.getElementById('w_buy_text').innerText = "✦ Data did not load. Tap Buy to try again ✦";
+        })
+        .getOrdersForWorker(loggedInWorker);
+    }
+
+    function calcBalance() {
+      if (!step2Done) return;
+      const curBalStr = document.getElementById('w_curBal').innerText;
+      const curBal = Number(curBalStr) || 0;
+      const outputVal = document.getElementById('w_output').value;
+      const output = Number(outputVal) || 0;
+      const btn = document.getElementById('workerSubmitBtn');
+
+      if (curBalStr !== "") {
+        let calculatedBalance = curBal - output;
+        if (calculatedBalance < 0) { calculatedBalance = 0; }
+        document.getElementById('w_newBal').innerText = calculatedBalance;
+
+        if (outputVal !== "" && output > 0) {
+          step3Done = true;
+          btn.classList.remove('locked-btn');
+        } else {
+          step3Done = false;
+          btn.classList.add('locked-btn');
+        }
+      }
+    }
+
+    function clearWorkerFields() {
+      document.getElementById('w_artName').innerText = "";
+      document.getElementById('w_batch').innerText = "";
+      document.getElementById('w_pairs').innerText = "";
+      document.getElementById('w_curBal').innerText = "";
+      document.getElementById('w_newBal').innerText = "";
+      document.getElementById('w_output').value = "";
+    }
+
+    function sendWorkerData() {
+      killKeyboard();
+      const btn = document.getElementById('workerSubmitBtn');
+      const curBal = Number(document.getElementById('w_curBal').innerText) || 0;
+      const output = Number(document.getElementById('w_output').value) || 0;
+
+      if (!step3Done || output <= 0) {
+        showMsg('workerMsgBox', 'error', '⚠️ Enter the quantity first!');
+        return;
+      }
+      if (output > curBal) {
+        showMsg('workerMsgBox', 'error', '⚠️ More than the balance. Balance: ' + curBal);
+        return;
+      }
+
+      const data = {
+        worker: loggedInWorker,
+        date: new Date().toISOString().split('T')[0],
+        buy: document.getElementById('w_buy').value,
+        field1: document.getElementById('w_article').value,
+        field2: document.getElementById('w_artName').innerText + " | " + document.getElementById('w_batch').innerText,
+        field3: output,
+        remarks: ""
+      };
+
+      btn.innerText = "Saving Data...";
+      step3Done = false;
+      btn.classList.add('locked-btn');
+
+      // Keeps the quantity on screen so the worker can try again
+      const restoreForRetry = function () {
+        btn.innerText = "Report Submit 🚀";
+        step3Done = true;
+        btn.classList.remove('locked-btn');
+      };
+
+      google.script.run
+        .withSuccessHandler(function (res) {
+          if (res && res.success) {
+            btn.innerText = "Report Submit 🚀";
+            showMsg('workerMsgBox', 'success', res.message);
+            resetLockSystem();
+            fetchMasterOrders();
+          } else {
+            restoreForRetry();
+            showMsg('workerMsgBox', 'error', (res && res.message) || '❌ Not saved.');
+          }
+        })
+        .withFailureHandler(function () {
+          restoreForRetry();
+          showMsg('workerMsgBox', 'error', '❌ Could not connect to server. Check the balance first to see if it saved.');
+        })
+        .submitReport(data);
+    }
+
+    // ADMIN: Excel upload
+    function processExcel() {
+      const fileInput = document.getElementById('excelFile');
+      if (fileInput.files.length === 0) { showMsg('adminMsgBox', 'error', '⚠️ Please select an Excel file first!'); return; }
+
+      const btn = document.getElementById('uploadExcelBtn');
+      const resetBtn = function () { btn.disabled = false; btn.innerText = "Upload & Sync Orders 🚀"; };
+      btn.disabled = true;
+      btn.innerText = "Reading Excel... ⏳";
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onerror = function () {
+        resetBtn();
+        showMsg('adminMsgBox', 'error', '❌ Could not read the file.');
+      };
+
+      reader.onload = function (e) {
+        let formattedOrders = [];
+        try {
+          if (typeof XLSX === 'undefined') throw new Error('Excel library did not load');
+          const workbook = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+          // Har tab (sheet) padha jata hai. Row 1 heading hai, data row 2 se shuru.
+          // Columns: A Buy Name | B PO Number | C Batch | D Article Number | E Article Name | F Order Pairs
+          workbook.SheetNames.forEach(function (sheetName) {
+            const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, defval: "" });
+            rows.slice(1).forEach(function (r) {
+              const buy = String(r[0]).trim();
+              const artNo = String(r[3]).trim();
+              if (buy && artNo) {
+                formattedOrders.push({
+                  buyName: buy, po: r[1], batch: r[2], articleNo: artNo, articleName: r[4], pairs: Number(r[5]) || 0
+                });
+              }
+            });
+          });
+          if (formattedOrders.length === 0) throw new Error('no order rows found');
+        } catch (err) {
+          resetBtn();
+          showMsg('adminMsgBox', 'error', "❌ Excel format did not match (" + err.message + ")");
+          return;
+        }
+
+        btn.innerText = "Syncing with Cloud... ☁️";
+        google.script.run
+          .withSuccessHandler(function (msg) {
+            resetBtn();
+            fileInput.value = "";
+            showMsg('adminMsgBox', 'success', msg || "✅ Excel Orders Uploaded!");
+          })
+          .withFailureHandler(function () {
+            resetBtn();
+            showMsg('adminMsgBox', 'error', "❌ Upload failed. Check your internet and try again.");
+          })
+          .saveExcelOrders(formattedOrders);
+      };
+
+      reader.readAsArrayBuffer(file);
+    }
+  </script>
+</body>
+</html>
