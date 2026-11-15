@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#0b1b3a">
   <link rel="manifest" href="manifest.json">
+  <script async src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"></script>
   <link rel="icon" href="icon-192.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <meta name="mobile-web-app-capable" content="yes">
@@ -286,6 +287,11 @@
     @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
       .pin-mask { -webkit-text-security: disc; text-security: disc; }
   </style>
+<style id="pushcss">
+  #pushBar { position:fixed; left:12px; right:12px; bottom:12px; z-index:50; background:#0b1b3a; color:#fff; border-radius:18px; padding:10px 12px; display:none; align-items:center; gap:10px; box-shadow:0 10px 26px rgba(11,27,58,.35); font-size:13px; }
+  #pushBar span { flex:1; } #pushBar button { background:#ffb300; color:#0b1b3a; border:0; border-radius:12px; padding:9px 12px; font-weight:800; font-size:13px; }
+  #pushBar a { color:#9db7e8; font-size:18px; text-decoration:none; padding:0 4px; }
+</style>
 <style id="sumcss">
   .sm-card { background:#fff; border:1px solid #e3eaf6; border-radius:22px; padding:14px; margin-bottom:12px; box-shadow:0 8px 22px rgba(11,27,58,.07); }
   .sm-h { margin:0 0 10px; font-size:13px; color:#5b6b86; letter-spacing:.5px; text-transform:uppercase; font-weight:800; }
@@ -402,6 +408,7 @@
     </div>
 
     <!-- WORKER SCREEN -->
+    <div id="pushBar"><span>🔔 Get report reminders on this phone</span><button type="button" onclick="pushEnable()">Turn on</button><a href="#" onclick="pushHide();return false;">✕</a></div>
     <div class="form-card hidden" id="workerScreen">
       <h2 id="roomTitle">👤 Welcome</h2>
       <button type="button" class="ig-login-btn" onclick="openWorkerEntries()">📝 Entries &amp; Correct</button>
@@ -546,7 +553,7 @@
           .catch(onFail);
       }
 
-      const FUNCS = ["verifyPin", "getOrdersForWorker", "submitReport", "saveExcelOrders", "saveAlthfData", "getAlthfData", "saveCharPackData", "getCharPackData", "adminSummary", "adminSummaryDetail", "adminWorkerLog", "adminEditEntry", "adminSetPin", "adminRecalcAll", "adminLog", "adminSetPins", "adminStockReport", "adminFullReport", "adminArticleEntries", "adminDeleteEntry", "adminAddEntry", "adminSetCharPack", "adminGetFormat", "adminGetFormatFile", "adminSaveFormatFile", "adminMemberReport", "adminDeleteBuy", "saveKittingFormat", "workerList", "workerEdit", "workerDelete", "workerReport", "workerFormatFile"];
+      const FUNCS = ["verifyPin", "getOrdersForWorker", "submitReport", "saveExcelOrders", "saveAlthfData", "getAlthfData", "saveCharPackData", "getCharPackData", "adminSummary", "adminSummaryDetail", "adminSetNoWork", "adminWorkerLog", "adminEditEntry", "adminSetPin", "adminRecalcAll", "adminLog", "adminSetPins", "adminStockReport", "adminFullReport", "adminArticleEntries", "adminDeleteEntry", "adminAddEntry", "adminSetCharPack", "adminGetFormat", "adminGetFormatFile", "adminSaveFormatFile", "adminMemberReport", "adminDeleteBuy", "saveKittingFormat", "workerList", "workerEdit", "workerDelete", "workerReport", "workerFormatFile"];
 
       function makeRun(okH, failH) {
         const run = {
@@ -1200,6 +1207,15 @@
       const box = document.getElementById('adminOut');
       box.innerHTML = '';
       const entered = s.workers.filter(function (w) { return w.enteredToday; }).length;
+
+      const nwBtn = smEl('button', 'ig-login-btn', s.noWork ? '🏖️ No work today (tap to turn reminders back on)' : '🏖️ Mark "No work today"');
+      nwBtn.type = 'button';
+      nwBtn.onclick = function () {
+        const turnOn = !s.noWork;
+        if (turnOn && !confirm('Stop all reminders for today?')) return;
+        admCall('adminSetNoWork', [turnOn], function (m) { s.noWork = turnOn; alert(m); renderSummary(); });
+      };
+      box.appendChild(nwBtn);
 
       const k = smEl('div', 'sm-card'); const kp = smEl('div', 'sm-kp');
       [[s.buys, 'Buys'], [s.articles, 'Articles'], [entered + ' / ' + s.workers.length, 'Entered today']].forEach(function (x) {
@@ -2273,6 +2289,7 @@
             if (res && res.success) {
               document.getElementById('loginScreen').classList.add('hidden');
               loggedInWorker = worker;
+              pushLogin(worker);
 
               if (worker === "KAFEEL") {
                 admMenu();
@@ -2301,7 +2318,52 @@
       }, 100);
     }
 
+    // ===== Push notifications (OneSignal). Fails silently if the service is blocked. =====
+    let pushReady = false;
+    function pushInit() {
+      try {
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        const base = location.pathname.replace(/[^\/]*$/, '');
+        window.OneSignalDeferred.push(async function (OneSignal) {
+          await OneSignal.init({
+            appId: "904c7ffa-90c0-41a3-b91a-a3949fe03a43",
+            serviceWorkerPath: base.slice(1) + "sw.js",
+            serviceWorkerParam: { scope: base },
+            notifyButton: { enable: false },
+            allowLocalhostAsSecureOrigin: true
+          });
+          pushReady = true;
+          if (loggedInWorker) pushLogin(loggedInWorker);
+        });
+      } catch (e) { }
+    }
+    function pushDo(fn) {
+      try { (window.OneSignalDeferred = window.OneSignalDeferred || []).push(function (O) { try { fn(O); } catch (e) { } }); } catch (e) { }
+    }
+    function pushLogin(name) {
+      pushDo(function (O) { O.login(name); });
+      pushShowBar();
+    }
+    function pushLogout() { pushDo(function (O) { O.logout(); }); document.getElementById('pushBar').style.display = 'none'; }
+    function pushShowBar() {
+      try {
+        if (!('Notification' in window)) return;
+        const bar = document.getElementById('pushBar');
+        if (Notification.permission === 'granted' || Notification.permission === 'denied') { bar.style.display = 'none'; return; }
+        bar.style.display = 'flex';
+      } catch (e) { }
+    }
+    function pushHide() { document.getElementById('pushBar').style.display = 'none'; }
+    function pushEnable() {
+      pushDo(function (O) {
+        O.Notifications.requestPermission().then(function () { pushShowBar(); if (loggedInWorker) O.login(loggedInWorker); });
+      });
+      setTimeout(pushShowBar, 3000);
+    }
+    window.addEventListener('load', pushInit);
+
     function logout() {
+      pushLogout();
       if (window.__clearAuth) window.__clearAuth();
       killKeyboard();
       document.getElementById('workerPin').value = "";
