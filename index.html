@@ -286,6 +286,48 @@
     @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
       .pin-mask { -webkit-text-security: disc; text-security: disc; }
   </style>
+<style id="sumcss">
+  .sm-card { background:#fff; border:1px solid #e3eaf6; border-radius:22px; padding:14px; margin-bottom:12px; box-shadow:0 8px 22px rgba(11,27,58,.07); }
+  .sm-h { margin:0 0 10px; font-size:13px; color:#5b6b86; letter-spacing:.5px; text-transform:uppercase; font-weight:800; }
+  .sm-kp { display:flex; gap:8px; } .sm-kp > div { flex:1; background:#f4f7fd; border-radius:16px; padding:10px 6px; text-align:center; min-width:0; }
+  .sm-kp b { display:block; font-size:19px; color:#0b1b3a; } .sm-kp small { font-size:11px; color:#5b6b86; }
+  .sm-hb { display:flex; align-items:center; gap:6px; margin:7px 0; font-size:12px; }
+  .sm-hn { width:78px; font-weight:800; } .sm-track { flex:1; display:flex; height:16px; background:#eef2fa; border-radius:10px; overflow:hidden; }
+  .sm-done { background:linear-gradient(90deg,#0a64e8,#3b8bff); width:0; transition:width .9s cubic-bezier(.2,.8,.2,1); }
+  .sm-bal { background:repeating-linear-gradient(45deg,#ffd467,#ffd467 4px,#ffc233 4px,#ffc233 8px); width:0; transition:width .9s cubic-bezier(.2,.8,.2,1) .25s; }
+  .sm-hv { width:48px; text-align:right; font-weight:800; }
+  .sm-leg { display:flex; gap:14px; font-size:11px; color:#5b6b86; margin-top:6px; flex-wrap:wrap; } .sm-leg i { display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:4px; }
+  .sm-tap { margin:14px 4px 8px; font-size:13px; color:#5b6b86; font-weight:800; letter-spacing:.5px; text-transform:uppercase; }
+  .sm-wc { display:flex; justify-content:space-between; align-items:center; gap:8px; background:#fff; border:1px solid #e3eaf6; border-left:5px solid #0a64e8; border-radius:18px; padding:11px 12px; margin-bottom:9px; box-shadow:0 6px 16px rgba(11,27,58,.06); cursor:pointer; }
+  .sm-wc.off { border-left-color:#e11d48; background:#fff8f9; } .sm-wc.idle { border-left-color:#94a3b8; background:#f8fafc; }
+  .sm-wl { display:flex; gap:10px; align-items:center; min-width:0; } .sm-wl b { display:block; font-size:15px; } .sm-wl small, .sm-wr small { color:#5b6b86; font-size:11px; }
+  .sm-av { width:36px; height:36px; flex:0 0 36px; border-radius:12px; background:#0b1b3a; color:#ffb300; display:flex; align-items:center; justify-content:center; font-weight:800; }
+  .sm-wr { text-align:right; } .sm-wr small { display:block; }
+  .sm-chip { display:inline-block; font-size:11px; font-weight:800; padding:4px 10px; border-radius:12px; margin-bottom:3px; }
+  .sm-chip.ok { background:#dcfce7; color:#0a7a3d; } .sm-chip.no { background:#ffe4e8; color:#be123c; } .sm-chip.idle { background:#e8edf5; color:#475569; }
+  .sm-rings { display:flex; gap:8px; } .sm-rg { flex:1; text-align:center; background:#f4f7fd; border-radius:18px; padding:12px 4px; min-width:0; }
+  .sm-pc { position:relative; width:74px; margin:0 auto; } .sm-pc svg { width:74px; height:74px; transform:rotate(-90deg); }
+  .sm-pc .bgc { fill:none; stroke:#e3eaf6; stroke-width:9; } .sm-pc .fg { fill:none; stroke-width:9; stroke-linecap:round; transition:stroke-dasharray 1s cubic-bezier(.2,.8,.2,1); }
+  .sm-pc span { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; }
+  .sm-rg b { display:block; font-size:13px; margin-top:4px; } .sm-rg small { font-size:11px; color:#5b6b86; }
+  .sm-chartwrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .sm-chart { display:flex; align-items:flex-end; gap:3px; height:120px; margin-top:6px; min-width:100%; }
+  .sm-col { flex:1 0 12px; height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; }
+  .sm-cb { width:100%; background:linear-gradient(180deg,#3b8bff,#0a64e8); border-radius:4px 4px 0 0; height:0; transition:height .8s cubic-bezier(.2,.8,.2,1); } .sm-cb.z { background:#fecdd3; }
+  .sm-col span { font-size:8px; color:#8a97ad; margin-top:3px; } .sm-col span.sun { color:#e11d48; font-weight:800; }
+  .sm-er { display:flex; justify-content:space-between; gap:8px; padding:9px 4px; border-bottom:1px solid #eef2fa; font-size:13px; } .sm-er span { color:#5b6b86; text-align:right; }
+  .sm-er.none b, .sm-er.none span { color:#be123c; }
+  .sm-ar { padding:10px 2px; border-bottom:1px solid #eef2fa; } .sm-art { display:flex; justify-content:space-between; gap:8px; font-size:13px; } .sm-art b { font-size:14px; } .sm-art span { color:#5b6b86; font-size:11px; text-align:right; }
+  .sm-mb { display:flex; align-items:center; gap:6px; margin-top:5px; font-size:10px; color:#5b6b86; } .sm-mb em { width:44px; font-style:normal; }
+  .sm-mb .tr { flex:1; height:8px; background:#eef2fa; border-radius:6px; overflow:hidden; } .sm-mb .f { height:100%; border-radius:6px; width:0; transition:width .8s cubic-bezier(.2,.8,.2,1); } .sm-mb u { width:70px; text-align:right; text-decoration:none; color:#0f1f3d; font-weight:700; }
+  .sm-buy { margin:12px 2px 2px; font-size:12px; font-weight:800; color:#0a64e8; letter-spacing:.5px; }
+  .sm-more { text-align:center; color:#0a64e8; font-weight:800; padding:10px; cursor:pointer; font-size:13px; }
+</style>
+<style id="itemcss">
+  .item-seg { display:flex; gap:8px; margin:2px 0 12px; }
+  .item-seg button { flex:1; padding:13px 4px; border-radius:16px; font-weight:800; font-size:15px; background:#fff; border:1.5px solid #cfd9ee; color:#0b1b3a; cursor:pointer; font-family:inherit; }
+  .item-seg button.on { background:linear-gradient(135deg,#0a64e8,#1a3fc4); color:#fff; border-color:transparent; box-shadow:0 8px 18px rgba(10,100,232,.3); }
+</style>
 </head>
 <body>
 
@@ -352,30 +394,6 @@
       <div id="adminOut" class="althf-list"></div>
     </div>
 
-    <!-- ALTHF SCREEN: Excel upload + sirf dekhne wala balance list -->
-    <div class="form-card hidden" id="althfScreen">
-      <h2>📦 ALTHF Data</h2>
-      <button type="button" class="ig-login-btn" onclick="openWorkerReport(this)">📊 Show Report (Excel view)</button>
-      <div id="althfMsgBox" class="error-popup"></div>
-      <label class="field-label">1. Upload Excel file (.xlsx)</label>
-      <input type="file" class="ig-input" id="althfFile" accept=".xlsx, .xls">
-      <button type="button" class="ig-login-btn" onclick="uploadAlthf()">Upload 🚀</button>
-      <div id="althfList" class="althf-list"></div>
-      <button type="button" class="ig-login-btn btn-logout" onclick="logout()">Lock & Exit 🔒</button>
-    </div>
-
-    <!-- SARAVANAN SCREEN: Excel upload + buy-wise charging/packing balance list -->
-    <div class="form-card hidden" id="sarScreen">
-      <h2>🧾 Welcome SARAVANAN</h2>
-      <button type="button" class="ig-login-btn" onclick="openWorkerReport(this)">📊 Show Report (Excel view)</button>
-      <div id="sarMsgBox" class="error-popup"></div>
-      <label class="field-label">1. Attach Excel file (.xlsx)</label>
-      <input type="file" class="ig-input" id="sarFile" accept=".xlsx, .xls">
-      <button type="button" class="ig-login-btn" onclick="uploadSar()">Upload 🚀</button>
-      <div id="sarList" class="althf-list"></div>
-      <button type="button" class="ig-login-btn btn-logout" onclick="logout()">Lock & Exit 🔒</button>
-    </div>
-
     <!-- MEMBER REPORT SCREEN: "Show Report" dabane par alag screen khulti hai -->
     <div class="form-card hidden" id="wReportScreen">
       <h2 id="wReportTitle">REPORT</h2>
@@ -389,6 +407,12 @@
       <button type="button" class="ig-login-btn" onclick="openWorkerEntries()">📝 Entries &amp; Correct</button>
       <div id="wEntriesBox" class="althf-list hidden"></div>
       <button type="button" class="ig-login-btn" onclick="openWorkerReport(this)">📊 Show Report (Excel view)</button>
+
+      <!-- ALTHF / SARAVANAN only: what are you updating? -->
+      <div id="itemSegWrap" class="hidden">
+        <label class="field-label">What are you updating?</label>
+        <div class="item-seg" id="itemSeg"></div>
+      </div>
 
       <!-- STEP 1: BUY -->
       <label class="field-label">Buys Select</label>
@@ -522,7 +546,7 @@
           .catch(onFail);
       }
 
-      const FUNCS = ["verifyPin", "getOrdersForWorker", "submitReport", "saveExcelOrders", "saveAlthfData", "getAlthfData", "saveCharPackData", "getCharPackData", "adminSummary", "adminWorkerLog", "adminEditEntry", "adminSetPin", "adminRecalcAll", "adminLog", "adminSetPins", "adminStockReport", "adminFullReport", "adminArticleEntries", "adminDeleteEntry", "adminAddEntry", "adminSetCharPack", "adminGetFormat", "adminGetFormatFile", "adminSaveFormatFile", "adminMemberReport", "adminDeleteBuy", "saveKittingFormat", "workerList", "workerEdit", "workerDelete", "workerReport", "workerFormatFile"];
+      const FUNCS = ["verifyPin", "getOrdersForWorker", "submitReport", "saveExcelOrders", "saveAlthfData", "getAlthfData", "saveCharPackData", "getCharPackData", "adminSummary", "adminSummaryDetail", "adminWorkerLog", "adminEditEntry", "adminSetPin", "adminRecalcAll", "adminLog", "adminSetPins", "adminStockReport", "adminFullReport", "adminArticleEntries", "adminDeleteEntry", "adminAddEntry", "adminSetCharPack", "adminGetFormat", "adminGetFormatFile", "adminSaveFormatFile", "adminMemberReport", "adminDeleteBuy", "saveKittingFormat", "workerList", "workerEdit", "workerDelete", "workerReport", "workerFormatFile"];
 
       function makeRun(okH, failH) {
         const run = {
@@ -547,12 +571,8 @@
             else if (fn === "saveKittingFormat") post({ type: "format", rows: args[0], pin: adminPin }, onOk, onFail);
             else if (fn === "workerList" || fn === "workerEdit" || fn === "workerDelete" || fn === "workerReport" || fn === "workerFormatFile") post({ type: "worker", action: fn, worker: args[0], pin: pins[args[0]] || "", args: args.slice(1) }, onOk, onFail);
             else if (fn === "verifyPin") post({ type: "verify", worker: args[0], pin: args[1] }, onOk, onFail);
-            else if (fn === "getOrdersForWorker") post({ type: "worker", action: "workerOrders", worker: args[0], pin: pins[args[0]] || "", args: [] }, onOk, onFail);
+            else if (fn === "getOrdersForWorker") post({ type: "worker", action: "workerOrders", worker: args[0], pin: pins[args[0]] || "", args: [args[1] || ""] }, onOk, onFail);
             else if (fn === "submitReport") { const sd = args[0] || {}; post({ type: "worker", action: "workerSubmit", worker: sd.worker, pin: pins[sd.worker] || "", args: [sd] }, onOk, onFail); }
-            else if (fn === "getAlthfData") post({ type: "worker", action: "workerAlthf", worker: args[0], pin: pins[args[0]] || "", args: [] }, onOk, onFail);
-            else if (fn === "getCharPackData") post({ type: "worker", action: "workerCharpack", worker: "SARAVANAN", pin: pins["SARAVANAN"] || "", args: [] }, onOk, onFail);
-            else if (fn === "saveAlthfData") post({ type: "althf", worker: args[0], rows: args[1], pin: pins[args[0]] || "" }, onOk, onFail);
-            else if (fn === "saveCharPackData") post({ type: "charpack", rows: args[0], pin: pins["SARAVANAN"] || "" }, onOk, onFail);
             else jsonp(fn, args, onOk, onFail);
           };
         });
@@ -575,7 +595,7 @@
 
     // Names must match the server (Code.gs): WORKER_COLS and WORKER_PINS
     const ALL_WORKERS = ["SADIQ", "KAFEEL", "KUMAR", "ZESAN", "IMTHIYAZ", "MUDASSIR", "LOKASH", "ALTHF", "SARAVANAN"];
-    const ADMIN_USERS = ["SADIQ", "KAFEEL", "ALTHF"];
+    const ADMIN_USERS = ["SADIQ", "KAFEEL"];
 
     // ALTHF admin screen se apni report screen par jaaye
     function openReportFromAdmin() {
@@ -586,96 +606,6 @@
       document.getElementById('backAdminBtn').classList.remove('hidden');
       resetLockSystem();
       fetchMasterOrders();
-    }
-
-    // ===== ALTHF: Excel upload aur dekhne wala list =====
-    function findCol(header, name) {
-      for (let i = 0; i < header.length; i++) {
-        if (String(header[i]).replace(/\s+/g, " ").trim().toUpperCase() === name) return i;
-      }
-      return -1;
-    }
-
-    function uploadAlthf() {
-      const fileInput = document.getElementById('althfFile');
-      if (fileInput.files.length === 0) { showMsg('althfMsgBox', 'error', '⚠️ Please select an Excel file first!'); return; }
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        try {
-          const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
-          const data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: "" });
-          if (data.length < 2) { showMsg('althfMsgBox', 'error', '❌ No data found in the Excel.'); return; }
-          const h = data[0];
-          const cols = {
-            art: findCol(h, "ARTICLE NUMBER"), name: findCol(h, "ARTICLE NAME"), po: findCol(h, "PO NUMBER"),
-            order: findCol(h, "ORDER PAIRS"),
-            soleR: findCol(h, "SOLE RECV"), soleB: findCol(h, "SOLE BAL"),
-            insR: findCol(h, "INSOLE RECV"), insB: findCol(h, "INSOLE BAL"),
-            sockR: findCol(h, "SOCK RECV"), sockB: findCol(h, "SOCK BAL"),
-            buy: findColAny(h, ["BUYS NAME", "BUY NAME"]), batch: findCol(h, "BATCH")
-          };
-          if (cols.art < 0 || cols.soleB < 0 || cols.insB < 0 || cols.sockB < 0) {
-            showMsg('althfMsgBox', 'error', '❌ Required columns not found (ARTICLE NUMBER, SOLE BAL, INSOLE BAL, SOCK BAL). Check the header row.');
-            return;
-          }
-          const get = function (r, i) { return (i >= 0 && r[i] !== undefined) ? String(r[i]).trim() : ""; };
-          const rows = [];
-          for (let i = 1; i < data.length; i++) {
-            const r = data[i];
-            if (!get(r, cols.art)) continue;
-            rows.push([get(r, cols.art), get(r, cols.name), get(r, cols.po), get(r, cols.order),
-                       get(r, cols.soleR), get(r, cols.soleB), get(r, cols.insR), get(r, cols.insB),
-                       get(r, cols.sockR), get(r, cols.sockB), get(r, cols.buy), get(r, cols.batch)]);
-          }
-          google.script.run.withSuccessHandler(function (msg) {
-            showMsg('althfMsgBox', 'success', msg || '✅ Upload complete');
-            fileInput.value = "";
-            loadAlthfList();
-          }).withFailureHandler(function () {
-            showMsg('althfMsgBox', 'error', '❌ Upload failed. Check your internet and try again.');
-          }).saveAlthfData(loggedInWorker, rows);
-        } catch (err) {
-          showMsg('althfMsgBox', 'error', '❌ Could not read the Excel (' + err.message + ')');
-        }
-      };
-      reader.onerror = function () { showMsg('althfMsgBox', 'error', '❌ Could not read the file.'); };
-      reader.readAsArrayBuffer(fileInput.files[0]);
-    }
-
-    function loadAlthfList() {
-      const box = document.getElementById('althfList');
-      box.innerText = "⏳ Loading data...";
-      google.script.run.withSuccessHandler(function (rows) {
-        renderAlthfList(rows || []);
-      }).withFailureHandler(function () {
-        box.innerText = "⚠️ Could not connect to server. Please try again.";
-      }).getAlthfData(loggedInWorker);
-    }
-
-    function renderAlthfList(rows) {
-      const box = document.getElementById('althfList');
-      box.innerHTML = "";
-      if (rows.length === 0) { box.innerText = "No data yet. Upload an Excel file above."; return; }
-      rows.forEach(function (o) {
-        const card = document.createElement('div');
-        card.className = 'althf-card';
-        const title = document.createElement('div');
-        title.className = 'althf-art';
-        title.innerText = 'Article ' + o.articleNo + (o.articleName ? ' - ' + o.articleName : '');
-        card.appendChild(title);
-        const line = function (label, val) {
-          const d = document.createElement('div');
-          d.innerText = label + ': ' + (val === "" ? "—" : val);
-          card.appendChild(d);
-        };
-        line('Buy Name', o.buyName);
-        line('Batch', o.batch);
-        line('Order Pairs', o.orderPairs);
-        line('Sole Bal', o.soleBal);
-        line('Insole Bal', o.insoleBal);
-        line('Socks Bal', o.sockBal);
-        box.appendChild(card);
-      });
     }
 
     // ===== ADMIN CONTROL: menu and separate screens =====
@@ -692,7 +622,7 @@
     let wRepPrev = null;
     function openWorkerReport() {
       getFormatB64();
-      const cur = ['workerScreen', 'althfScreen', 'sarScreen'].map(function (id) { return document.getElementById(id); })
+      const cur = ['workerScreen'].map(function (id) { return document.getElementById(id); })
         .find(function (el) { return el && !el.classList.contains('hidden'); });
       wRepPrev = cur || null;
       if (cur) cur.classList.add('hidden');
@@ -1217,16 +1147,186 @@
       return sel;
     }
 
-    function admSummary() {
-      admCall('adminSummary', [], function (s) {
-        const box = document.getElementById('adminOut');
-        box.innerHTML = "";
-        admLine(box, 'Buys: ' + s.buys + ' | Master articles: ' + s.articles);
-        admLine(box, 'ALTHF data: ' + s.althf + ' articles | SARAVANAN data: ' + s.charpack + ' articles');
-        s.workers.forEach(function (w) {
-          admLine(box, w.worker + ' → done ' + w.done + ' | balance ' + w.balance + ' | entries ' + w.logs);
-        });
+    // ===== KAFEEL: Summary (animated) and member pages =====
+    let sumData = null;
+    function smEl(tag, cls, text) {
+      const e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (text !== undefined && text !== null) e.textContent = text;
+      return e;
+    }
+    function smNum(n) { return Number(n || 0).toLocaleString('en-IN'); }
+    const SM_MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const SM_DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+    function smShift(ms) { return new Date(ms + 330 * 60000); }
+    function smTime(ms) {
+      const d = smShift(ms); let h = d.getUTCHours(); const m = d.getUTCMinutes();
+      const ap = h >= 12 ? 'PM' : 'AM'; h = h % 12; if (h === 0) h = 12;
+      return h + ':' + (m < 10 ? '0' : '') + m + ' ' + ap;
+    }
+    function smDayKey(ms) { return smShift(ms).toISOString().slice(0, 10); }
+    function smDayLabel(key) {
+      const d = new Date(key + 'T00:00:00Z');
+      return SM_DAYS[d.getUTCDay()] + ' ' + d.getUTCDate() + ' ' + SM_MONTHS[d.getUTCMonth()];
+    }
+    function smLast(ms, s) {
+      if (!ms) return 'No entry yet';
+      const k = smDayKey(ms);
+      if (k === s.today) return 'Today ' + smTime(ms);
+      if (k === smDayKey(s.now - 86400000)) return 'Yesterday ' + smTime(ms);
+      return smDayLabel(k) + ' ' + smTime(ms);
+    }
+    function smAnimate(fn) { requestAnimationFrame(function () { requestAnimationFrame(fn); }); }
+    function smLegend(items) {
+      const leg = smEl('div', 'sm-leg');
+      items.forEach(function (x) {
+        const sp = smEl('span'); const i = smEl('i'); i.style.background = x[0];
+        sp.appendChild(i); sp.appendChild(document.createTextNode(x[1])); leg.appendChild(sp);
       });
+      return leg;
+    }
+
+    function admSummary() {
+      document.getElementById('admPageTitle').innerText = '📊 Summary';
+      const box = document.getElementById('adminOut');
+      box.innerHTML = '';
+      box.appendChild(smEl('div', 'sm-card', 'Loading summary... ⏳'));
+      admCall('adminSummaryDetail', [], function (s) { sumData = s; renderSummary(); });
+    }
+
+    function renderSummary() {
+      const s = sumData;
+      document.getElementById('admPageTitle').innerText = '📊 Summary';
+      const box = document.getElementById('adminOut');
+      box.innerHTML = '';
+      const entered = s.workers.filter(function (w) { return w.enteredToday; }).length;
+
+      const k = smEl('div', 'sm-card'); const kp = smEl('div', 'sm-kp');
+      [[s.buys, 'Buys'], [s.articles, 'Articles'], [entered + ' / ' + s.workers.length, 'Entered today']].forEach(function (x) {
+        const c = smEl('div'); c.appendChild(smEl('b', '', x[0])); c.appendChild(smEl('small', '', x[1])); kp.appendChild(c);
+      });
+      k.appendChild(kp); box.appendChild(k);
+
+      const ch = smEl('div', 'sm-card'); ch.appendChild(smEl('div', 'sm-h', 'Work done by member'));
+      const mx = Math.max.apply(null, s.workers.map(function (w) { return w.done + w.balance; }).concat([1]));
+      const bars = [];
+      s.workers.forEach(function (w) {
+        const row = smEl('div', 'sm-hb'); row.appendChild(smEl('div', 'sm-hn', w.worker));
+        const tr = smEl('div', 'sm-track'); const d = smEl('div', 'sm-done'); const b = smEl('div', 'sm-bal');
+        tr.appendChild(d); tr.appendChild(b); row.appendChild(tr); row.appendChild(smEl('div', 'sm-hv', smNum(w.done)));
+        ch.appendChild(row); bars.push([d, b, w]);
+      });
+      ch.appendChild(smLegend([['#0a64e8', 'Done'], ['#ffc233', 'Balance']])); box.appendChild(ch);
+      smAnimate(function () {
+        bars.forEach(function (x) { x[0].style.width = (x[2].done / mx * 100) + '%'; x[1].style.width = (x[2].balance / mx * 100) + '%'; });
+      });
+
+      box.appendChild(smEl('div', 'sm-tap', 'Tap a member for details'));
+      s.workers.forEach(function (w) {
+        const idle = !w.enteredToday && w.balance === 0 && w.done > 0;
+        const card = smEl('div', 'sm-wc' + (w.enteredToday ? '' : (idle ? ' idle' : ' off')));
+        const l = smEl('div', 'sm-wl'); l.appendChild(smEl('div', 'sm-av', w.worker.charAt(0)));
+        const nm = smEl('div'); nm.appendChild(smEl('b', '', w.worker)); nm.appendChild(smEl('small', '', w.label)); l.appendChild(nm);
+        const r = smEl('div', 'sm-wr');
+        r.appendChild(smEl('span', 'sm-chip ' + (w.enteredToday ? 'ok' : (idle ? 'idle' : 'no')), w.enteredToday ? 'Entered today' : (idle ? 'No pending work' : 'No entry today')));
+        r.appendChild(smEl('small', '', 'Last: ' + smLast(w.lastMs, s)));
+        card.appendChild(l); card.appendChild(r);
+        card.onclick = function () { renderMember(w); window.scrollTo(0, 0); };
+        box.appendChild(card);
+      });
+    }
+
+    function renderMember(w) {
+      const s = sumData;
+      document.getElementById('admPageTitle').innerText = w.worker + ' · ' + w.label;
+      const box = document.getElementById('adminOut');
+      box.innerHTML = '';
+      admButton(box, '← Back to Summary', function () { renderSummary(); window.scrollTo(0, 0); });
+
+      const top = smEl('div', 'sm-card');
+      if (w.parts.length === 1) {
+        const kp = smEl('div', 'sm-kp');
+        [[smNum(w.done), 'Done'], [smNum(w.balance), 'Balance'], [smLast(w.lastMs, s), 'Last entry']].forEach(function (x) {
+          const c = smEl('div'); const b = smEl('b', '', x[0]); if (x[1] === 'Last entry') b.style.fontSize = '13px';
+          c.appendChild(b); c.appendChild(smEl('small', '', x[1])); kp.appendChild(c);
+        });
+        top.appendChild(kp);
+      } else {
+        top.appendChild(smEl('div', 'sm-h', 'Done vs balance'));
+        const rings = smEl('div', 'sm-rings'); const colors = ['#0a64e8', '#12a150', '#e8890c']; const fgs = [];
+        const NS = 'http://www.w3.org/2000/svg';
+        w.parts.forEach(function (p, i) {
+          const tot = p.done + p.bal, pc = tot ? p.done / tot : 0, c = 2 * Math.PI * 30;
+          const rg = smEl('div', 'sm-rg'); const wrap = smEl('div', 'sm-pc');
+          const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('viewBox', '0 0 74 74');
+          const bg = document.createElementNS(NS, 'circle'); bg.setAttribute('class', 'bgc'); bg.setAttribute('cx', 37); bg.setAttribute('cy', 37); bg.setAttribute('r', 30);
+          const fg = document.createElementNS(NS, 'circle'); fg.setAttribute('class', 'fg'); fg.setAttribute('cx', 37); fg.setAttribute('cy', 37); fg.setAttribute('r', 30);
+          fg.setAttribute('stroke', colors[i % 3]); fg.setAttribute('stroke-dasharray', '0 ' + c);
+          svg.appendChild(bg); svg.appendChild(fg); wrap.appendChild(svg); wrap.appendChild(smEl('span', '', Math.round(pc * 100) + '%'));
+          rg.appendChild(wrap); rg.appendChild(smEl('b', '', p.label));
+          const sm = smEl('small'); sm.appendChild(document.createTextNode('Done ' + smNum(p.done))); sm.appendChild(document.createElement('br')); sm.appendChild(document.createTextNode('Bal ' + smNum(p.bal)));
+          rg.appendChild(sm); rings.appendChild(rg); fgs.push([fg, pc * c, c]);
+        });
+        top.appendChild(rings);
+        smAnimate(function () { fgs.forEach(function (x) { x[0].setAttribute('stroke-dasharray', x[1] + ' ' + x[2]); }); });
+      }
+      box.appendChild(top);
+
+      const dc = smEl('div', 'sm-card'); dc.appendChild(smEl('div', 'sm-h', 'Pairs per day (all days)'));
+      if (!w.days.length) {
+        dc.appendChild(smEl('div', 'sm-leg', 'No entries yet.'));
+      } else {
+        const wrap = smEl('div', 'sm-chartwrap'); const chart = smEl('div', 'sm-chart');
+        const mxd = Math.max.apply(null, w.days.map(function (d) { return d[1]; }).concat([1])); const cbs = [];
+        w.days.forEach(function (d) {
+          const col = smEl('div', 'sm-col'); const cb = smEl('div', 'sm-cb' + (d[1] ? '' : ' z'));
+          const sun = new Date(d[0] + 'T00:00:00Z').getUTCDay() === 0;
+          col.appendChild(cb); col.appendChild(smEl('span', sun ? 'sun' : '', String(Number(d[0].slice(8)))));
+          chart.appendChild(col); cbs.push([cb, d[1] ? Math.max(d[1] / mxd * 100, 6) : 6]);
+        });
+        wrap.appendChild(chart); dc.appendChild(wrap);
+        const leg = smLegend([['#0a64e8', 'Entry done'], ['#fecdd3', 'No entry']]);
+        const sunNote = smEl('span', '', 'Red date = Sunday'); sunNote.style.color = '#e11d48'; leg.appendChild(sunNote);
+        dc.appendChild(leg);
+        const withE = w.days.filter(function (d) { return d[1] > 0; }).length;
+        dc.appendChild(smEl('div', 'sm-leg', withE + ' of ' + w.days.length + (w.days.length === 1 ? ' day' : ' days') + ' with entry'));
+        smAnimate(function () { cbs.forEach(function (x) { x[0].style.height = x[1] + '%'; }); wrap.scrollLeft = wrap.scrollWidth; });
+      }
+      box.appendChild(dc);
+
+      const dd = smEl('div', 'sm-card'); dd.appendChild(smEl('div', 'sm-h', 'Day by day'));
+      const list = smEl('div'); dd.appendChild(list);
+      const rev = w.days.slice().reverse(); let shown = 0;
+      const more = smEl('div', 'sm-more', 'Show more days');
+      function addRows(n) {
+        rev.slice(shown, shown + n).forEach(function (d) {
+          const row = smEl('div', 'sm-er' + (d[1] ? '' : ' none')); row.appendChild(smEl('b', '', smDayLabel(d[0])));
+          row.appendChild(smEl('span', '', d[1] ? (smTime(d[3]) + ' · ' + smNum(d[1]) + ' pairs · ' + d[2] + (d[2] === 1 ? ' entry' : ' entries')) : 'No entry'));
+          list.appendChild(row);
+        });
+        shown += n; if (shown >= rev.length) more.style.display = 'none';
+      }
+      if (!rev.length) { list.appendChild(smEl('div', 'sm-leg', 'No entries yet.')); }
+      else { addRows(10); more.onclick = function () { addRows(30); }; dd.appendChild(more); }
+      box.appendChild(dd);
+
+      const ar = smEl('div', 'sm-card'); ar.appendChild(smEl('div', 'sm-h', 'By article'));
+      const colors = ['#0a64e8', '#12a150', '#e8890c']; const fills = []; let lastBuy = null;
+      if (!w.articles.length) ar.appendChild(smEl('div', 'sm-leg', 'No orders yet.'));
+      w.articles.forEach(function (a) {
+        if (a.buy !== lastBuy) { ar.appendChild(smEl('div', 'sm-buy', a.buy || 'Buy')); lastBuy = a.buy; }
+        const row = smEl('div', 'sm-ar'); const t = smEl('div', 'sm-art'); t.appendChild(smEl('b', '', a.art));
+        t.appendChild(smEl('span', '', (a.name ? a.name + ' · ' : '') + 'Order ' + smNum(a.order))); row.appendChild(t);
+        w.parts.forEach(function (p, i) {
+          const m = smEl('div', 'sm-mb'); m.appendChild(smEl('em', '', w.parts.length === 1 ? 'Done' : p.label));
+          const tr = smEl('div', 'tr'); const f = smEl('div', 'f'); f.style.background = colors[i % 3]; tr.appendChild(f); m.appendChild(tr);
+          m.appendChild(smEl('u', '', smNum(a.vals[i]) + ' / ' + smNum(a.order))); row.appendChild(m);
+          fills.push([f, a.order ? Math.min(100, a.vals[i] / a.order * 100) : 0]);
+        });
+        ar.appendChild(row);
+      });
+      box.appendChild(ar);
+      smAnimate(function () { fills.forEach(function (x) { x[0].style.width = x[1] + '%'; }); });
     }
 
     // Entries page: pick a worker, then see and correct that worker's entries
@@ -1780,12 +1880,12 @@
     function admLoadEntries(a, list, openW) {
       admCall('adminArticleEntries', [a, admArtBuy], function (rows) {
         list.innerHTML = "";
-        if (openW === 'SARAVANAN') { admCharPack(a, list); return; }
+        if (openW === 'SARAVANAN' || openW === 'ALTHF') { admItemsEdit(a, list, openW); return; }
         if (openW) { admMemberEntries(a, openW, rows, list); return; }
         const members = admEditMode === 'kit' ? KIT_MEMBERS : MAIN_MEMBERS;
         members.forEach(function (w) {
-          if (w === 'SARAVANAN') {
-            admButton(list, 'Edit SARAVANAN (Charging / Packing)', function () { admCharPack(a, list); });
+          if (w === 'SARAVANAN' || w === 'ALTHF') {
+            admButton(list, w === 'ALTHF' ? 'Edit ALTHF (Sole / Insole / Socks)' : 'Edit SARAVANAN (Charging / Packing)', function () { admItemsEdit(a, list, w); });
             return;
           }
           const n = rows.filter(function (e) { return e.worker === w; }).length;
@@ -1796,18 +1896,23 @@
     }
 
     // SARAVANAN: charging aur packing ki quantity (SARAVANAN_DATA sheet) - live balance ke saath.
-    function admCharPack(a, list) {
+    const ADM_ITEMS = {
+      ALTHF: { title: 'ALTHF (Sole / Insole / Socks)', fields: [['sole', 'Sole', 'soleRecv'], ['insole', 'Insole', 'insoleRecv'], ['socks', 'Socks', 'socksRecv']] },
+      SARAVANAN: { title: 'SARAVANAN (Charging / Packing)', fields: [['charging', 'Charging', 'charging'], ['packing', 'Packing', 'packing']] }
+    };
+    function admItemsEdit(a, list, owner) {
+      const cfg = ADM_ITEMS[owner];
       list.innerHTML = "";
       admButton(list, '← Back to members', function () { admLoadEntries(a, list); });
       const o = admRows.find(function (x) { return x.articleNo === a && x.buyName === admArtBuy; }) || admRows.find(function (x) { return x.articleNo === a; }) || { articleNo: a };
       const dash = function (v) { return (v === undefined || v === '' || v === null) ? '—' : v; };
       const order = Number(o.order) || 0;
-      admLine(list, 'Member: SARAVANAN (Charging / Packing)');
+      admLine(list, 'Member: ' + cfg.title);
       admLine(list, 'Article No: ' + a);
       admLine(list, 'Article Name: ' + dash(o.articleName));
       admLine(list, 'Batch: ' + dash(o.batch));
       admLine(list, 'Order QTY: ' + dash(o.order));
-      [['charging', 'Charging', Number(o.charging) || 0], ['packing', 'Packing', Number(o.packing) || 0]].forEach(function (f) {
+      cfg.fields.map(function (x) { return [x[0], x[1], Number(o[x[2]]) || 0]; }).forEach(function (f) {
         const card = document.createElement('div');
         card.className = 'althf-card';
         const live = document.createElement('div');
@@ -1829,7 +1934,7 @@
           if (inp.value === '') { admMsg('Enter a quantity.', 'error'); return; }
           admCall('adminSetCharPack', [a, f[0], inp.value, '', admArtBuy], function (msg) {
             admMsg(msg, 'success');
-            admReloadAll(function () { admArticleDetail(a, 'SARAVANAN'); });
+            admReloadAll(function () { admArticleDetail(a, owner); });
           });
         });
         list.appendChild(card);
@@ -1943,109 +2048,48 @@
       });
     }
 
-    // ===== SARAVANAN: charging/packing Excel upload aur buy-wise list =====
-    function findColAny(header, names) {
-      for (let n = 0; n < names.length; n++) {
-        const idx = findCol(header, names[n]);
-        if (idx >= 0) return idx;
-      }
-      return -1;
-    }
-
-    function uploadSar() {
-      const fileInput = document.getElementById('sarFile');
-      if (fileInput.files.length === 0) { showMsg('sarMsgBox', 'error', '⚠️ Please select an Excel file first!'); return; }
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        try {
-          const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
-          const data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: "" });
-          if (data.length < 2) { showMsg('sarMsgBox', 'error', '❌ No data found in the Excel.'); return; }
-          const h = data[0];
-          const cols = {
-            buy: findColAny(h, ["BUYS NAME", "BUY NAME"]), po: findCol(h, "PO NUMBER"), batch: findCol(h, "BATCH"),
-            art: findCol(h, "ARTICLE NUMBER"), name: findCol(h, "ARTICLE NAME"), order: findCol(h, "ORDER PAIRS"),
-            chg: findCol(h, "CHARGING"), pck: findCol(h, "PACKING")
-          };
-          if (cols.art < 0 || cols.order < 0 || cols.chg < 0 || cols.pck < 0) {
-            showMsg('sarMsgBox', 'error', '❌ Required columns not found (ARTICLE NUMBER, ORDER PAIRS, Charging, Packing). Check the header row.');
-            return;
-          }
-          const get = function (r, i) { return (i >= 0 && r[i] !== undefined) ? String(r[i]).trim() : ""; };
-          const num = function (r, i) { const v = Number(get(r, i)); return isNaN(v) ? 0 : v; };
-          const rows = [];
-          for (let i = 1; i < data.length; i++) {
-            const r = data[i];
-            if (!get(r, cols.art)) continue;
-            rows.push([get(r, cols.buy) || "Buy", get(r, cols.po), get(r, cols.batch), get(r, cols.art), get(r, cols.name),
-                       num(r, cols.order), num(r, cols.chg), num(r, cols.pck)]);
-          }
-          google.script.run.withSuccessHandler(function (msg) {
-            showMsg('sarMsgBox', 'success', msg || '✅ Upload complete');
-            fileInput.value = "";
-            loadSarList();
-          }).withFailureHandler(function () {
-            showMsg('sarMsgBox', 'error', '❌ Upload failed. Check your internet and try again.');
-          }).saveCharPackData(rows);
-        } catch (err) {
-          showMsg('sarMsgBox', 'error', '❌ Could not read the Excel (' + err.message + ')');
-        }
-      };
-      reader.onerror = function () { showMsg('sarMsgBox', 'error', '❌ Could not read the file.'); };
-      reader.readAsArrayBuffer(fileInput.files[0]);
-    }
-
-    function loadSarList() {
-      const box = document.getElementById('sarList');
-      box.innerText = "⏳ Loading data...";
-      google.script.run.withSuccessHandler(function (rows) {
-        renderSarList(rows || []);
-      }).withFailureHandler(function () {
-        box.innerText = "⚠️ Could not connect to server. Please try again.";
-      }).getCharPackData();
-    }
-
-    function renderSarList(rows) {
-      const box = document.getElementById('sarList');
-      box.innerHTML = "";
-      if (rows.length === 0) { box.innerText = "No data yet. Attach an Excel file above and tap Upload."; return; }
-      const groups = {};
-      const order = [];
-      rows.forEach(function (o) {
-        const key = o.buyName || "Buy";
-        if (!groups[key]) { groups[key] = []; order.push(key); }
-        groups[key].push(o);
-      });
-      order.forEach(function (key) {
-        const head = document.createElement('div');
-        head.className = 'sar-buy';
-        head.innerText = key;
-        box.appendChild(head);
-        groups[key].forEach(function (o) {
-          const card = document.createElement('div');
-          card.className = 'althf-card';
-          const title = document.createElement('div');
-          title.className = 'althf-art';
-          title.innerText = 'Article ' + o.articleNo + (o.articleName ? ' - ' + o.articleName : '');
-          card.appendChild(title);
-          const line = function (text) {
-            const d = document.createElement('div');
-            d.innerText = text;
-            card.appendChild(d);
-          };
-          line('Batch: ' + (o.batch || '—'));
-          line('Order Pairs: ' + o.orderPairs);
-          line('Charging: ' + o.chgDone + ' | Balance: ' + o.chgBal);
-          line('Packing: ' + o.pckDone + ' | Balance: ' + o.pckBal);
-          box.appendChild(card);
-        });
-      });
-    }
-
     function backToAdmin() {
       document.getElementById('workerScreen').classList.add('hidden');
       document.getElementById('adminScreen').classList.remove('hidden');
     }
+    // ALTHF and SARAVANAN choose what they update first (Sole / Insole / Socks, or Charging / Packing)
+    const ITEM_CONFIG = {
+      ALTHF: [["SOLE", "Sole", "Sole Received"], ["INSOLE", "Insole", "Insole Received"], ["SOCKS", "Socks", "Socks Received"]],
+      SARAVANAN: [["CHG", "Charging", "Charging Done"], ["PACK", "Packing", "Packing Done"]]
+    };
+    let currentItem = "";
+
+    function setupItems(worker) {
+      const cfg = ITEM_CONFIG[worker];
+      const wrap = document.getElementById('itemSegWrap');
+      const seg = document.getElementById('itemSeg');
+      seg.innerHTML = "";
+      currentItem = "";
+      if (!cfg) { wrap.classList.add('hidden'); return; }
+      wrap.classList.remove('hidden');
+      cfg.forEach(function (it) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.innerText = it[1];
+        b.dataset.code = it[0];
+        b.onclick = function () { chooseItem(it[0]); };
+        seg.appendChild(b);
+      });
+      chooseItem(cfg[0][0]);
+    }
+
+    function chooseItem(code) {
+      currentItem = code;
+      const cfg = ITEM_CONFIG[loggedInWorker] || [];
+      Array.prototype.forEach.call(document.querySelectorAll('#itemSeg button'), function (b) {
+        b.classList.toggle('on', b.dataset.code === code);
+      });
+      const it = cfg.filter(function (x) { return x[0] === code; })[0];
+      if (it) document.getElementById('lbl_output').innerText = it[2];
+      resetLockSystem();
+      fetchMasterOrders();
+    }
+
     const WORKER_LABELS = {
       "KUMAR": "Upper Output", "ZESAN": "Upper Received", "IMTHIYAZ": "Upper Stock",
       "MUDASSIR": "Molding And Forming Arrived", "LOKASH": "Kit Issue",
@@ -2230,23 +2274,19 @@
               document.getElementById('loginScreen').classList.add('hidden');
               loggedInWorker = worker;
 
-              if (worker === "SARAVANAN") {
-                document.getElementById('sarScreen').classList.remove('hidden');
-                loadSarList();
-              } else if (worker === "ALTHF") {
-                document.getElementById('althfScreen').classList.remove('hidden');
-                loadAlthfList();
-              } else if (worker === "KAFEEL") {
+              if (worker === "KAFEEL") {
                 admMenu();
               } else if (worker === "SADIQ") {
                 admUploadScreen();
               } else {
                 document.getElementById('workerScreen').classList.remove('hidden');
                 document.getElementById('roomTitle').innerText = "👤 Welcome " + worker;
-                document.getElementById('lbl_output').innerText = WORKER_LABELS[worker];
-
-                resetLockSystem();
-                fetchMasterOrders();
+                setupItems(worker);
+                if (!ITEM_CONFIG[worker]) {
+                  document.getElementById('lbl_output').innerText = WORKER_LABELS[worker];
+                  resetLockSystem();
+                  fetchMasterOrders();
+                }
               }
             } else {
               showMsg('loginMsgBox', 'error', (res && res.locked) ? '⛔ Too many wrong attempts. Try again in 10 minutes.' : '❌ Incorrect Security PIN!');
@@ -2266,8 +2306,8 @@
       killKeyboard();
       document.getElementById('workerPin').value = "";
       document.getElementById('adminScreen').classList.add('hidden');
-      document.getElementById('althfScreen').classList.add('hidden');
-      document.getElementById('sarScreen').classList.add('hidden');
+      document.getElementById('itemSegWrap').classList.add('hidden');
+      currentItem = "";
       document.getElementById('adminMenu').classList.add('hidden');
       document.getElementById('adminPage').classList.add('hidden');
       document.getElementById('workerScreen').classList.add('hidden');
@@ -2300,8 +2340,10 @@
     // Loads this worker's orders from the server. Shows a clear message if nothing loads.
     function fetchMasterOrders() {
       document.getElementById('w_buy_text').innerText = "✦ Fetching Data... ✦";
+      const itemAtCall = currentItem;
       google.script.run
         .withSuccessHandler(function (orders) {
+          if (itemAtCall !== currentItem) return; // another item was chosen meanwhile
           masterOrders = Array.isArray(orders) ? orders : [];
           document.getElementById('w_buy_text').innerText = masterOrders.length
             ? "✦ Select Buy ✦"
@@ -2311,7 +2353,7 @@
           masterOrders = [];
           document.getElementById('w_buy_text').innerText = "✦ Data did not load. Tap Buy to try again ✦";
         })
-        .getOrdersForWorker(loggedInWorker);
+        .getOrdersForWorker(loggedInWorker, currentItem);
     }
 
     function calcBalance() {
@@ -2363,6 +2405,7 @@
 
       const data = {
         worker: loggedInWorker,
+        item: currentItem,
         date: new Date().toISOString().split('T')[0],
         buy: document.getElementById('w_buy').value,
         field1: document.getElementById('w_article').value,
