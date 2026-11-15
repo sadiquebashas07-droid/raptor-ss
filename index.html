@@ -2457,6 +2457,33 @@
 
       reader.readAsArrayBuffer(file);
     }
-  </script>
+  
+    // ===== Phone / browser Back button: step back inside the app instead of leaving it =====
+    (function () {
+      function $(id) { return document.getElementById(id); }
+      function vis(id) { var e = $(id); return e && !e.classList.contains('hidden'); }
+      function loggedIn() { return !vis('loginScreen'); }
+      function ensureSentinel() {
+        try {
+          if (loggedIn() && !(history.state && history.state.app)) history.pushState({ app: 1 }, '');
+        } catch (e) { }
+      }
+      function goBackInApp() {
+        if (vis('pickerModal')) { hideModal(); return; }
+        if (vis('wReportScreen')) { closeWorkerReport(); return; }
+        if (vis('adminPage')) { admMenu(); return; }
+        if (vis('workerScreen') && vis('backAdminBtn')) { backToAdmin(); return; }
+        // Top level screen: stay here (use Lock & Exit to log out)
+      }
+      window.addEventListener('popstate', function () {
+        if (loggedIn()) { goBackInApp(); ensureSentinel(); }
+      });
+      var ls = $('loginScreen');
+      if (ls && window.MutationObserver) {
+        new MutationObserver(ensureSentinel).observe(ls, { attributes: true, attributeFilter: ['class'] });
+      }
+      document.addEventListener('click', ensureSentinel, true);
+    })();
+</script>
 </body>
 </html>
