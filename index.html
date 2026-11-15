@@ -3,6 +3,9 @@
 <head>
   <base target="_top">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0b1b3a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Urbanist:wght@600;700;800&display=swap" rel="stylesheet">
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
@@ -164,6 +167,121 @@
     }
     .modal-item-btn:active { background: #eff6ff; border-color: #0064e0; color: #0064e0; }
   </style>
+
+  <style id="theme">
+    /* ===== THEME: look only. No behaviour or data is touched here. ===== */
+    :root {
+      --navy: #0b1b3a; --blue: #0064e0; --blue-deep: #1d4ed8; --amber: #ffc000;
+      --ink: #0f172a; --muted: #64748b; --line: #e2e8f0; --card: #ffffff; --bg: #f3f6fb;
+      --shadow: 0 12px 32px rgba(11, 27, 58, 0.09); --shadow-sm: 0 4px 14px rgba(11, 27, 58, 0.07);
+    }
+    html { background: var(--bg); }
+    body { background: transparent; }
+    body::before {
+      content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      background:
+        radial-gradient(900px 520px at -5% -8%, rgba(0, 100, 224, 0.15), transparent 60%),
+        radial-gradient(720px 440px at 105% 2%, rgba(255, 192, 0, 0.20), transparent 56%),
+        radial-gradient(800px 500px at 50% 112%, rgba(29, 78, 216, 0.10), transparent 60%);
+    }
+
+    /* header */
+    .top-header {
+      margin-top: 6px; padding: 12px 10px 11px; background: rgba(255, 255, 255, 0.78);
+      -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+      border: 1px solid rgba(226, 232, 240, 0.95); border-radius: 20px; box-shadow: var(--shadow-sm);
+    }
+    .company-title { font-size: 14px; letter-spacing: 0.7px; background: linear-gradient(90deg, #0b1b3a, #0064e0 55%, #0b1b3a); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .sub-title {
+      display: inline-block; margin-top: 7px; padding: 3px 13px; border-radius: 999px;
+      background: #eaf2ff; color: var(--blue-deep); font-size: 10px; letter-spacing: 2.4px;
+    }
+
+    /* login: one centred card, logo on top */
+    #loginScreen {
+      background: var(--card); border: 1px solid var(--line); border-radius: 28px; box-shadow: var(--shadow);
+      padding: 26px 20px 22px; margin: auto 0; position: relative; overflow: hidden;
+    }
+    #loginScreen::before {
+      content: ""; position: absolute; left: 0; right: 0; top: 0; height: 5px;
+      background: linear-gradient(90deg, var(--blue), var(--amber));
+    }
+    .company-logo-wrap {
+      width: 92px; height: 92px; margin: 4px auto 14px auto !important; border-radius: 28px;
+      background: linear-gradient(135deg, #ffc000 0%, #ff8a00 100%);
+      box-shadow: 0 12px 26px rgba(255, 138, 0, 0.35); animation: glow 3.2s ease-in-out infinite;
+    }
+    .company-logo-inner { width: 84px; height: 84px; border-radius: 24px; background: var(--navy); color: #ffffff; font-size: 26px; letter-spacing: 2px; }
+    .company-logo-inner span { color: var(--amber); font-size: 10px; letter-spacing: 2px; }
+    .login-title { font-family: 'Urbanist', sans-serif; font-size: 20px; font-weight: 800; color: var(--navy); text-align: center; margin: 0; }
+    .login-sub { font-size: 12px; font-weight: 600; color: var(--muted); text-align: center; margin: 4px 0 16px; }
+    @keyframes glow { 0%, 100% { box-shadow: 0 12px 26px rgba(255, 138, 0, 0.30); } 50% { box-shadow: 0 14px 34px rgba(255, 138, 0, 0.55); } }
+
+    /* inputs */
+    .ig-input, .picker-btn {
+      border: 1.5px solid #d5deec; border-radius: 14px; background-color: #f8fafc; padding: 13px 15px; font-size: 14px;
+      transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+    }
+    .ig-input:focus { border-color: var(--blue); background-color: #ffffff; box-shadow: 0 0 0 4px rgba(0, 100, 224, 0.14); }
+    .picker-btn:active { background-color: #eef4ff; }
+    .picker-arrow { color: var(--blue); }
+
+    /* buttons */
+    .ig-login-btn {
+      border-radius: 14px; padding: 14px; font-size: 14px; font-weight: 800; letter-spacing: 0.3px;
+      box-shadow: 0 8px 18px rgba(0, 100, 224, 0.28); transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    .ig-login-btn:active { transform: scale(0.98); box-shadow: 0 4px 10px rgba(0, 100, 224, 0.25); }
+    .btn-logout { background: #fff1f2 !important; color: #be123c !important; border: 1px solid #fecdd3 !important; box-shadow: none !important; }
+
+    /* menu buttons become tiles */
+    #adminMenu .ig-login-btn:not(.btn-logout),
+    #adminScreen .ig-login-btn:not(.btn-logout):not([onclick*="processExcel"]):not([onclick*="uploadFullFormat"]) {
+      background: var(--card); color: var(--ink); text-align: left; border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm); padding: 15px 16px; margin-bottom: 9px;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    #adminMenu .ig-login-btn:not(.btn-logout)::after,
+    #adminScreen .ig-login-btn:not(.btn-logout):not([onclick*="processExcel"]):not([onclick*="uploadFullFormat"])::after {
+      content: "\203A"; font-size: 24px; line-height: 1; color: #94a3b8; flex: none;
+    }
+    #adminMenu .ig-login-btn:not(.btn-logout):active,
+    #adminScreen .ig-login-btn:not(.btn-logout):not([onclick*="processExcel"]):not([onclick*="uploadFullFormat"]):active { background: #eef4ff; border-color: #bfd6ff; }
+    #adminPage > .ig-login-btn, #wReportScreen > .ig-login-btn { margin-bottom: 4px; }
+
+    /* page headings: banner */
+    .form-card h2 {
+      background: linear-gradient(135deg, #0b1b3a 0%, #1e3a8a 58%, #0064e0 100%); color: #ffffff;
+      padding: 15px 14px; border-radius: 18px; font-size: 17px; letter-spacing: 0.3px;
+      box-shadow: var(--shadow); margin: 8px 0 14px;
+    }
+    .field-label { color: #475569; font-size: 11.5px; letter-spacing: 0.3px; }
+
+    /* cards, tables, popups, modal */
+    .althf-card { border: 1px solid var(--line); border-left: 4px solid var(--blue); border-radius: 16px; box-shadow: var(--shadow-sm); }
+    .xl-wrap { border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow-sm); background: #ffffff; }
+    .error-popup, .success-popup { border-radius: 14px; box-shadow: 0 10px 28px rgba(15, 23, 42, 0.14); font-weight: 800; }
+    .modal-sheet { border-radius: 26px 26px 0 0; box-shadow: 0 -14px 44px rgba(11, 27, 58, 0.28); }
+    .modal-item-btn { border-radius: 14px; }
+    .readonly-div-box, .live-calc-div-box { border-radius: 14px; }
+    .bottom-footer { color: var(--muted); letter-spacing: 0.4px; }
+
+    /* spacing + file picker */
+    .grid-art-batch { grid-template-columns: minmax(0, 65fr) minmax(0, 35fr); }
+    #workerScreen .ig-login-btn { margin-bottom: 8px; }
+    #adminScreen .ig-login-btn[onclick*="processExcel"], #adminScreen .ig-login-btn[onclick*="uploadFullFormat"] { margin-bottom: 16px; }
+    .form-card .field-label { margin-top: 8px; }
+    .ig-input[type="file"]::file-selector-button {
+      border: none; background: #eaf2ff; color: var(--blue-deep); font-weight: 800; border-radius: 10px;
+      padding: 8px 12px; margin-right: 10px; cursor: pointer;
+    }
+
+    /* gentle entrance when a screen opens */
+    @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    #loginScreen, .form-card:not(.hidden) { animation: rise 0.32s ease both; }
+    @media (min-width: 900px) { .screen-wrapper:not(.wide) { max-width: 460px; } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  </style>
 </head>
 <body>
 
@@ -176,6 +294,8 @@
     <!-- LOGIN SCREEN -->
     <div class="ig-container" id="loginScreen">
       <div class="company-logo-wrap"><div class="company-logo-inner">ISE<span>UNIT B</span></div></div>
+      <p class="login-title">Welcome back</p>
+      <p class="login-sub">Choose your identity and enter your PIN</p>
       <div id="loginMsgBox" class="error-popup"></div>
 
       <button type="button" class="picker-btn" onclick="openWorkerPicker()">
@@ -673,11 +793,10 @@
       return wrap;
     }
 
-    // Export bar: sirf Excel (share + download). build(b) items deta hai; split = true ho to har buy ki alag file.
+    // Export bar: Excel download only. build(b) returns the items; split = true makes one file per buy.
     function addExportBar(host, build, baseTag, split) {
       const bar = document.createElement('div');
       bar.className = 'rpt-bar';
-      admButton(bar, '📤 Excel - WhatsApp / Share', function () { shareReport(build, baseTag, split); });
       admButton(bar, '⬇ Excel Download', function () { downloadReport(build, baseTag, split); });
       const note = document.createElement('div');
       note.id = 'rptNote';
@@ -845,23 +964,6 @@
       setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
     }
 
-    function inAppsScript() { return /googleusercontent\.com$|script\.google\.com$/.test(location.hostname); }
-    function shareHint() {
-      return inAppsScript()
-        ? 'WhatsApp share does not work on this page (it is opened inside Apps Script). Use the ⬇ Excel Download button and attach the file in WhatsApp, or open the GitHub Pages link.'
-        : 'This browser cannot share files directly (common on laptops). Use the ⬇ Excel Download button, then attach the file in WhatsApp.';
-    }
-
-    async function makeReportFile(items, tag) {
-      try {
-        const blob = await buildBook(items);
-        const name = reportFileName(tag, 'xlsx');
-        return { blob: blob, name: name, file: new File([blob], name, { type: XLSX_MIME }) };
-      } catch (e) {
-        rptNote('❌ ' + ((e && e.message) || 'Could not create the file'));
-        return null;
-      }
-    }
 
     // Buy list: split ho to filter wali buy (ya sab buys), warna ek hi '' entry.
     function rowsForBuy(b) { return admRows.filter(function (o) { return o.buyName === b; }); }
@@ -884,38 +986,7 @@
       return out;
     }
 
-    // WhatsApp / share: saari files ek saath share menu me. Share na chale to hint dikhta hai.
-    function shareBuilts(builts) {
-      if (!builts.length) return;
-      const files = builts.map(function (x) { return x.file; });
-      if (!(navigator.share && navigator.canShare && navigator.canShare({ files: files }))) {
-        rptNote(shareHint());
-        return;
-      }
-      doShare(files);
-    }
 
-    // The browser only allows sharing right after a tap. If it blocks, a "Tap to share" button appears (a fresh tap).
-    function doShare(files) {
-      rptNote('Opening share menu...');
-      navigator.share({ files: files, title: files.length === 1 ? files[0].name : 'Excel reports' }).then(function () {
-        rptNote('');
-      }).catch(function (e) {
-        if (e && e.name === 'AbortError') { rptNote(''); return; }
-        rptNote('Share was blocked by the browser (' + ((e && e.name) || 'error') + '). Tap the button below to try again, or use ⬇ Excel Download.');
-        const host = document.getElementById('rptNote');
-        if (host) {
-          const b = document.createElement('button');
-          b.type = 'button';
-          b.className = 'ig-login-btn';
-          b.style.marginTop = '8px';
-          b.innerText = '📤 Tap to share';
-          b.onclick = function () { doShare(files); };
-          host.appendChild(document.createElement('br'));
-          host.appendChild(b);
-        }
-      });
-    }
 
     function downloadBuilts(builts) {
       if (!builts.length) return;
@@ -923,10 +994,6 @@
       rptNote('Downloaded: ' + builts.map(function (x) { return x.name; }).join(', '));
     }
 
-    function shareReport(build, baseTag, split) {
-      rptNote('Creating file...');
-      makeReportFiles(build, baseTag, split).then(shareBuilts);
-    }
 
     function downloadReport(build, baseTag, split) {
       rptNote('Creating file...');
