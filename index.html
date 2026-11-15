@@ -284,6 +284,7 @@
     #loginScreen, .form-card:not(.hidden) { animation: rise 0.32s ease both; }
     @media (min-width: 900px) { .screen-wrapper:not(.wide) { max-width: 460px; } }
     @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+      .pin-mask { -webkit-text-security: disc; text-security: disc; }
   </style>
 </head>
 <body>
@@ -307,7 +308,7 @@
       </button>
       <input type="hidden" id="workerName" value="">
 
-      <input type="password" class="ig-input" id="workerPin" placeholder="Enter PIN Code" inputmode="numeric">
+      <input type="text" class="ig-input pin-mask" id="workerPin" placeholder="Enter PIN Code" inputmode="numeric" pattern="[0-9]*" maxlength="12" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="pin_code_x" data-lpignore="true" data-1p-ignore="true">
       <button type="button" class="ig-login-btn" id="loginBtn" onclick="checkLogin()">Log in</button>
     </div>
 
