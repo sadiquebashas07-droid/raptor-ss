@@ -581,7 +581,7 @@
       <button type="button" class="ig-login-btn" onclick="admOpen('Change PIN: One Member', admPinOnePage)">🔑 Change PIN (One Member)</button>
       <button type="button" class="ig-login-btn" onclick="admOpen('Change PIN: All 7 Members', admPinAllPage)">🔑 Change PIN (All 7 Members)</button>
       <button type="button" class="ig-login-btn" onclick="admOpen('Recalculate All', admRecalcPage)">🔁 Recalculate All Members</button>
-      <button type="button" class="ig-login-btn" onclick="admOpen('Activity Log', admLog)">📜 Activity Log</button>
+      <button type="button" class="ig-login-btn" onclick="admOpen('History', admLog)">📜 History (who changed / deleted)</button>
       <button type="button" class="ig-login-btn hidden" id="goReportBtn" onclick="openReportFromAdmin()">My Stitching Report 📝</button>
     </div>
 
@@ -612,7 +612,7 @@
     </div>
 
     <!-- WORKER SCREEN -->
-    <div id="pushBar"><span id="pushTxt">🔔 Get report reminders on this phone (v5)</span><button type="button" id="pushBtn" onclick="pushEnable()">Turn on</button><a href="#" onclick="pushHide();return false;">✕</a></div>
+    <div id="pushBar"><span id="pushTxt">🔔 Get report reminders on this phone</span><button type="button" id="pushBtn" onclick="pushEnable()">Turn on</button><a href="#" onclick="pushHide();return false;">✕</a></div>
     <div class="form-card hidden" id="workerScreen">
       <h2 id="roomTitle">👤 Welcome</h2>
       <button type="button" class="ig-login-btn" onclick="openWorkerEntries()">📝 Entries &amp; Correct</button>
@@ -862,6 +862,9 @@
     // Excel jaisi table: ek hi data se screen, PDF aur Excel teeno bante hain.
     // Har line: { cls, cells: [{ t, span, cls }] }. Buy ka title, heading, member ka naam (group row),
     // har 4 articles ke baad TOTAL, aur aakhir me GRAND TOTAL.
+    // Style name with the article number after one gap, e.g. REASAN LACE LTHR AM 1-14299
+    function styleLabel(o) { return String(o.articleName || '') + (o.articleNo ? ' ' + o.articleNo : ''); }
+
     function buildReportMatrix(rep, who) {
       const heads = ['BATCH NO', 'Style Name', 'Order QTY'].concat(rep.headers);
       const nCols = heads.length;
@@ -897,7 +900,7 @@
         g.rows.forEach(function (r, i) {
           const vals = [r.order].concat(r.values);
           const cells = vals.map(function (v) { return { t: v }; });
-          cells.unshift({ t: r.batch, cls: 'mrep-left' }, { t: r.articleName });
+          cells.unshift({ t: r.batch, cls: 'mrep-left' }, { t: styleLabel(r) });
           addLine('', cells);
           vals.forEach(function (v, j) {
             block[j] += num(v);
@@ -1276,27 +1279,19 @@
         inQ.type = 'number';
         inQ.inputMode = 'numeric';
         inQ.placeholder = 'New quantity';
-        const inR = document.createElement('input');
-        inR.className = 'ig-input';
-        inR.placeholder = 'Reason for change (required)';
         card.appendChild(inQ);
-        card.appendChild(inR);
         admButton(card, 'Save change ✅', function () {
           google.script.run
             .withSuccessHandler(function (msg) { showMsg('wEntryMsg', 'success', msg); loadWorkerEntries(); })
             .withFailureHandler(fail)
-            .workerEdit(loggedInWorker, e.row, inQ.value, inR.value);
+            .workerEdit(loggedInWorker, e.row, inQ.value, '');
         });
-        const inD = document.createElement('input');
-        inD.className = 'ig-input';
-        inD.placeholder = 'Reason for delete (required)';
-        card.appendChild(inD);
         admButton(card, '🗑 Delete entry', function () {
           if (!confirm('Delete this entry? This cannot be undone.')) return;
           google.script.run
             .withSuccessHandler(function (msg) { showMsg('wEntryMsg', 'success', msg); loadWorkerEntries(); })
             .withFailureHandler(fail)
-            .workerDelete(loggedInWorker, e.row, inD.value);
+            .workerDelete(loggedInWorker, e.row, '');
         });
         box.appendChild(card);
       });
@@ -1385,7 +1380,7 @@
       if (admBack === 'admin') { goTab('admin'); return; }
       if (sumData) { admShow('adminPage'); renderSummary(); window.scrollTo(0, 0); } else goTab('home');
     }
-    function lockExit() { if (confirm('Lock and exit?')) logout(); }
+    function lockExit() { logout(); }
 
     // Excel tab for KAFEEL / SADIQ: view and download
     function admExcelMenu() {
@@ -1712,13 +1707,9 @@
           inQ.type = 'number';
           inQ.inputMode = 'numeric';
           inQ.placeholder = 'New quantity';
-          const inR = document.createElement('input');
-          inR.className = 'ig-input';
-          inR.placeholder = 'Reason for change (required)';
           card.appendChild(inQ);
-          card.appendChild(inR);
           admButton(card, 'Save ✅', function () {
-            admCall('adminEditEntry', [w, e.row, inQ.value, inR.value], function (msg) {
+            admCall('adminEditEntry', [w, e.row, inQ.value, ''], function (msg) {
               admMsg(msg, 'success');
               admEntries(w);
             });
@@ -1912,7 +1903,7 @@
     const FMT_W = [10.3, 44.3, 9.1, 13.7, 14.9, 13.7, 14.9, 13.7, 14.9, 14.7, 14.7, 15.9, 15.9, 9.7, 12.7, 23.0, 17.7, 14.4, 13.4, 11.4, 13.7, 9, 12.6, 12.7, 9, 17.4];
     const FMT_COLS = [
       { h: 'BATCH NO', f: o => o.batch, text: true },
-      { h: 'Style Name', f: o => o.articleName, text: true },
+      { h: 'Style Name', f: o => styleLabel(o), text: true },
       { h: 'Order QTY', f: o => o.order },
       { g: 'SOLE DT ALTHF', h: 'INSOLE RECIVED', f: o => o.insoleRecv },
       { h: 'INSOLE BALANCE', f: o => o.insoleBal },
@@ -1952,7 +1943,7 @@
     // Columns and widths for the KIT STOCK (line-wise) view, same look as the format
     const KIT_FMT_COLS = [
       { h: 'BATCH NO', f: o => o.batch, text: true },
-      { h: 'Style Name', f: o => o.articleName, text: true },
+      { h: 'Style Name', f: o => styleLabel(o), text: true },
       { h: 'Order QTY', f: o => o.order },
       { g: 'LOKASH', h: 'kit issue', f: o => o.kitIssue },
       { g: '', h: 'KIT STOCK', f: o => o.kitStock },
@@ -2394,9 +2385,25 @@
       admCall('adminLog', [], function (rows) {
         const box = document.getElementById('adminOut');
         box.innerHTML = "";
-        if (!rows.length) { admLine(box, 'No activity yet.'); return; }
+        if (!rows.length) { admLine(box, 'No history yet.'); return; }
         rows.forEach(function (r) {
-          admLine(box, r.time + ' | ' + r.who + ' | ' + r.action + ' | ' + r.worker + ' | ' + r.change + (r.note ? ' | ' + r.note : ''));
+          const own = r.who === r.worker;
+          const whose = own ? 'own entry' : (r.worker + "'s entry");
+          const verb = { EDIT: 'changed', DELETE: 'deleted', ADD: 'added' }[r.action];
+          const head = verb ? (r.who + ' ' + verb + ' ' + whose) : (r.who + ' · ' + r.action + (r.worker ? ' · ' + r.worker : ''));
+          const card = document.createElement('div');
+          card.className = 'althf-card';
+          const t = document.createElement('div');
+          t.className = 'althf-art';
+          t.innerText = head;
+          card.appendChild(t);
+          [r.time, r.article ? 'Article: ' + r.article : '', r.change ? r.change.replace(' -> ', ' → ') : '', (r.note && r.note !== 'No reason given') ? 'Note: ' + r.note : ''].forEach(function (x) {
+            if (!x) return;
+            const d = document.createElement('div');
+            d.innerText = x;
+            card.appendChild(d);
+          });
+          box.appendChild(card);
         });
       });
     }
@@ -2692,9 +2699,9 @@
     function pushShowBar() {
       try {
         if (!('Notification' in window)) { pushSay('🔔 Notifications need the installed app (on iPhone: add to Home Screen first).', false); return; }
-        if (Notification.permission === 'granted') { pushSay('Checking notifications...', false); setTimeout(function () { pushCheck(0); }, 1500); return; }
+        if (Notification.permission === 'granted') { pushHide(); return; }
         if (Notification.permission === 'denied') { pushSay('🔕 Notifications are blocked. Phone Settings → Apps → Chrome (or this app) → Notifications → Allow.', false); return; }
-        pushSay('🔔 Get report reminders on this phone (v5)', true);
+        pushSay('🔔 Get report reminders on this phone', true);
       } catch (e) { }
     }
     function pushHide() { document.getElementById('pushBar').style.display = 'none'; }
@@ -2706,11 +2713,22 @@
         // ask the phone directly (works even if the push service is slow)
         Notification.requestPermission().then(function (p) {
           if (p !== 'granted') { pushShowBar(); return; }
-          pushSay('Allowed. Connecting...', false);
+          pushHide();
           pushDo(function (O) { O.login(loggedInWorker); try { O.User.PushSubscription.optIn(); } catch (e) { } });
           setTimeout(function () { pushCheck(0); }, 2500);
         });
       } catch (e) { pushSay('Could not ask for permission. Please try again.', true); }
+    }
+    // One-time success notification right after the member taps Allow (never shown again)
+    function pushWelcome() {
+      try {
+        if (localStorage.getItem('pushWelcomed')) return;
+        localStorage.setItem('pushWelcomed', '1');
+        const opts = { body: 'You will now get report reminders on this phone.', icon: 'icon-192.png', requireInteraction: false };
+        if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+          navigator.serviceWorker.ready.then(function (reg) { reg.showNotification('Notifications are ON', opts); }).catch(function () { });
+        } else { new Notification('Notifications are ON', opts); }
+      } catch (e) { }
     }
     function pushCheck(tries) {
       tries = tries || 0;
@@ -2719,7 +2737,7 @@
         answered = true;
         let ok = false;
         try { ok = !!(O.User.PushSubscription.id && O.User.PushSubscription.optedIn); } catch (e) { }
-        if (ok) { pushSay('✅ Notifications are ON for ' + loggedInWorker, false); setTimeout(pushHide, 4000); }
+        if (ok) { pushHide(); pushWelcome(); }
         else if (tries < 8) { setTimeout(function () { pushCheck(tries + 1); }, 2500); }
         else { pushSay('⚠️ Not connected' + (window.pushErr ? ': ' + window.pushErr : ' yet. Close the app, open it again and log in.'), true); }
       });
