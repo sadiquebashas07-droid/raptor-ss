@@ -372,11 +372,11 @@
 
   /* main (lime) buttons: login, upload, submit */
   .ig-login-btn { position: relative; overflow: hidden; }
-  .ig-login-btn:not(.btn-logout):not(.back-round) {
+  .ig-login-btn:not(.btn-logout):not(.back-round):not(.tile) {
     background: linear-gradient(90deg, var(--g1), var(--g2)); color: #07210a; font-weight: 800;
     box-shadow: 0 0 22px rgba(109, 255, 61, 0.45), 0 8px 18px rgba(0, 0, 0, 0.35);
   }
-  .ig-login-btn:not(.btn-logout):not(.back-round)::before {
+  .ig-login-btn:not(.btn-logout):not(.back-round):not(.tile)::before {
     content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%;
     background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
     transform: skewX(-20deg); animation: dgShine 3.6s ease-in-out infinite; pointer-events: none;
@@ -425,6 +425,119 @@
   .picker-arrow { color: #2a9a18; }
   .ig-input[type="file"]::file-selector-button { background: rgba(109, 255, 61, 0.2); color: #0d4a12; }
 </style>
+<style id="darkgreen2">
+  /* ===== everything dark-green, bottom tab bar ===== */
+  :root { --card-d: rgba(9, 26, 11, 0.78); --txt: #e8f5e8; --mut: #9fc79f; }
+  body.has-nav .screen-wrapper { padding-bottom: 96px; }
+  body.has-nav #pushBar { bottom: 88px; }
+
+  /* lock icon in the header */
+  .top-header { position: relative; padding-left: 50px; padding-right: 50px; }
+  .form-card { margin: 8px 0 auto; }
+  .sm-col { max-width: 44px; }
+  .sm-chart { justify-content: flex-start; }
+  .lock-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid var(--g1); background: rgba(6, 20, 8, 0.9); color: var(--g1); display: flex; align-items: center; justify-content: center; padding: 0; box-shadow: 0 0 14px rgba(109, 255, 61, 0.4); cursor: pointer; }
+  .lock-icon svg { width: 18px; height: 18px; }
+  .lock-icon:active { transform: translateY(-50%) scale(.9); }
+
+  /* bottom tab bar */
+  #navBar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: flex; justify-content: center; padding: 8px 10px calc(8px + env(safe-area-inset-bottom)); background: rgba(4, 12, 5, 0.94); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-top: 1px solid var(--gline); box-shadow: 0 -8px 30px rgba(0, 0, 0, .5), 0 -1px 18px rgba(109, 255, 61, .12); animation: navUp .45s ease both; }
+  #navBar.hidden { display: none !important; }
+  #navBar .nav-in { width: 100%; max-width: 420px; display: flex; justify-content: space-around; }
+  #navBar button { flex: 1; background: none; border: 0; color: #7c9a7c; padding: 4px 2px; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px; font-weight: 800; letter-spacing: .3px; cursor: pointer; position: relative; transition: color .2s; }
+  #navBar button svg { width: 26px; height: 26px; stroke: currentColor; fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; transition: transform .25s cubic-bezier(.2, 1.6, .4, 1), filter .25s; }
+  #navBar button.on { color: var(--g1); }
+  #navBar button.on svg { transform: translateY(-2px) scale(1.12); filter: drop-shadow(0 0 7px rgba(109, 255, 61, .85)); animation: navPop .5s ease; }
+  #navBar button.on::after { content: ""; position: absolute; top: -9px; width: 28px; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--g1), var(--g2)); box-shadow: 0 0 10px var(--g1); }
+  #navBar button:active svg { transform: scale(.88); }
+  @keyframes navUp { from { transform: translateY(100%); } to { transform: none; } }
+  @keyframes navPop { 0% { transform: scale(.8); } 60% { transform: translateY(-4px) scale(1.2); } 100% { transform: translateY(-2px) scale(1.12); } }
+
+  /* back button: hidden on tab root pages */
+  #adminPage.root > .back-round, #wReportScreen > .back-round { display: none !important; }
+
+  /* dark inputs, pickers, boxes everywhere */
+  .ig-input, .picker-btn { background-color: rgba(4, 14, 5, 0.88); border: 1.5px solid rgba(109, 255, 61, 0.28); color: #ffffff; }
+  .ig-input::placeholder { color: #86a886; }
+  .picker-btn span { color: #e8f5e8; }
+  .picker-arrow { color: var(--g1) !important; }
+  .picker-btn:active { background-color: rgba(20, 52, 22, 0.95); }
+  .ig-input:focus { background-color: rgba(4, 14, 5, 0.97); }
+  .locked-dabba { background-color: rgba(30, 42, 30, 0.7) !important; border-color: rgba(255, 255, 255, 0.08) !important; color: #6f8a6f !important; }
+  .locked-dabba span { color: #6f8a6f; }
+  .locked-label { color: #5f7a5f !important; }
+  .readonly-div-box { background-color: rgba(255, 255, 255, 0.04); border: 1.5px dashed rgba(109, 255, 61, 0.28); color: #cfe8cf; }
+  .live-calc-div-box { background-color: rgba(230, 255, 46, 0.08); border: 1.5px solid rgba(230, 255, 46, 0.45); color: #e6ff2e; }
+  .ig-input[type="file"] { color: #cfe8cf; }
+  .ig-input[type="file"]::file-selector-button { background: rgba(109, 255, 61, 0.2); color: #b9ff9a; }
+  select.ig-input option { background: #07140a; color: #fff; }
+
+  /* cards and lists */
+  .althf-card { background: var(--card-d); border: 1px solid var(--gline); border-left: 4px solid var(--g1); color: var(--txt); box-shadow: 0 0 16px rgba(109, 255, 61, 0.08); }
+  .althf-art { color: var(--g1); }
+  .xl-wrap { background: rgba(255, 255, 255, 0.02); border: 1px solid var(--gline); box-shadow: 0 0 18px rgba(109, 255, 61, 0.1); }
+  .error-popup { background: rgba(60, 12, 20, 0.95); color: #ffb3bd; border: 1px solid rgba(255, 90, 110, 0.5); }
+  .success-popup { background: rgba(10, 52, 20, 0.95); color: #9dff7a; border: 1px solid rgba(109, 255, 61, 0.5); }
+  .item-seg button { background: rgba(4, 14, 5, 0.88); border: 1.5px solid rgba(109, 255, 61, 0.28); color: #dff5df; }
+  .item-seg button.on { background: linear-gradient(90deg, var(--g1), var(--g2)); color: #07210a; border-color: transparent; box-shadow: 0 0 20px rgba(109, 255, 61, 0.45); }
+  .rpt-note { color: var(--mut); }
+
+  /* popup list (select buy / article / name) */
+  .modal-overlay { background: rgba(0, 0, 0, 0.7); }
+  .modal-sheet { background: #07140a; color: var(--txt); border-top: 2px solid var(--g1); box-shadow: 0 -10px 40px rgba(109, 255, 61, 0.18); }
+  .modal-title { color: var(--g1); }
+  .modal-close { background: rgba(109, 255, 61, 0.14); color: #d9ffcc; }
+  .modal-item-btn { background: rgba(255, 255, 255, 0.05); border: 1.5px solid rgba(109, 255, 61, 0.2); color: #e8f5e8; }
+  .modal-item-btn:active { background: rgba(109, 255, 61, 0.22); border-color: var(--g1); color: #ffffff; }
+
+  /* tile buttons (Excel menu, shortcuts, SADIQ admin screen) */
+  .ig-login-btn.tile, #adminScreen .ig-login-btn:not(.btn-logout):not(.back-round):not([onclick*="processExcel"]):not([onclick*="uploadFullFormat"]) {
+    background: var(--card-d); color: #e8f5e8; border: 1px solid var(--gline); text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 15px 16px; margin-bottom: 9px; box-shadow: 0 0 14px rgba(109, 255, 61, 0.1), 0 6px 16px rgba(0, 0, 0, 0.3);
+  }
+  .screen-wrapper.wide .ig-login-btn.tile, .ig-login-btn.tile { display: flex !important; justify-content: space-between !important; max-width: 100% !important; width: 100%; }
+  .ig-login-btn.tile::before { display: none; }
+  .ig-login-btn.tile::after { content: "\203A"; font-size: 24px; line-height: 1; color: var(--g1); flex: none; }
+  .ig-login-btn.tile:active { background: rgba(109, 255, 61, 0.16); }
+
+  /* Summary / member pages */
+  .sm-card, .sm-wc { background: var(--card-d); border: 1px solid var(--gline); color: var(--txt); box-shadow: 0 0 18px rgba(109, 255, 61, 0.08), 0 8px 20px rgba(0, 0, 0, 0.3); animation: rise .45s ease both; }
+  .sm-wc.off { border-left-color: #ff4d6a; background: rgba(60, 14, 22, 0.55); }
+  .sm-wc.idle { border-left-color: #6f8a6f; background: rgba(255, 255, 255, 0.04); }
+  .sm-wc { border-left: 5px solid var(--g1); }
+  .sm-h { color: var(--g1); }
+  .sm-kp > div, .sm-rg { background: rgba(255, 255, 255, 0.05); }
+  .sm-kp b, .sm-wl b, .sm-art b, .sm-er b, .sm-rg b, .sm-pc span, .sm-hn, .sm-hv { color: #ffffff; }
+  .sm-kp small, .sm-wl small, .sm-wr small, .sm-art span, .sm-rg small, .sm-er span, .sm-leg, .sm-mb, .sm-mb u, .sm-col span { color: var(--mut); }
+  .sm-track, .sm-mb .tr { background: rgba(255, 255, 255, 0.09); }
+  .sm-done { background: linear-gradient(90deg, var(--g1), var(--g2)); box-shadow: 0 0 10px rgba(109, 255, 61, .5); }
+  .sm-cb { background: linear-gradient(180deg, var(--g2), var(--g1)); box-shadow: 0 0 10px rgba(109, 255, 61, .4); }
+  .sm-cb.z { background: rgba(255, 90, 110, 0.4); box-shadow: none; }
+  .sm-leg i[style*="0a64e8"] { background: var(--g1) !important; }
+  .sm-leg i[style*="fecdd3"] { background: rgba(255, 90, 110, 0.55) !important; }
+  .sm-pc .bgc { stroke: rgba(255, 255, 255, 0.12); }
+  .sm-er, .sm-ar { border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+  .sm-er.none b, .sm-er.none span { color: #ff8896; }
+  .sm-chip.ok { background: rgba(109, 255, 61, 0.16); color: #8fff6a; }
+  .sm-chip.no { background: rgba(255, 90, 110, 0.18); color: #ff9aa8; }
+  .sm-chip.idle { background: rgba(255, 255, 255, 0.1); color: #c4d6c4; }
+  .sm-av { background: linear-gradient(135deg, var(--g1), var(--g2)); color: #07210a; }
+  .sm-more { color: var(--g1); }
+  .sm-buy, .sm-tap { color: #8fe36a; }
+  .sm-today { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 14px; }
+  .sm-today .dot { width: 12px; height: 12px; border-radius: 50%; flex: none; }
+  .sm-today.ok .dot { background: var(--g1); box-shadow: 0 0 12px var(--g1); animation: dgPulse 2s infinite; }
+  .sm-today.no .dot { background: #ff4d6a; box-shadow: 0 0 12px #ff4d6a; }
+  .sm-today.rest .dot { background: #e6ff2e; }
+
+  /* login: stagger animation */
+  #loginScreen > * { animation: rise .55s ease both; }
+  #loginScreen > :nth-child(2) { animation-delay: .06s; } #loginScreen > :nth-child(3) { animation-delay: .12s; }
+  #loginScreen > :nth-child(4) { animation-delay: .18s; } #loginScreen > :nth-child(5) { animation-delay: .24s; }
+  #loginScreen > :nth-child(6) { animation-delay: .30s; } #loginScreen > :nth-child(7) { animation-delay: .36s; }
+  #loginScreen > :nth-child(8) { animation-delay: .42s; }
+</style>
+
 
 </head>
 <body>
@@ -433,6 +546,7 @@
     <div class="top-header">
       <p class="company-title">INDIA SHOES EXPORT PTD LTD B UNIT</p>
       <p class="sub-title">Kitting Reports</p>
+      <button type="button" class="lock-icon hidden" id="lockBtn" onclick="lockExit()" aria-label="Lock and exit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></button>
     </div>
 
     <!-- LOGIN SCREEN -->
@@ -469,7 +583,6 @@
       <button type="button" class="ig-login-btn" onclick="admOpen('Recalculate All', admRecalcPage)">🔁 Recalculate All Members</button>
       <button type="button" class="ig-login-btn" onclick="admOpen('Activity Log', admLog)">📜 Activity Log</button>
       <button type="button" class="ig-login-btn hidden" id="goReportBtn" onclick="openReportFromAdmin()">My Stitching Report 📝</button>
-      <button type="button" class="ig-login-btn btn-logout" onclick="logout()">Lock & Exit 🔒</button>
     </div>
 
     <!-- ADMIN MENU (SADIQ / KAFEEL): one button per separate screen -->
@@ -481,12 +594,11 @@
       <button type="button" class="ig-login-btn" onclick="admKitStockPage()">📦 KIT STOCK (line-wise) Excel view</button>
       <button type="button" class="ig-login-btn" onclick="admKitPick()">✏️ Edit Entry (LOKASH / SARAVANAN)</button>
       <button type="button" class="ig-login-btn" onclick="admFullExcelPage()">📥 Full Excel (buy select: 7 members + kitting + kit stock)</button>
-      <button type="button" class="ig-login-btn btn-logout" onclick="logout()">Lock &amp; Exit 🔒</button>
     </div>
 
     <!-- ADMIN SUB-SCREEN: one page opens at a time -->
     <div class="form-card hidden" id="adminPage">
-      <button type="button" class="ig-login-btn back-round" onclick="admMenu()" aria-label="Back to menu">⬅ Back to Menu</button>
+      <button type="button" class="ig-login-btn back-round" onclick="admBackGo()" aria-label="Back">⬅ Back</button>
       <h2 id="admPageTitle"></h2>
       <div id="adminCtlMsg" class="error-popup"></div>
       <div id="adminOut" class="althf-list"></div>
@@ -505,7 +617,6 @@
       <h2 id="roomTitle">👤 Welcome</h2>
       <button type="button" class="ig-login-btn" onclick="openWorkerEntries()">📝 Entries &amp; Correct</button>
       <div id="wEntriesBox" class="althf-list hidden"></div>
-      <button type="button" class="ig-login-btn" onclick="openWorkerReport(this)">📊 Show Report (Excel view)</button>
 
       <!-- ALTHF / SARAVANAN only: what are you updating? -->
       <div id="itemSegWrap" class="hidden">
@@ -564,13 +675,20 @@
       <!-- STEP 4: SUBMIT -->
       <button type="button" class="ig-login-btn locked-btn" onclick="sendWorkerData()" id="workerSubmitBtn">Report Submit 🚀</button>
       <button type="button" class="ig-login-btn hidden" id="backAdminBtn" onclick="backToAdmin()">⬅ Admin Screen</button>
-      <button type="button" class="ig-login-btn btn-logout" onclick="logout()">Lock & Exit 🔒</button>
+    </div>
+
+    <!-- MEMBER HOME: own summary -->
+    <div class="form-card hidden" id="homeScreen">
+      <h2 id="homeTitle">🏠 Home</h2>
+      <div id="homeBody"></div>
     </div>
 
     <div class="bottom-footer">
       <span class="raptor-emoji">👾</span><span>Raptor</span>
     </div>
   </div>
+
+  <nav id="navBar" class="hidden"><div class="nav-in" id="navIn"></div></nav>
 
   <!-- POPUP BOTTOM SHEET -->
   <div class="modal-overlay hidden" id="pickerModal" onclick="closeModal(event)">
@@ -645,7 +763,7 @@
           .catch(onFail);
       }
 
-      const FUNCS = ["verifyPin", "getOrdersForWorker", "submitReport", "saveExcelOrders", "saveAlthfData", "getAlthfData", "saveCharPackData", "getCharPackData", "adminSummary", "adminSummaryDetail", "adminSetNoWork", "adminWorkerLog", "adminEditEntry", "adminSetPin", "adminRecalcAll", "adminLog", "adminSetPins", "adminStockReport", "adminFullReport", "adminArticleEntries", "adminDeleteEntry", "adminAddEntry", "adminSetCharPack", "adminGetFormat", "adminGetFormatFile", "adminSaveFormatFile", "adminMemberReport", "adminDeleteBuy", "saveKittingFormat", "workerList", "workerEdit", "workerDelete", "workerReport", "workerFormatFile"];
+      const FUNCS = ["verifyPin", "getOrdersForWorker", "submitReport", "saveExcelOrders", "saveAlthfData", "getAlthfData", "saveCharPackData", "getCharPackData", "adminSummary", "adminSummaryDetail", "adminSetNoWork", "adminWorkerLog", "adminEditEntry", "adminSetPin", "adminRecalcAll", "adminLog", "adminSetPins", "adminStockReport", "adminFullReport", "adminArticleEntries", "adminDeleteEntry", "adminAddEntry", "adminSetCharPack", "adminGetFormat", "adminGetFormatFile", "adminSaveFormatFile", "adminMemberReport", "adminDeleteBuy", "saveKittingFormat", "workerList", "workerEdit", "workerDelete", "workerReport", "workerFormatFile", "workerHome"];
 
       function makeRun(okH, failH) {
         const run = {
@@ -668,7 +786,7 @@
             if (fn.indexOf("admin") === 0) adminCall(fn, args, onOk, onFail);
             else if (fn === "saveExcelOrders") post({ orders: args[0], pin: adminPin }, onOk, onFail);
             else if (fn === "saveKittingFormat") post({ type: "format", rows: args[0], pin: adminPin }, onOk, onFail);
-            else if (fn === "workerList" || fn === "workerEdit" || fn === "workerDelete" || fn === "workerReport" || fn === "workerFormatFile") post({ type: "worker", action: fn, worker: args[0], pin: pins[args[0]] || "", args: args.slice(1) }, onOk, onFail);
+            else if (fn === "workerList" || fn === "workerEdit" || fn === "workerDelete" || fn === "workerReport" || fn === "workerFormatFile" || fn === "workerHome") post({ type: "worker", action: fn, worker: args[0], pin: pins[args[0]] || "", args: args.slice(1) }, onOk, onFail);
             else if (fn === "verifyPin") post({ type: "verify", worker: args[0], pin: args[1] }, onOk, onFail);
             else if (fn === "getOrdersForWorker") post({ type: "worker", action: "workerOrders", worker: args[0], pin: pins[args[0]] || "", args: [args[1] || ""] }, onOk, onFail);
             else if (fn === "submitReport") { const sd = args[0] || {}; post({ type: "worker", action: "workerSubmit", worker: sd.worker, pin: pins[sd.worker] || "", args: [sd] }, onOk, onFail); }
@@ -721,10 +839,7 @@
     let wRepPrev = null;
     function openWorkerReport() {
       getFormatB64();
-      const cur = ['workerScreen'].map(function (id) { return document.getElementById(id); })
-        .find(function (el) { return el && !el.classList.contains('hidden'); });
-      wRepPrev = cur || null;
-      if (cur) cur.classList.add('hidden');
+      ['workerScreen', 'homeScreen'].forEach(function (id) { document.getElementById(id).classList.add('hidden'); });
       document.getElementById('wReportScreen').classList.remove('hidden');
       document.getElementById('wReportTitle').innerText = loggedInWorker + ' REPORT';
       const body = document.getElementById('wReportBody');
@@ -742,11 +857,7 @@
         .workerReport(loggedInWorker);
     }
 
-    function closeWorkerReport() {
-      document.getElementById('wReportScreen').classList.add('hidden');
-      if (wRepPrev) wRepPrev.classList.remove('hidden');
-      window.scrollTo(0, 0);
-    }
+    function closeWorkerReport() { goTab('home'); }
 
     // Excel jaisi table: ek hi data se screen, PDF aur Excel teeno bante hain.
     // Har line: { cls, cells: [{ t, span, cls }] }. Buy ka title, heading, member ka naam (group row),
@@ -1191,17 +1302,148 @@
       });
     }
 
-    function admMenu() {
-      if (loggedInWorker === 'SADIQ') { admUploadScreen(); return; }
+    // ===== Bottom tabs (like Instagram): Home / Report / Excel (members), Home / Excel (KAFEEL), Home / Excel / Admin (SADIQ) =====
+    const NAV_ICONS = {
+      home: '<svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>',
+      report: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg>',
+      excel: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 10h18M9 4v16M15 10v10"/></svg>',
+      admin: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>'
+    };
+    const NAV_SETS = {
+      MEMBER: [['home', 'Home'], ['report', 'Report'], ['excel', 'Excel']],
+      KAFEEL: [['home', 'Home'], ['excel', 'Excel']],
+      SADIQ: [['home', 'Home'], ['excel', 'Excel'], ['admin', 'Admin']]
+    };
+    let curTab = 'home';
+    let admBack = 'home';
+    let homeData = null;
+
+    function navBuild(who) {
+      const set = NAV_SETS[who] || NAV_SETS.MEMBER;
+      const box = document.getElementById('navIn');
+      box.innerHTML = '';
+      set.forEach(function (t) {
+        const b = document.createElement('button');
+        b.type = 'button'; b.setAttribute('data-tab', t[0]);
+        b.innerHTML = NAV_ICONS[t[0]] + '<span>' + t[1] + '</span>';
+        b.onclick = function () { goTab(t[0]); };
+        box.appendChild(b);
+      });
+      document.getElementById('navBar').classList.remove('hidden');
+      document.getElementById('lockBtn').classList.remove('hidden');
+      document.body.classList.add('has-nav');
+    }
+    function navHide() {
+      document.getElementById('navBar').classList.add('hidden');
+      document.getElementById('lockBtn').classList.add('hidden');
+      document.body.classList.remove('has-nav');
+    }
+    function navMark(tab) {
+      Array.prototype.forEach.call(document.querySelectorAll('#navIn button'), function (b) {
+        b.classList.toggle('on', b.getAttribute('data-tab') === tab);
+      });
+    }
+    function hideAllScreens() {
+      ['homeScreen', 'workerScreen', 'wReportScreen', 'adminMenu', 'adminPage', 'adminScreen'].forEach(function (id) {
+        document.getElementById(id).classList.add('hidden');
+      });
+      const wrapEl = document.querySelector('.screen-wrapper');
+      if (wrapEl) wrapEl.classList.remove('wide');
+    }
+    function admIsBoss() { return loggedInWorker === 'KAFEEL' || loggedInWorker === 'SADIQ'; }
+
+    function goTab(tab) {
+      curTab = tab; navMark(tab);
+      hideAllScreens();
+      hideModal();
+      if (admIsBoss()) {
+        if (tab === 'admin') { admBack = 'admin'; document.getElementById('adminScreen').classList.remove('hidden'); }
+        else if (tab === 'excel') { admBack = 'excel'; admOpen('📊 Excel', admExcelMenu); document.getElementById('adminPage').classList.add('root'); }
+        else {
+          admBack = 'home';
+          if (sumData) { admShow('adminPage'); renderSummary(); admSummaryRefresh(); }
+          else admOpen('📊 Summary', admSummary);
+        }
+      } else if (tab === 'report') {
+        document.getElementById('workerScreen').classList.remove('hidden');
+      } else if (tab === 'excel') {
+        openWorkerReport();
+      } else {
+        showMemberHome();
+      }
+      window.scrollTo(0, 0);
+    }
+    // Home shows the saved page at once and refreshes it from the server in the background
+    function admSummaryRefresh() {
+      admCall('adminSummaryDetail', [], function (s2) {
+        sumData = s2;
+        if (curTab === 'home' && !document.getElementById('adminPage').classList.contains('hidden') && document.getElementById('adminPage').classList.contains('root')) renderSummary();
+      });
+    }
+    function admBackGo() {
+      if (admBack === 'excel') { goTab('excel'); return; }
+      if (admBack === 'admin') { goTab('admin'); return; }
+      if (sumData) { admShow('adminPage'); renderSummary(); window.scrollTo(0, 0); } else goTab('home');
+    }
+    function lockExit() { if (confirm('Lock and exit?')) logout(); }
+
+    // Excel tab for KAFEEL / SADIQ: view and download
+    function admExcelMenu() {
+      const box = document.getElementById('adminOut');
+      box.innerHTML = '';
+      [['📊 Kitting Report (Excel view)', function () { admOpen('Kitting Report', admReportPage); }],
+       ['📦 KIT STOCK (line-wise) Excel view', function () { admKitStockPage(); }],
+       ['📥 Full Excel (download, buy select)', function () { admFullExcelPage(); }]].forEach(function (x) {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'ig-login-btn tile'; b.innerText = x[0];
+        b.onclick = function () { admBack = 'excel'; x[1](); window.scrollTo(0, 0); };
+        box.appendChild(b);
+      });
       getFormatB64();
-      admShow('adminMenu');
     }
 
-    function admUploadScreen() { admShow('adminScreen'); }
+    // Member Home: own summary
+    function showMemberHome() {
+      const sc = document.getElementById('homeScreen');
+      sc.classList.remove('hidden');
+      document.getElementById('homeTitle').innerText = '🏠 ' + loggedInWorker;
+      const body = document.getElementById('homeBody');
+      if (homeData) renderMemberHome(homeData); else { body.innerHTML = ''; body.appendChild(smEl('div', 'sm-card', 'Loading... ⏳')); }
+      google.script.run
+        .withSuccessHandler(function (h) { homeData = h; if (curTab === 'home') renderMemberHome(h); })
+        .withFailureHandler(function (e) {
+          if (homeData) return;
+          body.innerHTML = '';
+          const d = smEl('div', 'error-popup', '❌ ' + ((e && e.message) || 'Could not load')); d.style.display = 'block'; d.style.position = 'static';
+          body.appendChild(d);
+        })
+        .workerHome(loggedInWorker);
+    }
+    function renderMemberHome(h) {
+      const body = document.getElementById('homeBody');
+      body.innerHTML = '';
+      const w = h.w;
+      const st = smEl('div', 'sm-card');
+      const row = smEl('div', 'sm-today ' + (h.noWork ? 'rest' : (w.enteredToday ? 'ok' : 'no')));
+      row.appendChild(smEl('span', 'dot'));
+      row.appendChild(smEl('span', '', h.noWork ? 'No work today' : (w.enteredToday ? 'Today: entry done · ' + smLast(w.lastMs, h) : 'Today: no entry yet')));
+      st.appendChild(row);
+      body.appendChild(st);
+      const go = smEl('button', 'ig-login-btn', '📝 Update my report'); go.type = 'button';
+      go.style.marginBottom = '12px';
+      go.onclick = function () { goTab('report'); };
+      body.appendChild(go);
+      memberPageInto(body, w, h);
+    }
+
+    function admMenu() { goTab(loggedInWorker === 'SADIQ' ? 'admin' : 'home'); }
+
+    function admUploadScreen() { goTab('home'); }
 
     // Opens one admin page: clears the old content, then builds the new one
     function admOpen(title, builder) {
       admShow('adminPage');
+      document.getElementById('adminPage').classList.remove('root');
       document.getElementById('admPageTitle').innerText = title;
       document.getElementById('adminOut').innerHTML = "";
       builder();
@@ -1287,6 +1529,7 @@
     }
 
     function admSummary() {
+      document.getElementById('adminPage').classList.add('root');
       document.getElementById('admPageTitle').innerText = '📊 Summary';
       const box = document.getElementById('adminOut');
       box.innerHTML = '';
@@ -1311,6 +1554,14 @@
       };
       box.appendChild(nwBtn);
 
+      document.getElementById('adminPage').classList.add('root');
+      if (loggedInWorker === 'KAFEEL') {
+        [['✏️ Edit Entry', admGoEditMain], ['✏️ Edit Entry (LOKASH / SARAVANAN)', admKitPick]].forEach(function (x) {
+          const b = smEl('button', 'ig-login-btn tile', x[0]); b.type = 'button';
+          b.onclick = function () { admBack = 'home'; x[1](); }; box.appendChild(b);
+        });
+      }
+
       const k = smEl('div', 'sm-card'); const kp = smEl('div', 'sm-kp');
       [[s.buys, 'Buys'], [s.articles, 'Articles'], [entered + ' / ' + s.workers.length, 'Entered today']].forEach(function (x) {
         const c = smEl('div'); c.appendChild(smEl('b', '', x[0])); c.appendChild(smEl('small', '', x[1])); kp.appendChild(c);
@@ -1326,7 +1577,7 @@
         tr.appendChild(d); tr.appendChild(b); row.appendChild(tr); row.appendChild(smEl('div', 'sm-hv', smNum(w.done)));
         ch.appendChild(row); bars.push([d, b, w]);
       });
-      ch.appendChild(smLegend([['#0a64e8', 'Done'], ['#ffc233', 'Balance']])); box.appendChild(ch);
+      ch.appendChild(smLegend([['#6dff3d', 'Done'], ['#ffc233', 'Balance']])); box.appendChild(ch);
       smAnimate(function () {
         bars.forEach(function (x) { x[0].style.width = (x[2].done / mx * 100) + '%'; x[1].style.width = (x[2].balance / mx * 100) + '%'; });
       });
@@ -1351,7 +1602,12 @@
       document.getElementById('admPageTitle').innerText = w.worker + ' · ' + w.label;
       const box = document.getElementById('adminOut');
       box.innerHTML = '';
-      admButton(box, '← Back to Summary', function () { renderSummary(); window.scrollTo(0, 0); });
+      document.getElementById('adminPage').classList.remove('root');
+      memberPageInto(box, w, s);
+    }
+
+    // The member page body (used by KAFEEL's member pages and by each member's own Home)
+    function memberPageInto(box, w, s) {
 
       const top = smEl('div', 'sm-card');
       if (w.parts.length === 1) {
@@ -1363,7 +1619,7 @@
         top.appendChild(kp);
       } else {
         top.appendChild(smEl('div', 'sm-h', 'Done vs balance'));
-        const rings = smEl('div', 'sm-rings'); const colors = ['#0a64e8', '#12a150', '#e8890c']; const fgs = [];
+        const rings = smEl('div', 'sm-rings'); const colors = ['#6dff3d', '#2ed3ff', '#ffb300']; const fgs = [];
         const NS = 'http://www.w3.org/2000/svg';
         w.parts.forEach(function (p, i) {
           const tot = p.done + p.bal, pc = tot ? p.done / tot : 0, c = 2 * Math.PI * 30;
@@ -1395,7 +1651,7 @@
           chart.appendChild(col); cbs.push([cb, d[1] ? Math.max(d[1] / mxd * 100, 6) : 6]);
         });
         wrap.appendChild(chart); dc.appendChild(wrap);
-        const leg = smLegend([['#0a64e8', 'Entry done'], ['#fecdd3', 'No entry']]);
+        const leg = smLegend([['#6dff3d', 'Entry done'], ['#ff5a6e', 'No entry']]);
         const sunNote = smEl('span', '', 'Red date = Sunday'); sunNote.style.color = '#e11d48'; leg.appendChild(sunNote);
         dc.appendChild(leg);
         const withE = w.days.filter(function (d) { return d[1] > 0; }).length;
@@ -1421,7 +1677,7 @@
       box.appendChild(dd);
 
       const ar = smEl('div', 'sm-card'); ar.appendChild(smEl('div', 'sm-h', 'By article'));
-      const colors = ['#0a64e8', '#12a150', '#e8890c']; const fills = []; let lastBuy = null;
+      const colors = ['#6dff3d', '#2ed3ff', '#ffb300']; const fills = []; let lastBuy = null;
       if (!w.articles.length) ar.appendChild(smEl('div', 'sm-leg', 'No orders yet.'));
       w.articles.forEach(function (a) {
         if (a.buy !== lastBuy) { ar.appendChild(smEl('div', 'sm-buy', a.buy || 'Buy')); lastBuy = a.buy; }
@@ -2385,19 +2641,20 @@
               loggedInWorker = worker;
               pushLogin(worker);
 
+              sumData = null; homeData = null;
               if (worker === "KAFEEL") {
-                admMenu();
+                navBuild('KAFEEL'); getFormatB64(); goTab('home');
               } else if (worker === "SADIQ") {
-                admUploadScreen();
+                navBuild('SADIQ'); goTab('home');
               } else {
-                document.getElementById('workerScreen').classList.remove('hidden');
-                document.getElementById('roomTitle').innerText = "👤 Welcome " + worker;
+                document.getElementById('roomTitle').innerText = "👤 " + worker;
                 setupItems(worker);
                 if (!ITEM_CONFIG[worker]) {
                   document.getElementById('lbl_output').innerText = WORKER_LABELS[worker];
                   resetLockSystem();
                   fetchMasterOrders();
                 }
+                navBuild('MEMBER'); goTab('home');
               }
             } else {
               showMsg('loginMsgBox', 'error', (res && res.locked) ? '⛔ Too many wrong attempts. Try again in 10 minutes.' : '❌ Incorrect Security PIN!');
@@ -2494,6 +2751,8 @@
       document.getElementById('adminMenu').classList.add('hidden');
       document.getElementById('adminPage').classList.add('hidden');
       document.getElementById('workerScreen').classList.add('hidden');
+      ['homeScreen', 'wReportScreen'].forEach(function (id) { document.getElementById(id).classList.add('hidden'); });
+      navHide(); sumData = null; homeData = null; curTab = 'home'; admBack = 'home';
       document.getElementById('loginScreen').classList.remove('hidden');
 
       document.getElementById('workerName').value = "";
@@ -2700,9 +2959,10 @@
       }
       function goBackInApp() {
         if (vis('pickerModal')) { hideModal(); return; }
-        if (vis('wReportScreen')) { closeWorkerReport(); return; }
-        if (vis('adminPage')) { admMenu(); return; }
-        if (vis('workerScreen') && vis('backAdminBtn')) { backToAdmin(); return; }
+        if (vis('wReportScreen') || vis('workerScreen')) { goTab('home'); return; }
+        if (vis('adminPage') && !$('adminPage').classList.contains('root')) { admBackGo(); return; }
+        if (vis('adminPage') && curTab === 'excel') { goTab('home'); return; }
+        if (vis('adminScreen')) { goTab('home'); return; }
         // Top level screen: stay here (use Lock & Exit to log out)
       }
       window.addEventListener('popstate', function () {
