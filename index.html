@@ -408,7 +408,7 @@
     </div>
 
     <!-- WORKER SCREEN -->
-    <div id="pushBar"><span id="pushTxt">🔔 Get report reminders on this phone (v4)</span><button type="button" id="pushBtn" onclick="pushEnable()">Turn on</button><a href="#" onclick="pushHide();return false;">✕</a></div>
+    <div id="pushBar"><span id="pushTxt">🔔 Get report reminders on this phone (v5)</span><button type="button" id="pushBtn" onclick="pushEnable()">Turn on</button><a href="#" onclick="pushHide();return false;">✕</a></div>
     <div class="form-card hidden" id="workerScreen">
       <h2 id="roomTitle">👤 Welcome</h2>
       <button type="button" class="ig-login-btn" onclick="openWorkerEntries()">📝 Entries &amp; Correct</button>
@@ -2354,9 +2354,9 @@
     function pushShowBar() {
       try {
         if (!('Notification' in window)) { pushSay('🔔 Notifications need the installed app (on iPhone: add to Home Screen first).', false); return; }
-        if (Notification.permission === 'granted') { document.getElementById('pushBar').style.display = 'none'; return; }
+        if (Notification.permission === 'granted') { pushSay('Checking notifications...', false); setTimeout(function () { pushCheck(0); }, 1500); return; }
         if (Notification.permission === 'denied') { pushSay('🔕 Notifications are blocked. Phone Settings → Apps → Chrome (or this app) → Notifications → Allow.', false); return; }
-        pushSay('🔔 Get report reminders on this phone (v4)', true);
+        pushSay('🔔 Get report reminders on this phone (v5)', true);
       } catch (e) { }
     }
     function pushHide() { document.getElementById('pushBar').style.display = 'none'; }
