@@ -1429,10 +1429,6 @@
       row.appendChild(smEl('span', '', h.noWork ? 'No work today' : (w.enteredToday ? 'Today: entry done · ' + smLast(w.lastMs, h) : 'Today: no entry yet')));
       st.appendChild(row);
       body.appendChild(st);
-      const go = smEl('button', 'ig-login-btn', '📝 Update my report'); go.type = 'button';
-      go.style.marginBottom = '12px';
-      go.onclick = function () { goTab('report'); };
-      body.appendChild(go);
       memberPageInto(body, w, h);
     }
 
@@ -1544,15 +1540,6 @@
       box.innerHTML = '';
       const entered = s.workers.filter(function (w) { return w.enteredToday; }).length;
 
-      const nwBtn = smEl('button', 'ig-login-btn', s.noWork ? '🏖️ No work today (tap to turn reminders back on)' : '🏖️ Mark "No work today"');
-      nwBtn.type = 'button';
-      nwBtn.style.marginBottom = '12px';
-      nwBtn.onclick = function () {
-        const turnOn = !s.noWork;
-        if (turnOn && !confirm('Stop all reminders for today?')) return;
-        admCall('adminSetNoWork', [turnOn], function (m) { s.noWork = turnOn; alert(m); renderSummary(); });
-      };
-      box.appendChild(nwBtn);
 
       document.getElementById('adminPage').classList.add('root');
       if (loggedInWorker === 'KAFEEL') {
@@ -2741,7 +2728,7 @@
     window.addEventListener('load', pushInit);
 
     function logout() {
-      pushLogout();
+      document.getElementById('pushBar').style.display = 'none'; // the phone stays linked to the last login, so reminders keep coming after Lock
       if (window.__clearAuth) window.__clearAuth();
       killKeyboard();
       document.getElementById('workerPin').value = "";
