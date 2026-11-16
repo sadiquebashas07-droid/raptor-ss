@@ -2325,13 +2325,13 @@
         window.OneSignalDeferred = window.OneSignalDeferred || [];
         const base = location.pathname.replace(/[^\/]*$/, '');
         window.OneSignalDeferred.push(async function (OneSignal) {
-          await OneSignal.init({
+          try { await OneSignal.init({
             appId: "904c7ffa-90c0-41a3-b91a-a3949fe03a43",
             serviceWorkerPath: base.slice(1) + "sw.js",
             serviceWorkerParam: { scope: base },
             notifyButton: { enable: false },
             allowLocalhostAsSecureOrigin: true
-          });
+          }); } catch (e) { window.pushErr = String((e && e.message) || e); return; }
           pushReady = true;
           if (loggedInWorker) pushLogin(loggedInWorker);
         });
@@ -2370,20 +2370,22 @@
           if (p !== 'granted') { pushShowBar(); return; }
           pushSay('Allowed. Connecting...', false);
           pushDo(function (O) { O.login(loggedInWorker); try { O.User.PushSubscription.optIn(); } catch (e) { } });
-          setTimeout(pushCheck, 4000);
+          setTimeout(function () { pushCheck(0); }, 2500);
         });
       } catch (e) { pushSay('Could not ask for permission. Please try again.', true); }
     }
-    function pushCheck() {
+    function pushCheck(tries) {
+      tries = tries || 0;
       let answered = false;
       pushDo(function (O) {
         answered = true;
         let ok = false;
         try { ok = !!(O.User.PushSubscription.id && O.User.PushSubscription.optedIn); } catch (e) { }
         if (ok) { pushSay('✅ Notifications are ON for ' + loggedInWorker, false); setTimeout(pushHide, 4000); }
-        else { pushSay('⚠️ Allowed, but not connected yet. Close and open the app once, then log in again.', false); }
+        else if (tries < 8) { setTimeout(function () { pushCheck(tries + 1); }, 2500); }
+        else { pushSay('⚠️ Not connected' + (window.pushErr ? ': ' + window.pushErr : ' yet. Close the app, open it again and log in.'), true); }
       });
-      setTimeout(function () { if (!answered) pushSay('⚠️ Notification service did not load. Check internet and try again.', true); }, 6000);
+      setTimeout(function () { if (!answered && tries === 0) pushSay('⚠️ Notification service did not load' + (window.pushErr ? ': ' + window.pushErr : '') + '. Check internet and try again.', true); }, 6000);
     }
     window.addEventListener('load', pushInit);
 
