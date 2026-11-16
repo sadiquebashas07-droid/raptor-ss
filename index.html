@@ -3,7 +3,7 @@
 <head>
   <base target="_top">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#0b1b3a">
+  <meta name="theme-color" content="#040804">
   <link rel="manifest" href="manifest.json">
   <script async src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"></script>
   <link rel="icon" href="icon-192.png">
@@ -334,6 +334,98 @@
   .item-seg button { flex:1; padding:13px 4px; border-radius:16px; font-weight:800; font-size:15px; background:#fff; border:1.5px solid #cfd9ee; color:#0b1b3a; cursor:pointer; font-family:inherit; }
   .item-seg button.on { background:linear-gradient(135deg,#0a64e8,#1a3fc4); color:#fff; border-color:transparent; box-shadow:0 8px 18px rgba(10,100,232,.3); }
 </style>
+<style id="darkgreen">
+  /* ===== DARK + GREEN GLOW LOOK (colours and animation only; no behaviour changes) ===== */
+  :root { --g1: #6dff3d; --g2: #e6ff2e; --gd: #0a1a0a; --gline: rgba(109, 255, 61, 0.35); }
+  html { background: #040804; }
+  body { color: #e8f5e8; }
+  body::before {
+    background:
+      radial-gradient(620px 460px at 4% -6%, rgba(61, 200, 40, 0.55), transparent 62%),
+      radial-gradient(520px 420px at 108% 108%, rgba(109, 255, 61, 0.16), transparent 60%),
+      #040804;
+    animation: dgDrift 9s ease-in-out infinite alternate;
+  }
+  @keyframes dgDrift { from { opacity: .82; transform: scale(1); } to { opacity: 1; transform: scale(1.06); } }
+
+  .top-header { background: rgba(10, 26, 10, 0.55); border: 1px solid var(--gline); box-shadow: 0 0 22px rgba(109, 255, 61, 0.12); }
+  .company-title { background: linear-gradient(90deg, #ffffff, #b6ff8a 55%, #ffffff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .sub-title { background: rgba(109, 255, 61, 0.12); color: var(--g1); border: 1px solid var(--gline); }
+  .bottom-footer { color: #7fa87f; }
+
+  /* login */
+  #loginScreen { background: rgba(8, 20, 8, 0.55); border: 1px solid var(--gline); box-shadow: 0 0 40px rgba(109, 255, 61, 0.14); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); align-items: stretch; }
+  #loginScreen::before { background: linear-gradient(90deg, var(--g1), var(--g2)); box-shadow: 0 0 14px var(--g1); }
+  .company-logo-wrap { background: linear-gradient(135deg, var(--g1), var(--g2)); box-shadow: 0 0 26px rgba(109, 255, 61, 0.55); animation: dgGlow 2.8s ease-in-out infinite; align-self: center; }
+  .company-logo-inner { background: #06130a; color: #ffffff; }
+  .company-logo-inner span { color: var(--g1); }
+  @keyframes dgGlow { 0%, 100% { box-shadow: 0 0 18px rgba(109, 255, 61, 0.35); } 50% { box-shadow: 0 0 38px rgba(109, 255, 61, 0.8); } }
+  .login-title { color: #ffffff; text-align: left; font-size: 28px; letter-spacing: .2px; margin-top: 6px; }
+  .login-sub { color: #b9d6b9; text-align: left; font-size: 13px; margin: 4px 0 18px; }
+  #loginScreen .field-label { color: #cfe8cf; }
+  #loginScreen .ig-input, #loginScreen .picker-btn { background-color: rgba(4, 14, 4, 0.85); border: 1.5px solid rgba(109, 255, 61, 0.28); color: #ffffff; }
+  #loginScreen .ig-input::placeholder { color: #86a886; }
+  #loginScreen .picker-btn span { color: #e8f5e8; }
+  #loginScreen .picker-arrow { color: var(--g1); }
+  #loginScreen .ig-input:focus { border-color: var(--g1); background-color: rgba(4, 14, 4, 0.95); box-shadow: 0 0 0 3px rgba(109, 255, 61, 0.2), 0 0 18px rgba(109, 255, 61, 0.3); }
+  #loginScreen .picker-btn:active { background-color: rgba(20, 50, 20, 0.9); }
+
+  /* main (lime) buttons: login, upload, submit */
+  .ig-login-btn { position: relative; overflow: hidden; }
+  .ig-login-btn:not(.btn-logout):not(.back-round) {
+    background: linear-gradient(90deg, var(--g1), var(--g2)); color: #07210a; font-weight: 800;
+    box-shadow: 0 0 22px rgba(109, 255, 61, 0.45), 0 8px 18px rgba(0, 0, 0, 0.35);
+  }
+  .ig-login-btn:not(.btn-logout):not(.back-round)::before {
+    content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+    transform: skewX(-20deg); animation: dgShine 3.6s ease-in-out infinite; pointer-events: none;
+  }
+  @keyframes dgShine { 0% { left: -60%; } 55%, 100% { left: 130%; } }
+  .ig-login-btn:active { box-shadow: 0 0 12px rgba(109, 255, 61, 0.4); }
+  .locked-btn { background: #263326 !important; color: #6f8a6f !important; box-shadow: none !important; }
+  .locked-btn::before { display: none; }
+
+  /* admin menu tiles stay light so they are easy to read */
+  #adminMenu .ig-login-btn:not(.btn-logout):not(.back-round),
+  #adminScreen .ig-login-btn:not(.btn-logout):not(.back-round):not([onclick*="processExcel"]):not([onclick*="uploadFullFormat"]) {
+    background: rgba(255, 255, 255, 0.96); color: #0f1f12; box-shadow: 0 0 14px rgba(109, 255, 61, 0.18), 0 6px 16px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(109, 255, 61, 0.35);
+  }
+  #adminMenu .ig-login-btn:not(.btn-logout):not(.back-round)::before,
+  #adminScreen .ig-login-btn:not(.btn-logout):not(.back-round):not([onclick*="processExcel"]):not([onclick*="uploadFullFormat"])::before { display: none; }
+  .btn-logout { background: rgba(255, 70, 90, 0.12) !important; color: #ff8896 !important; border: 1px solid rgba(255, 90, 110, 0.45) !important; }
+
+  /* round glowing back button */
+  .ig-login-btn.back-round, .screen-wrapper.wide .ig-login-btn.back-round {
+    width: 48px; min-width: 48px; height: 48px; padding: 0; margin: 4px auto 8px 0; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 35% 30%, #1e4d16, #07140a 70%); border: 2px solid var(--g1); color: var(--g1);
+    font-size: 0; box-shadow: 0 0 0 4px rgba(109, 255, 61, 0.12), 0 0 20px rgba(109, 255, 61, 0.55); animation: dgPulse 2.4s ease-in-out infinite;
+  }
+  .ig-login-btn.back-round::after { content: "\2190"; font-size: 24px; line-height: 1; color: #eaffde; font-weight: 800; }
+  .ig-login-btn.back-round:active { transform: scale(0.92); }
+  @keyframes dgPulse { 0%, 100% { box-shadow: 0 0 0 4px rgba(109, 255, 61, 0.10), 0 0 14px rgba(109, 255, 61, 0.4); } 50% { box-shadow: 0 0 0 7px rgba(109, 255, 61, 0.16), 0 0 28px rgba(109, 255, 61, 0.8); } }
+
+  /* headings and labels on the dark page */
+  .form-card h2 {
+    background: linear-gradient(135deg, #07140a 0%, #12361a 60%, #2a7d1c 100%); border: 1px solid var(--gline);
+    box-shadow: 0 0 24px rgba(109, 255, 61, 0.2), 0 10px 24px rgba(0, 0, 0, 0.35); color: #f2ffe9;
+  }
+  .field-label { color: #bfe3bf; }
+  .rpt-note { color: #b7d3b7; }
+  .rpt-head-title, .sar-buy { color: #e8f5e8; }
+  .sm-tap, .sm-buy { color: #8fe36a; }
+  .althf-card { background: rgba(255, 255, 255, 0.97); }
+  .modal-sheet { border-top: 2px solid var(--g1); }
+  .sm-card, .sm-wc, .xl-wrap, .modal-sheet, .althf-card, .sm-er, .sm-ar { color: #0f172a; }
+  .sm-er b, .sm-art b, .sm-wl b, .sm-kp b { color: #0b1b3a; }
+
+  /* inputs inside the work screens stay light, with a green focus glow */
+  .ig-input:focus { border-color: var(--g1); box-shadow: 0 0 0 3px rgba(109, 255, 61, 0.22); }
+  .picker-arrow { color: #2a9a18; }
+  .ig-input[type="file"]::file-selector-button { background: rgba(109, 255, 61, 0.2); color: #0d4a12; }
+</style>
+
 </head>
 <body>
 
@@ -394,7 +486,7 @@
 
     <!-- ADMIN SUB-SCREEN: one page opens at a time -->
     <div class="form-card hidden" id="adminPage">
-      <button type="button" class="ig-login-btn" onclick="admMenu()">⬅ Back to Menu</button>
+      <button type="button" class="ig-login-btn back-round" onclick="admMenu()" aria-label="Back to menu">⬅ Back to Menu</button>
       <h2 id="admPageTitle"></h2>
       <div id="adminCtlMsg" class="error-popup"></div>
       <div id="adminOut" class="althf-list"></div>
@@ -403,7 +495,7 @@
     <!-- MEMBER REPORT SCREEN: "Show Report" dabane par alag screen khulti hai -->
     <div class="form-card hidden" id="wReportScreen">
       <h2 id="wReportTitle">REPORT</h2>
-      <button type="button" class="ig-login-btn" onclick="closeWorkerReport()">← Back</button>
+      <button type="button" class="ig-login-btn back-round" onclick="closeWorkerReport()" aria-label="Back">← Back</button>
       <div id="wReportBody"></div>
     </div>
 
@@ -1134,7 +1226,8 @@
     function admButton(box, text, onClick) {
       const b = document.createElement('button');
       b.type = 'button';
-      b.className = 'ig-login-btn';
+      b.className = 'ig-login-btn' + (/^(←|⬅)/.test(text) ? ' back-round' : '');
+      if (/^(←|⬅)/.test(text)) b.setAttribute('aria-label', text.replace(/^(←|⬅)\s*/, ''));
       b.innerText = text;
       b.onclick = onClick;
       box.appendChild(b);
@@ -1210,6 +1303,7 @@
 
       const nwBtn = smEl('button', 'ig-login-btn', s.noWork ? '🏖️ No work today (tap to turn reminders back on)' : '🏖️ Mark "No work today"');
       nwBtn.type = 'button';
+      nwBtn.style.marginBottom = '12px';
       nwBtn.onclick = function () {
         const turnOn = !s.noWork;
         if (turnOn && !confirm('Stop all reminders for today?')) return;
