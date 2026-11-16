@@ -408,7 +408,7 @@
     </div>
 
     <!-- WORKER SCREEN -->
-    <div id="pushBar"><span>🔔 Get report reminders on this phone</span><button type="button" onclick="pushEnable()">Turn on</button><a href="#" onclick="pushHide();return false;">✕</a></div>
+    <div id="pushBar"><span id="pushTxt">🔔 Get report reminders on this phone</span><button type="button" id="pushBtn" onclick="pushEnable()">Turn on</button><a href="#" onclick="pushHide();return false;">✕</a></div>
     <div class="form-card hidden" id="workerScreen">
       <h2 id="roomTitle">👤 Welcome</h2>
       <button type="button" class="ig-login-btn" onclick="openWorkerEntries()">📝 Entries &amp; Correct</button>
@@ -2345,20 +2345,45 @@
       pushShowBar();
     }
     function pushLogout() { pushDo(function (O) { O.logout(); }); document.getElementById('pushBar').style.display = 'none'; }
+    function pushSay(txt, showBtn) {
+      const bar = document.getElementById('pushBar');
+      document.getElementById('pushTxt').innerText = txt;
+      document.getElementById('pushBtn').style.display = showBtn ? '' : 'none';
+      bar.style.display = 'flex';
+    }
     function pushShowBar() {
       try {
-        if (!('Notification' in window)) return;
-        const bar = document.getElementById('pushBar');
-        if (Notification.permission === 'granted' || Notification.permission === 'denied') { bar.style.display = 'none'; return; }
-        bar.style.display = 'flex';
+        if (!('Notification' in window)) { pushSay('🔔 Notifications need the installed app (on iPhone: add to Home Screen first).', false); return; }
+        if (Notification.permission === 'granted') { document.getElementById('pushBar').style.display = 'none'; return; }
+        if (Notification.permission === 'denied') { pushSay('🔕 Notifications are blocked. Phone Settings → Apps → Chrome (or this app) → Notifications → Allow.', false); return; }
+        pushSay('🔔 Get report reminders on this phone', true);
       } catch (e) { }
     }
     function pushHide() { document.getElementById('pushBar').style.display = 'none'; }
     function pushEnable() {
+      try {
+        if (!('Notification' in window)) { pushShowBar(); return; }
+        if (Notification.permission === 'denied') { pushShowBar(); return; }
+        pushSay('Please tap Allow in the box that appears...', false);
+        // ask the phone directly (works even if the push service is slow)
+        Notification.requestPermission().then(function (p) {
+          if (p !== 'granted') { pushShowBar(); return; }
+          pushSay('Allowed. Connecting...', false);
+          pushDo(function (O) { O.login(loggedInWorker); try { O.User.PushSubscription.optIn(); } catch (e) { } });
+          setTimeout(pushCheck, 4000);
+        });
+      } catch (e) { pushSay('Could not ask for permission. Please try again.', true); }
+    }
+    function pushCheck() {
+      let answered = false;
       pushDo(function (O) {
-        O.Notifications.requestPermission().then(function () { pushShowBar(); if (loggedInWorker) O.login(loggedInWorker); });
+        answered = true;
+        let ok = false;
+        try { ok = !!(O.User.PushSubscription.id && O.User.PushSubscription.optedIn); } catch (e) { }
+        if (ok) { pushSay('✅ Notifications are ON for ' + loggedInWorker, false); setTimeout(pushHide, 4000); }
+        else { pushSay('⚠️ Allowed, but not connected yet. Close and open the app once, then log in again.', false); }
       });
-      setTimeout(pushShowBar, 3000);
+      setTimeout(function () { if (!answered) pushSay('⚠️ Notification service did not load. Check internet and try again.', true); }, 6000);
     }
     window.addEventListener('load', pushInit);
 
