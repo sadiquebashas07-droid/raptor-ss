@@ -1267,18 +1267,33 @@
       rows.forEach(function (e) {
         const card = document.createElement('div');
         card.className = 'althf-card';
+        const dash = function (v) { return (v === undefined || v === '' || v === null) ? '—' : v; };
+        const hasInfo = e.order !== undefined;
+        const line = function (txt) { const x = document.createElement('div'); x.innerText = txt; card.appendChild(x); return x; };
         const t = document.createElement('div');
         t.className = 'althf-art';
-        t.innerText = e.date + ' | Article ' + e.article + (e.artInfo ? ' - ' + e.artInfo : '');
+        t.innerText = e.date + (hasInfo ? '' : ' | Article ' + e.article + (e.artInfo ? ' - ' + e.artInfo : ''));
         card.appendChild(t);
-        const d = document.createElement('div');
-        d.innerText = 'Current: ' + e.output + (e.remarks ? ' | ' + e.remarks : '');
-        card.appendChild(d);
+        if (hasInfo) {
+          line('Article No: ' + e.article);
+          line('Article Name: ' + dash(e.name));
+          line('Batch: ' + dash(e.batch));
+          line('Order QTY: ' + dash(e.order));
+          line('Current done: ' + e.output + ' | Balance: ' + e.balance);
+        } else { line('Current: ' + e.output); }
+        const live = hasInfo ? line('Live balance: ' + e.balance) : null;
+        if (live) live.className = 'althf-art';
         const inQ = document.createElement('input');
         inQ.className = 'ig-input';
         inQ.type = 'number';
         inQ.inputMode = 'numeric';
         inQ.placeholder = 'New quantity';
+        inQ.value = e.output;
+        if (live) inQ.addEventListener('input', function () {
+          const typed = Number(inQ.value);
+          const v = (inQ.value === '' || !isFinite(typed)) ? 0 : typed;
+          live.innerText = 'Live balance: ' + Math.max(0, e.order - (e.others + v));
+        });
         card.appendChild(inQ);
         admButton(card, 'Save change ✅', function () {
           google.script.run
