@@ -2692,6 +2692,7 @@
             appId: "904c7ffa-90c0-41a3-b91a-a3949fe03a43",
             serviceWorkerPath: base.slice(1) + "sw.js",
             serviceWorkerParam: { scope: base },
+            serviceWorkerOverrideForTypical: true,
             notifyButton: { enable: false },
             allowLocalhostAsSecureOrigin: true
           }); } catch (e) { window.pushErr = String((e && e.message) || e); return; }
@@ -2803,7 +2804,7 @@
     window.addEventListener('load', function () { setTimeout(pushDebugStart, 1200); });
 
     // ===== App upgrade: shows a message when a newer version is published; one tap loads it =====
-    const APP_VER = '14';
+    const APP_VER = '15';
     let appNewVer = '';
     function appCheckUpdate() {
       try {
