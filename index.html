@@ -2763,8 +2763,47 @@
     }
     window.addEventListener('load', pushInit);
 
+    // ===== Notification check screen: open the app link with &pushdebug=1 to see the phone's real state =====
+    function pushDebugStart() {
+      try {
+        if (location.search.indexOf('pushdebug') < 0) return;
+        const box = document.createElement('div');
+        box.id = 'pdbg';
+        box.style.cssText = 'position:fixed;left:8px;right:8px;top:60px;z-index:999;background:#001a00;color:#cfffbf;border:1px solid #6dff3d;border-radius:12px;padding:10px;font:12px/1.5 monospace;white-space:pre-wrap;word-break:break-all;max-height:55vh;overflow:auto';
+        document.body.appendChild(box);
+        const b = document.createElement('button');
+        b.textContent = 'Force Allow + Connect';
+        b.style.cssText = 'position:fixed;left:8px;right:8px;top:calc(60px + 55vh + 8px);z-index:999;padding:12px;border-radius:12px;border:0;background:#d9ff2e;font-weight:800';
+        b.onclick = function () { pushEnable(); };
+        document.body.appendChild(b);
+        const tick = function () {
+          const L = [];
+          L.push('Notification supported: ' + ('Notification' in window));
+          L.push('Permission: ' + (('Notification' in window) ? Notification.permission : 'n/a'));
+          L.push('Service worker supported: ' + ('serviceWorker' in navigator));
+          L.push('Logged in as: ' + (loggedInWorker || '(not logged in)'));
+          L.push('OneSignal init error: ' + (window.pushErr || 'none'));
+          L.push('Display mode: ' + (window.matchMedia('(display-mode: standalone)').matches ? 'installed app' : 'browser tab'));
+          if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+            navigator.serviceWorker.getRegistrations().then(function (rs) { window.__swn = rs.length + ' registration(s): ' + rs.map(function (r) { return r.scope + ' [' + ((r.active && r.active.state) || 'no active') + ']'; }).join(' | '); }).catch(function () { });
+          }
+          L.push('SW: ' + (window.__swn || '...'));
+          pushDo(function (O) {
+            try {
+              const p = O.User.PushSubscription;
+              window.__pd = 'OneSignal sub id: ' + (p.id || 'NONE') + '\noptedIn: ' + p.optedIn + '\ntoken: ' + (p.token ? p.token.slice(0, 12) + '...' : 'NONE') + '\nexternal id: ' + (O.User.externalId || 'NONE') + '\nOneSignal permission: ' + O.Notifications.permission;
+            } catch (e) { window.__pd = 'OneSignal read error: ' + e; }
+          });
+          L.push(window.__pd || 'OneSignal: not ready yet');
+          box.textContent = L.join('\n');
+        };
+        tick(); setInterval(tick, 2000);
+      } catch (e) { }
+    }
+    window.addEventListener('load', function () { setTimeout(pushDebugStart, 1200); });
+
     // ===== App upgrade: shows a message when a newer version is published; one tap loads it =====
-    const APP_VER = '13';
+    const APP_VER = '14';
     let appNewVer = '';
     function appCheckUpdate() {
       try {
