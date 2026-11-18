@@ -290,6 +290,8 @@
 <style id="pushcss">
   #pushBar { position:fixed; left:12px; right:12px; bottom:12px; z-index:50; background:#0b1b3a; color:#fff; border-radius:18px; padding:10px 12px; display:none; align-items:center; gap:10px; box-shadow:0 10px 26px rgba(11,27,58,.35); font-size:13px; }
   #pushBar span { flex:1; } #pushBar button { background:#ffb300; color:#0b1b3a; border:0; border-radius:12px; padding:9px 12px; font-weight:800; font-size:13px; }
+  #updBar { position:fixed; left:12px; right:12px; top:12px; z-index:60; background:#0a2a0a; color:#eaffe0; border:1px solid #6dff3d; border-radius:18px; padding:10px 12px; display:none; align-items:center; gap:10px; box-shadow:0 0 22px rgba(109,255,61,.35); font-size:13px; }
+  #updBar span { flex:1; } #updBar button { background:linear-gradient(90deg,#6dff3d,#d9ff2e); color:#06130a; border:0; border-radius:12px; padding:9px 12px; font-weight:800; font-size:13px; }
   #pushBar a { color:#9db7e8; font-size:18px; text-decoration:none; padding:0 4px; }
 </style>
 <style id="sumcss">
@@ -612,6 +614,7 @@
     </div>
 
     <!-- WORKER SCREEN -->
+    <div id="updBar"><span>🆕 A new version of the app is ready.</span><button type="button" onclick="appUpgrade()">Upgrade now</button></div>
     <div id="pushBar"><span id="pushTxt">🔔 Get report reminders on this phone</span><button type="button" id="pushBtn" onclick="pushEnable()">Turn on</button><a href="#" onclick="pushHide();return false;">✕</a></div>
     <div class="form-card hidden" id="workerScreen">
       <h2 id="roomTitle">👤 Welcome</h2>
@@ -2714,7 +2717,7 @@
     function pushShowBar() {
       try {
         if (!('Notification' in window)) { pushSay('🔔 Notifications need the installed app (on iPhone: add to Home Screen first).', false); return; }
-        if (Notification.permission === 'granted') { pushHide(); return; }
+        if (Notification.permission === 'granted') { pushHide(); pushDo(function (O) { try { O.User.PushSubscription.optIn(); } catch (e) { } }); return; }
         if (Notification.permission === 'denied') { pushSay('🔕 Notifications are blocked. Phone Settings → Apps → Chrome (or this app) → Notifications → Allow.', false); return; }
         pushSay('🔔 Get report reminders on this phone', true);
       } catch (e) { }
@@ -2759,6 +2762,29 @@
       setTimeout(function () { if (!answered && tries === 0) pushSay('⚠️ Notification service did not load' + (window.pushErr ? ': ' + window.pushErr : '') + '. Check internet and try again.', true); }, 6000);
     }
     window.addEventListener('load', pushInit);
+
+    // ===== App upgrade: shows a message when a newer version is published; one tap loads it =====
+    const APP_VER = '13';
+    let appNewVer = '';
+    function appCheckUpdate() {
+      try {
+        if (!window.fetch) return;
+        fetch(location.pathname + '?_chk=' + Date.now(), { cache: 'no-store' })
+          .then(function (r) { return r.text(); })
+          .then(function (t) {
+            const m = t.match(/const APP_VER = '([^']+)'/);
+            if (m && m[1] !== APP_VER) {
+              appNewVer = m[1];
+              document.getElementById('updBar').style.display = 'flex';
+            } else { document.getElementById('updBar').style.display = 'none'; }
+          }).catch(function () { });
+      } catch (e) { }
+    }
+    function appUpgrade() {
+      try { location.replace(location.pathname + '?v=' + (appNewVer || Date.now())); } catch (e) { location.reload(); }
+    }
+    window.addEventListener('load', function () { setTimeout(appCheckUpdate, 1500); });
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) appCheckUpdate(); });
 
     function logout() {
       document.getElementById('pushBar').style.display = 'none'; // the phone stays linked to the last login, so reminders keep coming after Lock
