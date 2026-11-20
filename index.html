@@ -1013,9 +1013,10 @@
           .withFailureHandler(function (e) { reject(new Error((e && e.message) || 'Server error')); });
         if (isAdminUser) run.adminGetFormatFile(); else run.workerFormatFile(loggedInWorker);
       });
-      return call.then(function (s) {
-        fmtB64Cache = s || FMT_TEMPLATE_B64;
-        return fmtB64Cache;
+      const timeout = new Promise(function (resolve) { setTimeout(function () { resolve(''); }, 20000); });
+      return Promise.race([call, timeout]).then(function (s) {
+        if (s) fmtB64Cache = s;
+        return s || FMT_TEMPLATE_B64;
       }).catch(function () { return FMT_TEMPLATE_B64; });
     }
 
@@ -1090,6 +1091,7 @@
 
     // items: [{ tpl, mx, sheetName }]. Ek workbook me sab sheets; format ki template sheets hata di jaati hain.
     async function buildBook(items) {
+      for (let k = 0; k < 40 && !window.ExcelJS; k++) await new Promise(function (r) { setTimeout(r, 500); });
       if (!window.ExcelJS) throw new Error('Excel library did not load. Check the internet connection and try again.');
       const b64 = await getFormatB64();
       const wb = new ExcelJS.Workbook();
@@ -1124,6 +1126,11 @@
     }
     function fileTag(base, b) { return b ? base + '_' + b.replace(/[^A-Za-z0-9_-]+/g, '_') : base; }
 
+    async function makeReportFile(items, tag) {
+      const blob = await buildBook(items);
+      return { blob: blob, name: reportFileName(tag, 'xlsx') };
+    }
+
     // Har buy ke liye ek Excel file banati hai.
     async function makeReportFiles(build, baseTag, split) {
       const out = [];
@@ -1147,7 +1154,16 @@
 
     function downloadReport(build, baseTag, split) {
       rptNote('Creating file...');
-      makeReportFiles(build, baseTag, split).then(downloadBuilts);
+      let done = false;
+      const guard = setTimeout(function () { if (!done) rptNote('Taking too long. Check internet, close and reopen the app, then try again.'); }, 60000);
+      makeReportFiles(build, baseTag, split).then(function (b) {
+        done = true; clearTimeout(guard);
+        if (!b.length) { rptNote('No data to download.'); return; }
+        downloadBuilts(b);
+      }).catch(function (e) {
+        done = true; clearTimeout(guard);
+        rptNote('Download failed: ' + ((e && e.message) || e));
+      });
     }
 
     // Full Excel: sab reports ek file me. Buy filter ho to sirf wahi buy (KITTING, KIT STOCK, 7 members).
@@ -1569,17 +1585,19 @@
       k.appendChild(kp); box.appendChild(k);
 
       const ch = smEl('div', 'sm-card'); ch.appendChild(smEl('div', 'sm-h', 'Work done by member'));
-      const mx = Math.max.apply(null, s.workers.map(function (w) { return w.done + w.balance; }).concat([1]));
+      // Every member is drawn on the same scale: ALTHF (3 items) and SARAVANAN (2 items) are shown per item, like the others.
+      const up = function (w) { return Math.max(1, (w.parts && w.parts.length) || 1); };
+      const mx = Math.max.apply(null, s.workers.map(function (w) { return (w.done + w.balance) / up(w); }).concat([1]));
       const bars = [];
       s.workers.forEach(function (w) {
         const row = smEl('div', 'sm-hb'); row.appendChild(smEl('div', 'sm-hn', w.worker));
         const tr = smEl('div', 'sm-track'); const d = smEl('div', 'sm-done'); const b = smEl('div', 'sm-bal');
-        tr.appendChild(d); tr.appendChild(b); row.appendChild(tr); row.appendChild(smEl('div', 'sm-hv', smNum(w.done)));
+        tr.appendChild(d); tr.appendChild(b); row.appendChild(tr); row.appendChild(smEl('div', 'sm-hv', smNum(Math.round(w.done / up(w)))));
         ch.appendChild(row); bars.push([d, b, w]);
       });
       ch.appendChild(smLegend([['#6dff3d', 'Done'], ['#ffc233', 'Balance']])); box.appendChild(ch);
       smAnimate(function () {
-        bars.forEach(function (x) { x[0].style.width = (x[2].done / mx * 100) + '%'; x[1].style.width = (x[2].balance / mx * 100) + '%'; });
+        bars.forEach(function (x) { const u = up(x[2]); x[0].style.width = (x[2].done / u / mx * 100) + '%'; x[1].style.width = (x[2].balance / u / mx * 100) + '%'; });
       });
 
       box.appendChild(smEl('div', 'sm-tap', 'Tap a member for details'));
@@ -2804,7 +2822,7 @@
     window.addEventListener('load', function () { setTimeout(pushDebugStart, 1200); });
 
     // ===== App upgrade: shows a message when a newer version is published; one tap loads it =====
-    const APP_VER = '15';
+    const APP_VER = '16';
     let appNewVer = '';
     function appCheckUpdate() {
       try {
