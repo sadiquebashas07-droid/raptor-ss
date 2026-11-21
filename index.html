@@ -1085,7 +1085,14 @@
         ws.getCell(rr, 2).border = Object.assign({}, ws.getCell(rr, 2).border, { left: dark });
         ws.getCell(rr, lastCol).border = Object.assign({}, ws.getCell(rr, lastCol).border, { right: dark });
       }
-      ws.pageSetup = { orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0 };
+      // Page setup: same as the uploaded format sheet (paper, orientation, margins, fit). Falls back to landscape / 1 page wide.
+      let ps = { orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0 };
+      try {
+        const tp = tpl.pageSetup ? JSON.parse(JSON.stringify(tpl.pageSetup)) : null;
+        if (tp && (tp.paperSize || tp.orientation || tp.fitToPage || tp.scale)) { delete tp.printArea; delete tp.printTitlesRow; ps = tp; }
+      } catch (e) { }
+      try { ps.printArea = 'B1:' + ws.getColumn(lastCol).letter + r; } catch (e) { }
+      ws.pageSetup = ps;
       return ws;
     }
 
@@ -2072,8 +2079,9 @@
         tb.appendChild(title);
         tb.appendChild(hr);
         tb.appendChild(gr);
-        for (let i = 0; i < g.list.length; i += 4) {
-          const block = g.list.slice(i, i + 4);
+        const BLK = useFormatHeads ? 5 : 4; // kitting format has 5 articles per block
+        for (let i = 0; i < g.list.length; i += BLK) {
+          const block = g.list.slice(i, i + BLK);
           block.forEach(function (o) {
             const tr = row('clk');
             tr.onclick = function () { admArticleDetail(o.articleNo, undefined, o.buyName); };
@@ -2127,8 +2135,9 @@
         ]);
         add('fmt-head', heads.map(function (hd) { return { t: hd }; }));
         add('fmt-group', admGroupSpans(cols).map(function (sp) { return { t: sp[0], span: sp[1] }; }));
-        for (let i = 0; i < g.list.length; i += 4) {
-          const block = g.list.slice(i, i + 4);
+        const BLK = useFormatHeads ? 5 : 4; // kitting format has 5 articles per block
+        for (let i = 0; i < g.list.length; i += BLK) {
+          const block = g.list.slice(i, i + BLK);
           block.forEach(function (o) {
             add('', cols.map(function (c) { return { t: c.f(o) }; }));
           });
@@ -2822,7 +2831,7 @@
     window.addEventListener('load', function () { setTimeout(pushDebugStart, 1200); });
 
     // ===== App upgrade: shows a message when a newer version is published; one tap loads it =====
-    const APP_VER = '16';
+    const APP_VER = '17';
     let appNewVer = '';
     function appCheckUpdate() {
       try {
